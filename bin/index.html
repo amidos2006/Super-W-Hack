@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Hello Phaser</title>
+    <style>
+        @font-face {
+            font-family: 'pixelFont';
+            src: url('assets/fonts/oxygene1-webfont.eot');
+            src: url('assets/fonts/oxygene1-webfont.eot?#iefix') format('embedded-opentype'),
+                url('assets/fonts/oxygene1-webfont.woff2') format('woff2'),
+                url('assets/fonts/oxygene1-webfont.woff') format('woff'),
+                url('assets/fonts/oxygene1-webfont.ttf') format('truetype'),
+                url('assets/fonts/oxygene1-webfont.svg#oxygene_1regular') format('svg');
+            font-weight: normal;
+            font-style: normal;
+        }
+        .fontPreload{    
+            position:absolute;    
+            left:-100px;
+        }
+    </style>
+    <script src="js/phaser.js"></script>
+    <script src="js/app.js"></script>
+</head>
+<body>
+    <div class="fontPreload" style="font-family: pixelFont;">.</div>
+    <div id="content"></div>
+</body>
+</html>
