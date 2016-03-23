@@ -8,4 +8,8 @@ class BaseGameObject extends Phaser.Group{
     isAnimating(){
         return false;
     }
+    
+    checkCollision(xTile:number, yTile:number){
+        return Math.floor(this.x / Global.TILE_SIZE) == xTile && Math.floor(this.y / Global.TILE_SIZE) == yTile;
+    }
 }

@@ -12,7 +12,9 @@ class Global{
     static getCurrentRoom():RoomInfoObject{
         var tempRoom:RoomInfoObject = new RoomInfoObject(100, DifficultyEnum.Easy);
         tempRoom.setDoor(new Phaser.Point(0, 1));
+        tempRoom.setDoor(new Phaser.Point(1, 0));
         tempRoom.setDoor(new Phaser.Point(-1, 0));
+        tempRoom.setDoor(new Phaser.Point(0, -1));
         tempRoom.cleared = false;
         return tempRoom;
         //return Global.levelRooms[Global.currentX][Global.currentY];
