@@ -6,4 +6,6 @@ class Global{
     static levelRooms:RoomInfoObject[];
     static levelNumber:number;
     static crateNumber:number;
+    static currentX:number;
+    static currentY:number;
 }
