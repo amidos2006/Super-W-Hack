@@ -51,7 +51,7 @@ class Weapon {
             }
         }
       
-        
+        //
         var inAttPosX:number = playerPos.x + (this.startPointShif*faceDirection.x);
         var inAttPosY:number = playerPos.y + (this.startPointShif*faceDirection.y);
         
