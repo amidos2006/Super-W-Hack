@@ -1,0 +1,4 @@
+enum WeaponOnColision {
+    PENETRATE,
+    EXPLODE
+}

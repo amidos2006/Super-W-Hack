@@ -1,0 +1,4 @@
+enum ColidedEndingType {
+    NOTHING,
+    EXPLODE
+}
