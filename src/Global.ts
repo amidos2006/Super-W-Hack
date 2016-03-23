@@ -10,6 +10,7 @@ class Global{
     static currentY:number;
     
     static getCurrentRoom():RoomInfoObject{
-        return Global.levelRooms[Global.currentX][Global.currentY];
+        return new RoomInfoObject(100, DifficultyEnum.Easy);
+        //return Global.levelRooms[Global.currentX][Global.currentY];
     }
 }

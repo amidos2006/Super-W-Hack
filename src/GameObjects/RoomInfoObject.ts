@@ -4,10 +4,11 @@ class RoomInfoObject{
     difficulty:DifficultyEnum;
     connections:number;
     
-    constructor(seed:number, cleared:boolean, difficulty:DifficultyEnum){
+    constructor(seed:number, difficulty:DifficultyEnum){
         this.seed = seed;
-        this.cleared = cleared;
         this.difficulty = difficulty;
+        this.cleared = false;
+        this.connections = 0;
     }
     
     setDoor(direction:Phaser.Point){
