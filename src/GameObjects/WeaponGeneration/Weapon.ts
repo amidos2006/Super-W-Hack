@@ -43,11 +43,14 @@ class Weapon {
     getWeaponPositions(playerPos:Phaser.Point, faceDirection:Phaser.Point, valueMatrix:TileTypeEnum[][]): number[][]	 {
         var result:number[][];
         
-        for(var i:number = 0; i < valueMatrix.length; i++) {
-            for(var j:number = 0; j < valueMatrix[0].length; j++) {
+        var x = new Array(valueMatrix.length);
+        for (var i = 0; i < valueMatrix.length; i++) {
+             x[i] = new Array(valueMatrix[0].length);
+             for(var j:number = 0; j < valueMatrix[0].length; j++) {
                 result[i][j] = 0;
             }
         }
+      
         
         var inAttPosX:number = playerPos.x + (this.startPointShif*faceDirection.x);
         var inAttPosY:number = playerPos.y + (this.startPointShif*faceDirection.y);
