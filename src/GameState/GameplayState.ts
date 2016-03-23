@@ -5,7 +5,8 @@ class GameplayState extends BaseGameState{
     
     create(){
         super.create();
-        
         Phaser.Canvas.setSmoothingEnabled(this.game.context, false);
+        
+        var currentRoom:RoomInfoObject = Global.getCurrentRoom();
     }
 }

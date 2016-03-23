@@ -8,4 +8,8 @@ class Global{
     static crateNumber:number;
     static currentX:number;
     static currentY:number;
+    
+    static getCurrentRoom():RoomInfoObject{
+        return Global.levelRooms[Global.currentX][Global.currentY];
+    }
 }
