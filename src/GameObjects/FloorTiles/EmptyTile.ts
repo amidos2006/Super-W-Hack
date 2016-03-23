@@ -7,7 +7,7 @@ class EmptyTile extends BaseTile{
         this.sprite = this.game.add.sprite(0, 0, "graphics");
         this.sprite.animations.add("normal", [1]);
         this.sprite.animations.play("normal");
-        this.sprite.tint = 0x333333;
+        this.sprite.tint = 0x252525;
         this.add(this.sprite);
     }
 }

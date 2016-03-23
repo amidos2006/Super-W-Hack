@@ -9,8 +9,8 @@ class DoorTile extends BaseTile{
         
         this.direction = direction;
         
-        this.floorSprite = new EmptyTile(game, Math.floor(this.x / Global.ROOM_WIDTH), 
-            Math.floor(this.y / Global.ROOM_HEIGHT));
+        this.floorSprite = new EmptyTile(game, Math.floor(this.x / Global.TILE_SIZE), 
+            Math.floor(this.y / Global.TILE_SIZE));
         this.game.add.existing(this.floorSprite);
         
         this.sprite = this.game.add.sprite(0, 0, "graphics");
