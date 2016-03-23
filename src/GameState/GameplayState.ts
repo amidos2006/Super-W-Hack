@@ -67,4 +67,33 @@ class GameplayState extends BaseGameState{
             }
         }
     }
+    
+    update(){
+        var direction:Phaser.Point = new Phaser.Point();
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP)){
+            direction.y -= 1;
+        }
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)){
+            direction.y += 1;
+        }
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
+            direction.x -= 1;
+        }
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
+            direction.x += 1;
+        }
+        
+        if(direction.x != 0 && direction.y != 0){
+            if(Math.random() < 0.5){
+                direction.x = 0;
+            }
+            else{
+                direction.y = 0;
+            }
+        }
+        
+        if(direction.x != 0 || direction.y != 0){
+            this.game.input.keyboard.reset();
+        }
+    }
 }
