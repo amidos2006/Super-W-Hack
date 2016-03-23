@@ -4,11 +4,14 @@ class DoorTile extends BaseTile{
     
     constructor(game:Phaser.Game, xTile:number, yTile:number){
         super(game, xTile, yTile);
-        this.floorSprite = new EmptyTile(game, xTile, yTile);
-        this.add(this.floorSprite);
         
-        this.sprite = this.game.add.sprite(0, 0, "graphics", [2]);
-        this.sprite.tint = 0xffcd66;
+        this.floorSprite = new EmptyTile(game, xTile, yTile);
+        this.game.add.existing(this.floorSprite);
+        
+        this.sprite = this.game.add.sprite(0, 0, "graphics");
+        this.sprite.animations.add("normal", [2]);
+        this.sprite.animations.play("normal");
+        this.sprite.tint = 0xffcc66;
         this.add(this.sprite);
     }
     
