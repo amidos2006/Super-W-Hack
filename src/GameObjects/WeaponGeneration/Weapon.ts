@@ -5,20 +5,20 @@ class Weapon {
     static MIN_DAMAGE:number = 1;
     static MAX_DAMAGE:number = 3;
     static DAMAGE_INTERVAL:number = 1;
-    damage: number = -1;
+    damage: number = 1;
     
     /** Time of shot cooldown: 1, 3, 5 */
     static MIN_COOLDOWN:number = 1;
     static MAX_COOLDOWN:number = 5;
     static COOLDOWN_INTERVAL:number = 2;
-    cooldown :number = -1;
+    cooldown :number = 1;
     curCooldown: number = 0;
     
     /** Where the weapon attack start: 0, 1, 2, 3 (squares ahead the player) */
     static MIN_SHIFT:number = 0;
     static MAX_SHIFT:number = 3;
     static COOLDOWN_SHIFTL:number = 1;
-    startPointShif: number = -1;
+    startPointShif: number = 1;
     
     /**The way the shooting area is presented */
     shape: WeaponShape = WeaponShape.LINE_1;
@@ -37,15 +37,15 @@ class Weapon {
     
 
     constructor() {
-        
+         this.shape = WeaponShape.LINE_1;
+
     }
 
     getWeaponPositions(playerPos:Phaser.Point, faceDirection:Phaser.Point, valueMatrix:TileTypeEnum[][]): number[][]	 {
-        var result:number[][];
         
-        var x = new Array(valueMatrix.length);
+        var result = new Array(valueMatrix.length);
         for (var i = 0; i < valueMatrix.length; i++) {
-             x[i] = new Array(valueMatrix[0].length);
+             result[i] = new Array(valueMatrix[0].length);
              for(var j:number = 0; j < valueMatrix[0].length; j++) {
                 result[i][j] = 0;
             }
