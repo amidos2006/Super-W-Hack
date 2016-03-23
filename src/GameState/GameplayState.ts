@@ -1,4 +1,6 @@
-class GameplayState extends BaseGameState{
+class GameplayState extends BaseGameState{    
+    currentDoors:DoorTile[];
+    
     constructor(){
         super();
     }
@@ -20,10 +22,14 @@ class GameplayState extends BaseGameState{
             tempDoor.unlock();
         }
         this.game.add.existing(tempDoor);
+        
+        this.currentDoors.push(tempDoor);
     }
     
     createCurrentRoom(room:RoomInfoObject){
         this.game.rnd.sow([room.seed]);
+        
+        this.currentDoors = [];
         
         for(var x:number=0; x<Global.ROOM_WIDTH; x++){
             if(room.checkDoor(new Phaser.Point(0, -1)) && x == Math.floor(Global.ROOM_WIDTH / 2)){
