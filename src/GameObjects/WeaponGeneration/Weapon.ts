@@ -58,13 +58,12 @@ class Weapon {
         if(this.shape == WeaponShape.LINE_1) {
             switch(faceDirection.x) {
                 case 1:
-                
                     for(var j:number = inAttPosX; j < valueMatrix[0].length && inAttPosX-j < 1; j++) {
                         result[inAttPosY][j] = this.damage;
                     }
                 break;
                 case -1:
-                     for(var j:number = inAttPosX; j >= 0 && inAttPosX-j < 1; j++) {
+                     for(var j:number = inAttPosX; j >= 0 && inAttPosX-j < 1; j--) {
                         result[inAttPosY][j] = this.damage;
                     }
                 break;
@@ -77,7 +76,7 @@ class Weapon {
                     }
                     break;
                     case -1:
-                    for(var i:number = inAttPosY; i >= 0 && inAttPosY-i < 1; i++) {
+                    for(var i:number = inAttPosY; i >= 0 && inAttPosY-i < 1; i--) {
                             result[i][j] = this.damage;
                     }
                     break;
@@ -85,11 +84,6 @@ class Weapon {
             }
             
             
-            for(var i:number = inAttPosY; i < valueMatrix.length && i + 1 < valueMatrix.length; i++) {
-                for(var j:number = 0; j < valueMatrix[0].length; j++) {
-                    result[i][j] = 0;
-                }
-            }
             
         }
         return result;
