@@ -11,10 +11,10 @@ class PlayerObject extends BaseGameObject{
     
     move(cursors:Phaser.Point, mapMatrix:TileTypeEnum[][])
     {
-        let canMove:boolean = false;
+        let canMove:boolean = false; 
         if (cursors.x > 0)
         {
-            if(mapMatrix[this.x + Global.TILE_SIZE][this.y] == TileTypeEnum.Passable)
+            if(mapMatrix[this.getTilePosition().x + Global.TILE_SIZE][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
                 canMove = true;
             }
@@ -26,7 +26,7 @@ class PlayerObject extends BaseGameObject{
         
         if(cursors.x < 0)
         {
-            if(mapMatrix[this.x - Global.TILE_SIZE][this.y] == TileTypeEnum.Passable)
+            if(mapMatrix[this.getTilePosition().x - Global.TILE_SIZE][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
                 canMove = true;
             }
@@ -38,7 +38,7 @@ class PlayerObject extends BaseGameObject{
         
         if(cursors.y > 0)
         {
-            if(mapMatrix[this.x][this.y + Global.TILE_SIZE] == TileTypeEnum.Passable)
+            if(mapMatrix[this.getTilePosition().x][this.getTilePosition().y + Global.TILE_SIZE] == TileTypeEnum.Passable)
             {
                 canMove = true;
             }
@@ -50,7 +50,7 @@ class PlayerObject extends BaseGameObject{
         
         if(cursors.y < 0)
         {
-            if(mapMatrix[this.x][this.y - Global.TILE_SIZE] == TileTypeEnum.Passable)
+            if(mapMatrix[this.getTilePosition().x][this.getTilePosition().y - Global.TILE_SIZE] == TileTypeEnum.Passable)
             {
                 canMove = true;
             }
