@@ -33,7 +33,7 @@ class RandomEnemyObject extends BaseGameObject{
         }
     }
     
-    killEnemy(){
+    takeDamage(damage:number){
         
     }
 }
