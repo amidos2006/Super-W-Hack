@@ -1,6 +1,7 @@
 class RandomEnemyObject extends BaseGameObject{
     
     enemySprite:Phaser.Sprite;
+    enemyHealth:number;
     
     constructor(game:Phaser.Game, x:number, y:number){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
@@ -9,6 +10,7 @@ class RandomEnemyObject extends BaseGameObject{
         this.enemySprite.animations.add("normal", [6]);
         this.enemySprite.animations.play("normal");
         this.enemySprite.tint = 0xcc6668;
+        this.enemyHealth = 3;
         this.add(this.enemySprite);
     }
     
@@ -66,7 +68,8 @@ class RandomEnemyObject extends BaseGameObject{
         return canMove;
     }
     
-    takeDamage(damage:number){
-        
+    takeDamage(damage:number)
+    {
+        this.enemyHealth = this.enemyHealth - damage;    
     }
 }
