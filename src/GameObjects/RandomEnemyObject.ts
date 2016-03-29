@@ -2,13 +2,17 @@ class RandomEnemyObject extends BaseGameObject{
     
     enemySprite:Phaser.Sprite;
     
-    constructor(game:Phaser.Game, x:number, y:number)
-    {
-        super(game, x, y);
-        this.enemySprite = this.game.add.sprite(144, 144, 'enemy');
+    constructor(game:Phaser.Game, x:number, y:number){
+        super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
+        
+        this.enemySprite = this.game.add.sprite(0, 0, 'graphics');
+        this.enemySprite.animations.add("normal", [6]);
+        this.enemySprite.animations.play("normal");
+        this.enemySprite.tint = 0xcc6668;
+        this.add(this.enemySprite);
     }
     
-    randomMove()
+    updateEnemy(playerPosition:Phaser.Point, tileMap:TileTypeEnum[][])
     {
         var dir = this.game.rnd.between(0,3);
         if(dir % 4 == 0)
@@ -29,4 +33,7 @@ class RandomEnemyObject extends BaseGameObject{
         }
     }
     
+    killEnemy(){
+        
+    }
 }
