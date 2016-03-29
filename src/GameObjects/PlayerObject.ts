@@ -1,9 +1,11 @@
 class PlayerObject extends BaseGameObject{
     playerSprite:Phaser.Sprite;
-    constructor(game:Phaser.Game, x:number, y:number)
-    {
+    constructor(game:Phaser.Game, x:number, y:number){
         super(game, x, y);
-        this.playerSprite = this.game.add.sprite(0, 0, 'cowboy');
+        
+        this.playerSprite = this.game.add.sprite(0, 0, 'graphics');
+        this.playerSprite.animations.add("normal", [3]);
+        this.playerSprite.animations.play("normal");
     } 
     
     move(cursors:Phaser.CursorKeys)
