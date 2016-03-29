@@ -7,6 +7,9 @@ class RoomInfoObject{
     constructor(difficulty:DifficultyEnum){
         this.difficulty = difficulty;
         this.cleared = false;
+        if(this.difficulty == DifficultyEnum.None){
+            this.cleared = true;
+        }
         this.connections = 0;
         this.constMatrix();
     }

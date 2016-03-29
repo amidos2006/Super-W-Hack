@@ -6,6 +6,7 @@ class SimpleGame {
         this.game.state.add("gameplay", GameplayState, false);
         
         this.game.state.start("gameplay", false, false);
+        Global.initialize();
     }
 }
 
