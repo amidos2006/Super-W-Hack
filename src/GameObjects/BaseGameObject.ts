@@ -9,7 +9,11 @@ class BaseGameObject extends Phaser.Group{
         return false;
     }
     
+    getTilePosition(){
+        return new Phaser.Point(Math.floor(this.x / Global.TILE_SIZE), Math.floor(this.y / Global.TILE_SIZE));
+    }
+    
     checkCollision(xTile:number, yTile:number){
-        return Math.floor(this.x / Global.TILE_SIZE) == xTile && Math.floor(this.y / Global.TILE_SIZE) == yTile;
+        return this.getTilePosition().equals(new Phaser.Point(xTile, yTile));
     }
 }
