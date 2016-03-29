@@ -2,6 +2,7 @@ class RandomEnemyObject extends BaseGameObject{
     
     enemySprite:Phaser.Sprite;
     enemyHealth:number;
+    isAlive:boolean;
     
     constructor(game:Phaser.Game, x:number, y:number){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
@@ -11,6 +12,7 @@ class RandomEnemyObject extends BaseGameObject{
         this.enemySprite.animations.play("normal");
         this.enemySprite.tint = 0xcc6668;
         this.enemyHealth = 3;
+        this.isAlive = true;
         this.add(this.enemySprite);
     }
     
@@ -70,6 +72,18 @@ class RandomEnemyObject extends BaseGameObject{
     
     takeDamage(damage:number)
     {
-        this.enemyHealth = this.enemyHealth - damage;    
+        if(this.enemyHealth > 0)
+        {
+            this.enemyHealth = this.enemyHealth - damage;
+        }
+        else
+        {
+            this.isAlive = false;
+        }    
+    }
+    
+    isEnemyAlive()
+    {
+        return this.isAlive;
     }
 }
