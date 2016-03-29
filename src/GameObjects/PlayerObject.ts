@@ -36,4 +36,11 @@ class PlayerObject extends BaseGameObject{
         // return false;
     }
     
+    setWeapon(newWeapon:Weapon){
+        
+    }
+    
+    getWeapon(){
+        
+    }
 }
