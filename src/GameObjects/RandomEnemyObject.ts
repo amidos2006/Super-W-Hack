@@ -12,25 +12,58 @@ class RandomEnemyObject extends BaseGameObject{
         this.add(this.enemySprite);
     }
     
-    updateEnemy(playerPosition:Phaser.Point, tileMap:TileTypeEnum[][])
+    updateEnemy(enemyDirection:Phaser.Point, tileMap:TileTypeEnum[][])
     {
-        var dir = this.game.rnd.between(0,3);
-        if(dir % 4 == 0)
+        let canMove:boolean = false;
+        
+        if (enemyDirection.x > 0)
         {
-            this.enemySprite.x += Global.TILE_SIZE;
+            if(tileMap[this.x + Global.TILE_SIZE][this.y] == TileTypeEnum.Passable)
+            {
+                canMove = true;
+            }
+            else
+            {
+                canMove = false;
+            }        
         }
-        if(dir % 4 == 1)
+        
+        if(enemyDirection.x < 0)
         {
-            this.enemySprite.x -= Global.TILE_SIZE;
+            if(tileMap[this.x - Global.TILE_SIZE][this.y] == TileTypeEnum.Passable)
+            {
+                canMove = true;
+            }
+            else
+            {
+                canMove = false;
+            }   
         }
-        if(dir % 4 == 2)
+        
+        if(enemyDirection.y > 0)
         {
-            this.enemySprite.y += Global.TILE_SIZE;
+            if(tileMap[this.x][this.y + Global.TILE_SIZE] == TileTypeEnum.Passable)
+            {
+                canMove = true;
+            }
+            else
+            {
+                canMove = false;
+            }
         }
-        if(dir % 4 == 3)
+        
+        if(enemyDirection.y < 0)
         {
-            this.enemySprite.y -= Global.TILE_SIZE;
+            if(tileMap[this.x][this.y - Global.TILE_SIZE] == TileTypeEnum.Passable)
+            {
+                canMove = true;
+            }
+            else
+            {
+                canMove = false;
+            }
         }
+        return canMove;
     }
     
     takeDamage(damage:number){
