@@ -1,5 +1,8 @@
 class GameplayState extends BaseGameState{    
     currentDoors:DoorTile[];
+    highlightTiles:HighlightTile[];
+    playerObject:PlayerObject;
+    lastDirection:Phaser.Point;
     
     constructor(){
         super();
@@ -13,6 +16,35 @@ class GameplayState extends BaseGameState{
         super.create();        
         
         this.createCurrentRoom(Global.getCurrentRoom());
+        this.lastDirection = new Phaser.Point(0, 1);
+        Global.constructLevel(this.game.rnd);
+    }
+    
+    highlight(damageMatrix:number[][]){
+        this.unhighlight();
+        
+        var index:number = 0;
+        for(var y:number=0; y<Global.ROOM_HEIGHT; y++){
+            for(var x:number=0; x<Global.ROOM_WIDTH; x++){
+                console.log(damageMatrix[y][x]);
+                if(damageMatrix[x][y] > 0){
+                    this.highlightTiles[index].x = x * Global.TILE_SIZE;
+                    this.highlightTiles[index].y = y * Global.TILE_SIZE;
+                    this.highlightTiles[index].show();
+                    index++;
+                }
+            }
+        }
+    }
+    
+    unhighlight(){
+        for(var i:number=0; i<this.highlightTiles.length; i++){
+            this.highlightTiles[i].hide();
+        }
+    }
+    
+    isHighlighted(){
+        return this.highlightTiles[0].alpha == 1;
     }
     
     addDoor(direction:Phaser.Point, cleared:boolean){
@@ -52,13 +84,55 @@ class GameplayState extends BaseGameState{
                         this.addDoor(new Phaser.Point(0, 1), room.cleared);
                     }
                     break;
+                }   
+            }
+        }
+        
+        this.highlightTiles = [];
+        for(var i:number=0; i< 2 * (Global.ROOM_WIDTH + Global.ROOM_HEIGHT); i++){
+            var tempTile:HighlightTile = new HighlightTile(this.game)
+            this.highlightTiles.push(tempTile);
+            this.game.add.existing(tempTile);
+        }
+        
+        this.playerObject = new PlayerObject(this.game, Math.floor(Global.ROOM_WIDTH / 2) + 
+            Global.previousDirection.x * (Math.floor(Global.ROOM_WIDTH / 2) - 1), 
+            Math.floor(Global.ROOM_HEIGHT / 2) + 
+            Global.previousDirection.y * (Math.floor(Global.ROOM_HEIGHT / 2) - 1));
+        this.game.add.existing(this.playerObject);
+    }
+    
+    getHackAttack(){
+        var result:number[][] = [];
+                for(var x:number=0; x<Global.ROOM_WIDTH; x++){
+                    result.push([]);
+                    for(var y:number=0; y<Global.ROOM_HEIGHT; y++){
+                        result[x].push(0);
+                    }
                 }
-                
+                result[this.playerObject.getTilePosition().x + this.lastDirection.x]
+                    [this.playerObject.getTilePosition().y + this.lastDirection.y] = 1;
+                    return result;
+    }
+    
+    stepUpdate(){
+        //enemies move
+        
+        var playerPosition:Phaser.Point = this.playerObject.getTilePosition();
+        for(var i:number=0; i<this.currentDoors.length; i++){
+            if(this.currentDoors[i].checkCollision(playerPosition.x, playerPosition.y)){
+                Global.currentX += this.currentDoors[i].direction.x;
+                Global.currentY += this.currentDoors[i].direction.y;
+                Global.previousDirection.set(-this.currentDoors[i].direction.x, -this.currentDoors[i].direction.y);
+                this.game.state.start("gameplay", true);
+                break;
             }
         }
     }
     
     update(){
+        super.update();
+        
         var direction:Phaser.Point = new Phaser.Point();
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP)){
             direction.y -= 1;
@@ -82,8 +156,35 @@ class GameplayState extends BaseGameState{
             }
         }
         
-        if(direction.x != 0 || direction.y != 0){
-            this.game.input.keyboard.reset();
+        if(this.isHighlighted()){
+            if(direction.x != 0 || direction.y != 0){
+                this.lastDirection = direction;
+                this.highlight(this.getHackAttack())
+                this.game.input.keyboard.reset();
+            }
+            if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
+                this.unhighlight();
+                //do the damage and kill enemies
+                this.stepUpdate();
+                this.game.input.keyboard.reset();
+            }
+            if(this.game.input.keyboard.isDown(Phaser.Keyboard.Z)){
+                this.unhighlight();
+                this.game.input.keyboard.reset();
+            }
         }
+        else{
+            if(direction.x != 0 || direction.y != 0){
+                this.lastDirection = direction;
+                this.playerObject.move(direction, Global.getCurrentRoom().getMatrix());
+                this.stepUpdate();
+                this.game.input.keyboard.reset();
+            }
+            if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
+                this.highlight(this.getHackAttack());
+                this.game.input.keyboard.reset();
+            }
+        }
+        
     }
 }

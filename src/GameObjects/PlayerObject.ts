@@ -9,31 +9,31 @@ class PlayerObject extends BaseGameObject{
         this.add(this.playerSprite);
     } 
     
-    move(cursors:Phaser.CursorKeys)
+    move(cursors:Phaser.Point, mapMatrix:TileTypeEnum[][])
     {
-        if (cursors.left.justDown)
-        {
-            this.playerSprite.x -= Global.TILE_SIZE;
-            return true;
-        }
+        // if (cursors.left.justDown)
+        // {
+        //     this.playerSprite.x -= Global.TILE_SIZE;
+        //     return true;
+        // }
         
-        else if (cursors.right.justDown)
-        {
-            this.playerSprite.x += Global.TILE_SIZE; 
-            return true;
-        }
+        // else if (cursors.right.justDown)
+        // {
+        //     this.playerSprite.x += Global.TILE_SIZE; 
+        //     return true;
+        // }
         
-        else if (cursors.down.justDown)
-        {
-            this.playerSprite.y += Global.TILE_SIZE;
-            return true;
-        }
-        else if (cursors.up.justDown)
-        {
-            this.playerSprite.y -= Global.TILE_SIZE; 
-            return true;
-        }
-        return false;
+        // else if (cursors.down.justDown)
+        // {
+        //     this.playerSprite.y += Global.TILE_SIZE;
+        //     return true;
+        // }
+        // else if (cursors.up.justDown)
+        // {
+        //     this.playerSprite.y -= Global.TILE_SIZE; 
+        //     return true;
+        // }
+        // return false;
     }
     
 }
