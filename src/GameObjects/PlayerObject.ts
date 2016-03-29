@@ -1,10 +1,13 @@
 class PlayerObject extends BaseGameObject{
     playerSprite:Phaser.Sprite;
-    constructor(game:Phaser.Game, x:number, y:number){
+    playerWeapon:Weapon;
+    
+    constructor(game:Phaser.Game, x:number, y:number, weapon:Weapon){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
         
         this.playerSprite = this.game.add.sprite(0, 0, 'graphics');
         this.playerSprite.animations.add("normal", [3]);
+        this.playerWeapon = weapon;
         this.playerSprite.animations.play("normal");
         this.add(this.playerSprite);
     } 
@@ -64,10 +67,11 @@ class PlayerObject extends BaseGameObject{
     
     setWeapon(newWeapon:Weapon)
     {
-        
+        this.playerWeapon = newWeapon;
     }
     
-    getWeapon(){
-        
+    getWeapon()
+    {
+        return this.playerWeapon;
     }
 }
