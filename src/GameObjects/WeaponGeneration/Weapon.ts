@@ -1,3 +1,36 @@
+//import WeaponShape = require('WeaponShape'); 
+enum WeaponShape {
+    AREA,
+    LINE_1,
+    LINE_2,
+    LINE_3,
+    LINE_INF,
+    CONE_2,
+    CONE_3,
+    CONE_4
+}
+
+enum WeaponOnColision {
+    PENETRATE,
+    EXPLODE
+}
+
+enum ColidedEndingType {
+    //Comment
+    NOTHING,
+    EXPLODE
+}
+
+enum ShotType {
+    NORMAL,
+    LEAVE_OBJECT
+}
+
+enum TypeColidedObject {
+    DIE_WITH_TIME,
+    DIE_ON_COLISION
+}
+
 class Weapon {
     name: String = "";
     
@@ -17,28 +50,96 @@ class Weapon {
     /** Where the weapon attack start: 0, 1, 2, 3 (squares ahead the player) */
     static MIN_SHIFT:number = 0;
     static MAX_SHIFT:number = 3;
-    static COOLDOWN_SHIFTL:number = 1;
+    static SHIFT_INTERVAL:number = 1;
     startPointShif: number = 1;
     
     /**The way the shooting area is presented */
     shape: WeaponShape = WeaponShape.LINE_1;
+    static WEAPON_SHAPE: WeaponShape[] = [WeaponShape.LINE_1, WeaponShape.LINE_2, WeaponShape.LINE_3, WeaponShape.LINE_INF,
+        WeaponShape.AREA, WeaponShape.CONE_2, WeaponShape.CONE_3, WeaponShape.CONE_4];
 
     /** Type of the shot: normal or leave_behind (e.g. mine) */
+    static SHOT_TYPE: ShotType[] = [ShotType.NORMAL, ShotType.LEAVE_OBJECT];
     shotType: ShotType = ShotType.NORMAL;
     
     /** What happen when bullet collide with enemy  */
+    static WEAPON_ON_COLISION: WeaponOnColision[] = [WeaponOnColision.EXPLODE, WeaponOnColision.PENETRATE];
     wOnColision: WeaponOnColision = WeaponOnColision.PENETRATE;	
     
     /** What happen when the left object do on collosion  */
+    static TYPE_COLIDED_OBJECT: TypeColidedObject[] = [TypeColidedObject.DIE_ON_COLISION, TypeColidedObject.DIE_WITH_TIME];
     typeColidedObj: TypeColidedObject = TypeColidedObject.DIE_ON_COLISION;
     
     /** What happen when time is out from LeaveObj */
+    static ENDING_TYPES: ColidedEndingType[] = [ColidedEndingType.NOTHING, ColidedEndingType.EXPLODE];
     endingType: ColidedEndingType = ColidedEndingType.NOTHING;	
     
 
     constructor() {
          this.shape = WeaponShape.LINE_1;
 
+    }
+
+    attackInLine(result: number[][], intAttPosX: number, intAttPosY: number,
+        playerPos: Phaser.Point, faceDirection: Phaser.Point, valueMatrix: TileTypeEnum[][], quantSpaces: number): number[][] {
+
+        if (faceDirection.x > 0) {
+            for (var i: number = intAttPosX; (i < intAttPosX + quantSpaces || quantSpaces == -1)
+                && i < result[0].length &&
+                valueMatrix[intAttPosY][i] != TileTypeEnum.Wall; i++) {
+                result[intAttPosY][i] = this.damage;
+            }
+        } else if (faceDirection.x < 0) {
+            for (var i: number = intAttPosX; (i > intAttPosX - quantSpaces || quantSpaces == -1)
+                && i >= 0 && valueMatrix[intAttPosY][i] != TileTypeEnum.Wall; i--) {
+                result[intAttPosY][i] = this.damage;
+            }
+        } else {
+            if (faceDirection.y > 0) {
+                for (var i: number = intAttPosY; (i < intAttPosY + quantSpaces || quantSpaces == -1) && i < result.length &&
+                    valueMatrix[i][intAttPosX] != TileTypeEnum.Wall; i++) {
+                    result[i][intAttPosX] = this.damage;
+                }
+            } else if (faceDirection.y < 0) {
+                for (var i: number = intAttPosY; i > (intAttPosY - quantSpaces || quantSpaces == -1)
+                    && i >= 0 && valueMatrix[i][intAttPosX] != TileTypeEnum.Wall; i--) {
+                    result[i][intAttPosX] = this.damage;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    attackInArea(result: number[][], intAttPosX: number, intAttPosY: number,
+        playerPos: Phaser.Point, faceDirection: Phaser.Point, valueMatrix: TileTypeEnum[][]): number[][] {
+
+        if (faceDirection.x > 0) {
+            for (var i: number = intAttPosX; i < intAttPosX + 3
+                && i < result[0].length &&
+                valueMatrix[intAttPosY][i] != TileTypeEnum.Wall; i++) {
+                result[intAttPosY][i] = this.damage;
+            }
+        } else if (faceDirection.x < 0) {
+            for (var i: number = intAttPosX; (i > intAttPosX - 3)
+                && i >= 0 && valueMatrix[intAttPosY][i] != TileTypeEnum.Wall; i--) {
+                result[intAttPosY][i] = this.damage;
+            }
+        } else {
+            if (faceDirection.y > 0) {
+                for (var i: number = intAttPosY; (i < intAttPosY + 3) && i < result.length &&
+                    valueMatrix[i][intAttPosX] != TileTypeEnum.Wall; i++) {
+                    result[i][intAttPosX] = this.damage;
+                }
+            } else if (faceDirection.y < 0) {
+                for (var i: number = intAttPosY; i > (intAttPosY - 3)
+                    && i >= 0 && valueMatrix[i][intAttPosX] != TileTypeEnum.Wall; i--) {
+                    result[i][intAttPosX] = this.damage;
+                }
+            }
+        }
+
+        return result;
     }
 
     getWeaponPositions(playerPos:Phaser.Point, faceDirection:Phaser.Point, valueMatrix:TileTypeEnum[][]): number[][]	 {
@@ -55,7 +156,17 @@ class Weapon {
         var inAttPosX:number = playerPos.x + (this.startPointShif*faceDirection.x);
         var inAttPosY:number = playerPos.y + (this.startPointShif*faceDirection.y);
         
-        if(this.shape == WeaponShape.LINE_1) {
+        if (this.shape == WeaponShape.LINE_1) {
+            return this.attackInLine(result, inAttPosX, inAttPosY, playerPos, faceDirection, valueMatrix, 1);
+        } else if (this.shape == WeaponShape.LINE_2) {
+            return this.attackInLine(result, inAttPosX, inAttPosY, playerPos, faceDirection, valueMatrix, 2);
+        } else if (this.shape == WeaponShape.LINE_3) {
+            return this.attackInLine(result, inAttPosX, inAttPosY, playerPos, faceDirection, valueMatrix, 3);
+        } else if (this.shape == WeaponShape.LINE_INF) {
+            return this.attackInLine(result, inAttPosX, inAttPosY, playerPos, faceDirection, valueMatrix, -1);
+        } else if (this.shape == WeaponShape.AREA) {
+            return this.attackInArea(result, inAttPosX, inAttPosY, playerPos, faceDirection, valueMatrix);
+        } else {
             switch(faceDirection.x) {
                 case 1:
                     for(var j:number = inAttPosX; j < valueMatrix[0].length && inAttPosX-j < 1; j++) {
@@ -82,9 +193,6 @@ class Weapon {
                     break;
                 }
             }
-            
-            
-            
         }
         return result;
     }
@@ -114,7 +222,8 @@ class Weapon {
     
     toString():string{
         var text: string = "";
-        text+="Damage: "+this.damage+", Cooldown: "+this.cooldown;
+        text += "Damage: " + this.damage + ", Cooldown: " + this.cooldown + " , Shift: " + this.startPointShif + ", "
+            + this.endingType+",";
         return text;
     }
 }

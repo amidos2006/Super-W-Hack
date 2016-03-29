@@ -1,4 +1,0 @@
-enum WeaponOnColision {
-    PENETRATE,
-    EXPLODE
-}
