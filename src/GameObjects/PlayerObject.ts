@@ -11,32 +11,59 @@ class PlayerObject extends BaseGameObject{
     
     move(cursors:Phaser.Point, mapMatrix:TileTypeEnum[][])
     {
-        // if (cursors.left.justDown)
-        // {
-        //     this.playerSprite.x -= Global.TILE_SIZE;
-        //     return true;
-        // }
+        let canMove:boolean = false;
+        if (cursors.x > 0)
+        {
+            if(mapMatrix[this.x + Global.TILE_SIZE][this.y] == TileTypeEnum.Passable)
+            {
+                canMove = true;
+            }
+            else
+            {
+                canMove = false;
+            }        
+        }
         
-        // else if (cursors.right.justDown)
-        // {
-        //     this.playerSprite.x += Global.TILE_SIZE; 
-        //     return true;
-        // }
+        if(cursors.x < 0)
+        {
+            if(mapMatrix[this.x - Global.TILE_SIZE][this.y] == TileTypeEnum.Passable)
+            {
+                canMove = true;
+            }
+            else
+            {
+                canMove = false;
+            }   
+        }
         
-        // else if (cursors.down.justDown)
-        // {
-        //     this.playerSprite.y += Global.TILE_SIZE;
-        //     return true;
-        // }
-        // else if (cursors.up.justDown)
-        // {
-        //     this.playerSprite.y -= Global.TILE_SIZE; 
-        //     return true;
-        // }
-        // return false;
+        if(cursors.y > 0)
+        {
+            if(mapMatrix[this.x][this.y + Global.TILE_SIZE] == TileTypeEnum.Passable)
+            {
+                canMove = true;
+            }
+            else
+            {
+                canMove = false;
+            }
+        }
+        
+        if(cursors.y < 0)
+        {
+            if(mapMatrix[this.x][this.y - Global.TILE_SIZE] == TileTypeEnum.Passable)
+            {
+                canMove = true;
+            }
+            else
+            {
+                canMove = false;
+            }
+        }
+        return canMove;
     }
     
-    setWeapon(newWeapon:Weapon){
+    setWeapon(newWeapon:Weapon)
+    {
         
     }
     
