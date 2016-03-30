@@ -1,6 +1,7 @@
 class GameplayState extends BaseGameState{    
     currentDoors:DoorTile[];
     highlightTiles:HighlightTile[];
+    arrowHighlight:DirHighlightTile;
     playerObject:PlayerObject;
     enemyObjects:RandomEnemyObject[];
     boxObject:BoxObject;
@@ -68,6 +69,8 @@ class GameplayState extends BaseGameState{
             this.highlightTiles.push(tempTile);
             this.game.add.existing(tempTile);
         }
+        this.arrowHighlight = new DirHighlightTile(this.game);
+        this.game.add.existing(this.arrowHighlight);
         
         if(Global.currentWeapon == null){
             Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd);
@@ -270,15 +273,17 @@ class GameplayState extends BaseGameState{
             }
         }
         
-        if(this.isHighlighted()){
+        if(this.arrowHighlight.isAppearing()){
             if(direction.x != 0 || direction.y != 0){
                 this.lastDirection = direction;
+                this.arrowHighlight.show(this.playerObject.getTilePosition(), this.lastDirection);
                 this.highlight(this.playerObject.getWeapon().getWeaponPositions(
                     this.playerObject.getTilePosition(), this.lastDirection, 
                     Global.getCurrentRoom().getMatrix(this.enemyObjects)));
                 this.game.input.keyboard.reset();
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
+                this.arrowHighlight.hide();
                 this.unhighlight();
                 this.playerObject.getWeapon().fireWeapon();
                 this.handleAttack(this.playerObject.getWeapon().getWeaponPositions(
@@ -288,6 +293,7 @@ class GameplayState extends BaseGameState{
                 this.game.input.keyboard.reset();
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.Z)){
+                this.arrowHighlight.hide();
                 this.unhighlight();
                 this.game.input.keyboard.reset();
             }
@@ -300,6 +306,7 @@ class GameplayState extends BaseGameState{
                 this.game.input.keyboard.reset();
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
+                this.arrowHighlight.show(this.playerObject.getTilePosition(), this.lastDirection);
                 this.highlight(this.playerObject.getWeapon().getWeaponPositions(
                     this.playerObject.getTilePosition(), this.lastDirection, 
                     Global.getCurrentRoom().getMatrix(this.enemyObjects)));
