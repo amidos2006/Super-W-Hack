@@ -1,6 +1,5 @@
 class RoomInfoObject{
     tileMatrix:TileTypeEnum[][];
-    invertedTileMatrix:TileTypeEnum[][];
     cleared:boolean;
     difficulty:DifficultyEnum;
     connections:number;
@@ -36,22 +35,30 @@ class RoomInfoObject{
     }
     
     getMatrix(){
-        if(this.cleared){
-            if(this.checkDoor(new Phaser.Point(-1, 0))){
-                this.tileMatrix[0][Math.floor(Global.ROOM_HEIGHT / 2)] = TileTypeEnum.Passable;
-            }
-            if(this.checkDoor(new Phaser.Point(1, 0))){
-                this.tileMatrix[Global.ROOM_WIDTH - 1][Math.floor(Global.ROOM_HEIGHT / 2)] = TileTypeEnum.Passable;
-            }
-            if(this.checkDoor(new Phaser.Point(0, -1))){
-                this.tileMatrix[Math.floor(Global.ROOM_WIDTH / 2)][0] = TileTypeEnum.Passable;
-            }
-            if(this.checkDoor(new Phaser.Point(0, 1))){
-                this.tileMatrix[Math.floor(Global.ROOM_WIDTH / 2)][Global.ROOM_HEIGHT - 1] = TileTypeEnum.Passable;
+        var returnMatrix:TileTypeEnum[][] = [];
+        for(var x:number=0; x<Global.ROOM_WIDTH; x++){
+            returnMatrix.push([]);
+            for(var y:number=0; y<Global.ROOM_HEIGHT; y++){
+                returnMatrix[x].push(this.tileMatrix[x][y]);
             }
         }
         
-        return this.tileMatrix;
+        if(this.cleared){
+            if(this.checkDoor(new Phaser.Point(-1, 0))){
+                returnMatrix[0][Math.floor(Global.ROOM_HEIGHT / 2)] = TileTypeEnum.Passable;
+            }
+            if(this.checkDoor(new Phaser.Point(1, 0))){
+                returnMatrix[Global.ROOM_WIDTH - 1][Math.floor(Global.ROOM_HEIGHT / 2)] = TileTypeEnum.Passable;
+            }
+            if(this.checkDoor(new Phaser.Point(0, -1))){
+                returnMatrix[Math.floor(Global.ROOM_WIDTH / 2)][0] = TileTypeEnum.Passable;
+            }
+            if(this.checkDoor(new Phaser.Point(0, 1))){
+                returnMatrix[Math.floor(Global.ROOM_WIDTH / 2)][Global.ROOM_HEIGHT - 1] = TileTypeEnum.Passable;
+            }
+        }
+        
+        return returnMatrix;
     }
     
     setDoor(direction:Phaser.Point){

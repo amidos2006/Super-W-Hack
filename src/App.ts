@@ -7,6 +7,7 @@ class SimpleGame {
         
         this.game.state.start("gameplay", false, false);
         Global.initialize();
+        Global.constructLevel(new Phaser.RandomDataGenerator([Date.now()]));
     }
 }
 

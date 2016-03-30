@@ -17,7 +17,7 @@ class RoomSet{
             for(var j:number=0; j<set.rooms.length; j++){
                 var d:Phaser.Point = new Phaser.Point(this.rooms[i].x - set.rooms[j].x, 
                     this.rooms[i].y - set.rooms[j].y);
-                if(d.getMagnitude() <= 1){
+                if(d.getMagnitude() == 1){
                     result.push(this.rooms[i]);
                     result.push(set.rooms[j]);
                 }
@@ -64,22 +64,28 @@ class Global{
             }
         }
         
+        var sets:RoomSet[] = [];
+        
         var queue:Phaser.Point[] = [new Phaser.Point(random.integerInRange(0, Global.mapWidth - 1), 
             random.integerInRange(0, Global.mapHeight - 1))];
+        Global.currentX = queue[0].x;
+        Global.currentY = queue[0].y;
         var roomNumbers:number = 0;
         while(queue.length != 0 && roomNumbers / (Global.mapWidth * Global.mapHeight) < precentageCovered){
             var p:Phaser.Point = queue.splice(random.integerInRange(0, queue.length - 1), 1)[0];
             if(Global.levelRooms[p.x][p.y] == null){
-                var diff:number = random.integerInRange(1, 4);
+                var diff:number = random.integerInRange(1, 3);
                 if(Math.random() < probabilityOfEmptyPlace){
                     diff = 0;
                 }
                 Global.levelRooms[p.x][p.y] = new RoomInfoObject(diff);
+                Global.levelRooms[p.x][p.y].cleared = true;
+                sets.push(new RoomSet(p));
                 roomNumbers += 1;
             }
             for(var x:number=-1; x<=1; x++){
                 for(var y:number=-1; y<=1; y++){
-                    if(x != 0 || y!= 0){
+                    if(Math.abs(x) + Math.abs(y) == 1){
                         if(p.x + x >=0 && p.x + x < Global.mapWidth && 
                             p.y + y >= 0 && p.y + y < Global.mapHeight){
                             queue.push(new Phaser.Point(p.x + x, p.y + y));
@@ -89,17 +95,30 @@ class Global{
             }
         }
         
-        
+        while(sets.length > 1){
+            var firstIndex:number = random.integerInRange(0, sets.length - 1);
+            var secondIndex:number = (firstIndex + random.integerInRange(1, sets.length - 1)) % sets.length;
+            
+            var connections:Phaser.Point[] = sets[firstIndex].getListOfConnections(sets[secondIndex]);
+            if(connections.length > 0){
+                sets[firstIndex].combine(sets[secondIndex]);
+                sets.splice(secondIndex, 1);
+                var numConn:number = random.integerInRange(1, connections.length / 2);
+                console.log(connections.length / 2);
+                for(var i:number=0; i<numConn; i++){
+                    var randomIndex:number = random.integerInRange(0, connections.length / 2 - 1);
+                    var fRoom:Phaser.Point = connections.splice(2*randomIndex + 1, 1)[0];
+                    var sRoom:Phaser.Point = connections.splice(2*randomIndex, 1)[0];
+                    console.log(numConn + " " + connections.length)
+                                  
+                    Global.levelRooms[fRoom.x][fRoom.y].setDoor(new Phaser.Point(sRoom.x - fRoom.x, sRoom.y - fRoom.y));
+                    Global.levelRooms[sRoom.x][sRoom.y].setDoor(new Phaser.Point(fRoom.x - sRoom.x, fRoom.y - sRoom.y));
+                }
+            }
+        }
     }
     
     static getCurrentRoom():RoomInfoObject{
-        var tempRoom:RoomInfoObject = new RoomInfoObject(DifficultyEnum.Easy);
-        tempRoom.setDoor(new Phaser.Point(0, 1));
-        tempRoom.setDoor(new Phaser.Point(1, 0));
-        tempRoom.setDoor(new Phaser.Point(-1, 0));
-        tempRoom.setDoor(new Phaser.Point(0, -1));
-        tempRoom.cleared = true;
-        return tempRoom;
-        //return Global.levelRooms[Global.currentX][Global.currentY];
+        return Global.levelRooms[Global.currentX][Global.currentY];
     }
 }
