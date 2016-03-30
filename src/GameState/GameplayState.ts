@@ -149,11 +149,16 @@ class GameplayState extends BaseGameState{
         }
         for(var i:number = listOfIndeces.length - 1; i >= 0; i--){
             this.enemyObjects.splice(listOfIndeces[i], 1);
+            lastEnemyDied = true;
         }
         
+        
         if(lastEnemyDied && this.enemyObjects.length <= 0){
-            this.boxObject.show(this.playerObject.getTilePosition(), 
-            Global.getCurrentRoom().getMatrix(this.enemyObjects));
+            var matrix:TileTypeEnum[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
+            var freePositions:Phaser.Point[] = this.getEmptyTiles(matrix);
+            
+            matrix[this.playerObject.getTilePosition().x][this.playerObject.getTilePosition().y] = TileTypeEnum.Wall;
+            this.boxObject.show(freePositions[this.game.rnd.integerInRange(0, freePositions.length - 1)], matrix);
         }
     }
     

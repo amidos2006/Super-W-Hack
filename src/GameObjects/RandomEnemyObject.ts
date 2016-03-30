@@ -13,7 +13,7 @@ class RandomEnemyObject extends BaseGameObject{
         this.enemySprite.animations.add("normal", [6]);
         this.enemySprite.animations.play("normal");
         this.enemySprite.tint = 0xcc6668;
-        this.enemyHealth = 3;
+        this.enemyHealth = 1;
         this.enemySpeed = speed;
         this.isAlive = true;
         this.add(this.enemySprite);
@@ -194,13 +194,14 @@ class RandomEnemyObject extends BaseGameObject{
     
     takeDamage(damage:number)
     {
-        if(this.enemyHealth > 0)
+        if(this.enemyHealth - damage > 0)
         {
             this.enemyHealth = this.enemyHealth - damage;
         }
         else
         {
             this.isAlive = false;
+            this.destroy(true);
             return true;
         } 
         
