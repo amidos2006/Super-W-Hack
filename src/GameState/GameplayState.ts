@@ -102,6 +102,10 @@ class GameplayState extends BaseGameState{
                 Global.previousDirection.y * (Math.floor(Global.ROOM_HEIGHT / 2) - 1), 
                 Global.currentWeapon);
         this.game.add.existing(this.playerObject);
+        
+        if(room.difficulty == DifficultyEnum.None && !room.cleared){
+            this.showBoxObject();
+        }
     }
 
     highlight(damageMatrix:number[][]){
@@ -158,12 +162,16 @@ class GameplayState extends BaseGameState{
         
         
         if(lastEnemyDied && this.enemyObjects.length <= 0){
-            var matrix:TileTypeEnum[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
-            var freePositions:Phaser.Point[] = this.getEmptyTiles(matrix);
-            
-            matrix[this.playerObject.getTilePosition().x][this.playerObject.getTilePosition().y] = TileTypeEnum.Wall;
-            this.boxObject.show(freePositions[this.game.rnd.integerInRange(0, freePositions.length - 1)], matrix);
+            this.showBoxObject();
         }
+    }
+    
+    showBoxObject(){
+        var matrix:TileTypeEnum[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
+        var freePositions:Phaser.Point[] = this.getEmptyTiles(matrix);
+            
+        matrix[this.playerObject.getTilePosition().x][this.playerObject.getTilePosition().y] = TileTypeEnum.Wall;
+        this.boxObject.show(freePositions[this.game.rnd.integerInRange(0, freePositions.length - 1)], matrix);
     }
     
     handleCollision(){
@@ -181,6 +189,7 @@ class GameplayState extends BaseGameState{
         for(var i:number=0; i<this.enemyObjects.length; i++){
             if(this.enemyObjects[i].checkCollision(playerPosition.x, playerPosition.y)){
                 this.playerObject.killObject();
+                this.playerObject = null;
                 return true;
             }
         }
@@ -206,6 +215,7 @@ class GameplayState extends BaseGameState{
         for(var i:number=0; i<this.enemyObjects.length; i++){
             if(this.enemyObjects[i].checkCollision(playerPosition.x, playerPosition.y)){
                 this.playerObject.killObject();
+                this.playerObject = null;
                 return true;
             }
         }
@@ -232,6 +242,10 @@ class GameplayState extends BaseGameState{
     
     update(){
         super.update();
+        
+        if(this.playerObject == null){
+            return;
+        }
         
         var direction:Phaser.Point = new Phaser.Point();
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP)){
