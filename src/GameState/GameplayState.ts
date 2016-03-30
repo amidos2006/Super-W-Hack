@@ -140,7 +140,16 @@ class GameplayState extends BaseGameState{
 
     handleAttack(damage:number[][]){
         var lastEnemyDied:boolean = false;
-        //handle damage over enemies
+        var listOfIndeces:number[] = [];
+        for (var i:number = 0; i < this.enemyObjects.length; i++) {
+            var eP = this.enemyObjects[i].getTilePosition();
+            if(this.enemyObjects[i].takeDamage(damage[eP.y][eP.x])){
+                listOfIndeces.push(i);
+            }
+        }
+        for(var i:number = listOfIndeces.length - 1; i >= 0; i++){
+            this.enemyObjects.splice(listOfIndeces[i], 1);
+        }
         
         if(lastEnemyDied && this.enemyObjects.length <= 0){
             this.boxObject.show(this.playerObject.getTilePosition(), 

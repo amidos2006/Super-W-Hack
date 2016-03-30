@@ -201,7 +201,10 @@ class RandomEnemyObject extends BaseGameObject{
         else
         {
             this.isAlive = false;
-        }    
+            return true;
+        } 
+        
+        return false;   
     }
     
     isEnemyAlive()
