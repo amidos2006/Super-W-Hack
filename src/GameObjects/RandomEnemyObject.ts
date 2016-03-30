@@ -24,7 +24,7 @@ class RandomEnemyObject extends BaseGameObject{
         
         if (enemyDirection.x > 0)
         {
-            if(tileMap[this.getTilePosition().x + Global.TILE_SIZE][this.getTilePosition().y] == TileTypeEnum.Passable)
+            if(tileMap[this.getTilePosition().x + 1][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
                 this.x += Global.TILE_SIZE * this.enemySpeed;
                 canMove = true;
@@ -37,7 +37,7 @@ class RandomEnemyObject extends BaseGameObject{
         
         if(enemyDirection.x < 0)
         {
-            if(tileMap[this.getTilePosition().x - Global.TILE_SIZE][this.getTilePosition().y] == TileTypeEnum.Passable)
+            if(tileMap[this.getTilePosition().x - 1][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
                 this.x -= Global.TILE_SIZE * this.enemySpeed;
                 canMove = true;
@@ -50,7 +50,7 @@ class RandomEnemyObject extends BaseGameObject{
         
         if(enemyDirection.y > 0)
         {
-            if(tileMap[this.getTilePosition().x][this.getTilePosition().y + Global.TILE_SIZE] == TileTypeEnum.Passable)
+            if(tileMap[this.getTilePosition().x][this.getTilePosition().y + 1] == TileTypeEnum.Passable)
             {
                 this.y += Global.TILE_SIZE * this.enemySpeed;
                 canMove = true;
@@ -63,7 +63,7 @@ class RandomEnemyObject extends BaseGameObject{
         
         if(enemyDirection.y < 0)
         {
-            if(tileMap[this.getTilePosition().x][this.getTilePosition().y - Global.TILE_SIZE] == TileTypeEnum.Passable)
+            if(tileMap[this.getTilePosition().x][this.getTilePosition().y - 1] == TileTypeEnum.Passable)
             {
                 this.y -= Global.TILE_SIZE * this.enemySpeed;
                 canMove = true;
@@ -73,6 +73,7 @@ class RandomEnemyObject extends BaseGameObject{
                 canMove = false;
             }
         }
+        
         return canMove;
     }
     
