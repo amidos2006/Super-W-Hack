@@ -118,14 +118,9 @@ class Global{
                 }
             }
         }
-        
-        console.log(Global.levelRooms);
-        console.log(Global.currentX + " " + Global.currentY)
     }
     
     static getCurrentRoom():RoomInfoObject{
-        
-        console.log("Room Position: " + Global.currentX + " " + Global.currentY)
         return Global.levelRooms[Global.currentX][Global.currentY];
     }
 }
