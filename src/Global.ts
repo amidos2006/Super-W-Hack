@@ -1,3 +1,30 @@
+class RoomSet{
+    rooms:Phaser.Point[];
+    
+    constructor(p:Phaser.Point){
+        this.rooms = [p];
+    }
+    
+    combine(set:RoomSet){
+        for(var i:number=0; i<set.rooms.length; i++){
+            this.rooms.push(set.rooms[i]);
+        }
+    }
+    
+    getListOfConnections(set:RoomSet){
+        var result:Phaser.Point[] = [];
+        for(var i:number=0; i<this.rooms.length; i++){
+            for(var j:number=0; j<set.rooms.length; j++){
+                var d:Phaser.Point = new Phaser.Point(this.rooms[i].x - set.rooms[j].x, 
+                    this.rooms[i].y - set.rooms[j].y);
+                if(d.getMagnitude() <= 1){
+                    
+                }
+            }
+        }
+    }
+}
+
 class Global{
     static TILE_SIZE:number = 32;
     static ROOM_WIDTH:number = 11;

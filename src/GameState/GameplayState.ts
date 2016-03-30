@@ -153,7 +153,7 @@ class GameplayState extends BaseGameState{
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
                 this.unhighlight();
-                //do the damage and kill enemies
+                this.playerObject.getWeapon().fireWeapon();
                 this.stepUpdate();
                 this.game.input.keyboard.reset();
             }
