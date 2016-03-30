@@ -2,9 +2,10 @@ class RandomEnemyObject extends BaseGameObject{
     
     enemySprite:Phaser.Sprite;
     enemyHealth:number;
+    enemySpeed:number;
     isAlive:boolean;
     
-    constructor(game:Phaser.Game, x:number, y:number){
+    constructor(game:Phaser.Game, x:number, y:number, speed:number){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
         
         this.enemySprite = this.game.add.sprite(0, 0, 'graphics');
@@ -12,6 +13,7 @@ class RandomEnemyObject extends BaseGameObject{
         this.enemySprite.animations.play("normal");
         this.enemySprite.tint = 0xcc6668;
         this.enemyHealth = 3;
+        this.enemySpeed = speed;
         this.isAlive = true;
         this.add(this.enemySprite);
     }
@@ -24,6 +26,7 @@ class RandomEnemyObject extends BaseGameObject{
         {
             if(tileMap[this.getTilePosition().x + Global.TILE_SIZE][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
+                this.x = this.getTilePosition().x + this.enemySpeed;
                 canMove = true;
             }
             else
@@ -36,6 +39,7 @@ class RandomEnemyObject extends BaseGameObject{
         {
             if(tileMap[this.getTilePosition().x - Global.TILE_SIZE][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
+                this.x = this.getTilePosition().x - this.enemySpeed;
                 canMove = true;
             }
             else
@@ -48,6 +52,7 @@ class RandomEnemyObject extends BaseGameObject{
         {
             if(tileMap[this.getTilePosition().x][this.getTilePosition().y + Global.TILE_SIZE] == TileTypeEnum.Passable)
             {
+                this.y = this.getTilePosition().y + this.enemySpeed;
                 canMove = true;
             }
             else
@@ -60,6 +65,7 @@ class RandomEnemyObject extends BaseGameObject{
         {
             if(tileMap[this.getTilePosition().x][this.getTilePosition().y - Global.TILE_SIZE] == TileTypeEnum.Passable)
             {
+                this.y = this.getTilePosition().y - this.enemySpeed;
                 canMove = true;
             }
             else
