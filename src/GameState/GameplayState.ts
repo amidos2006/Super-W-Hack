@@ -70,16 +70,16 @@ class GameplayState extends BaseGameState{
                     break;
                     case TileTypeEnum.Door:
                     if(x == 0){
-                        this.addDoor(new Phaser.Point(-1, 0), room.cleared);
+                        this.addDoor(new Phaser.Point(-1, 0), room.cleared || room.difficulty == DifficultyEnum.None);
                     }
                     if(x == Global.ROOM_WIDTH - 1){
-                        this.addDoor(new Phaser.Point(1, 0), room.cleared);
+                        this.addDoor(new Phaser.Point(1, 0), room.cleared || room.difficulty == DifficultyEnum.None);
                     }
                     if(y == 0){
-                        this.addDoor(new Phaser.Point(0, -1), room.cleared);
+                        this.addDoor(new Phaser.Point(0, -1), room.cleared || room.difficulty == DifficultyEnum.None);
                     }
                     if(y == Global.ROOM_HEIGHT - 1){
-                        this.addDoor(new Phaser.Point(0, 1), room.cleared);
+                        this.addDoor(new Phaser.Point(0, 1), room.cleared || room.difficulty == DifficultyEnum.None);
                     }
                     break;
                 }   
