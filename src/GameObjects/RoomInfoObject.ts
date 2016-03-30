@@ -1,5 +1,6 @@
 class RoomInfoObject{
     tileMatrix:TileTypeEnum[][];
+    invertedTileMatrix:TileTypeEnum[][];
     cleared:boolean;
     difficulty:DifficultyEnum;
     connections:number;

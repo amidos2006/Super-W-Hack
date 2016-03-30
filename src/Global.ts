@@ -18,10 +18,13 @@ class RoomSet{
                 var d:Phaser.Point = new Phaser.Point(this.rooms[i].x - set.rooms[j].x, 
                     this.rooms[i].y - set.rooms[j].y);
                 if(d.getMagnitude() <= 1){
-                    
+                    result.push(this.rooms[i]);
+                    result.push(set.rooms[j]);
                 }
             }
         }
+        
+        return result;
     }
 }
 
@@ -83,6 +86,8 @@ class Global{
                 }
             }
         }
+        
+        
     }
     
     static getCurrentRoom():RoomInfoObject{

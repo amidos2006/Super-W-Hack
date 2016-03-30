@@ -26,7 +26,7 @@ class GameplayState extends BaseGameState{
         var index:number = 0;
         for(var y:number=0; y<Global.ROOM_HEIGHT; y++){
             for(var x:number=0; x<Global.ROOM_WIDTH; x++){
-                if(damageMatrix[x][y] > 0){
+                if(damageMatrix[y][x] > 0){
                     this.highlightTiles[index].x = x * Global.TILE_SIZE;
                     this.highlightTiles[index].y = y * Global.TILE_SIZE;
                     this.highlightTiles[index].show();
