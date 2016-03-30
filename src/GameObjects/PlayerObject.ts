@@ -1,6 +1,8 @@
 class PlayerObject extends BaseGameObject{
     playerSprite:Phaser.Sprite;
     playerWeapon:Weapon;
+    playerHealth:number;
+    isAlive:boolean;
     
     constructor(game:Phaser.Game, x:number, y:number, weapon:Weapon){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
@@ -9,6 +11,8 @@ class PlayerObject extends BaseGameObject{
         this.playerSprite.animations.add("normal", [3]);
         this.playerWeapon = weapon;
         this.playerSprite.animations.play("normal");
+        this.playerHealth = 1;
+        this.isAlive = true;
         this.add(this.playerSprite);
     } 
     
@@ -74,4 +78,23 @@ class PlayerObject extends BaseGameObject{
     {
         return this.playerWeapon;
     }
+    
+     takeDamage(damage:number)
+     {
+        if(this.playerHealth > 0)
+        {
+            this.playerHealth = this.playerHealth - damage;
+        }
+        else
+        {
+            this.isAlive = false;
+        }    
+    }
+    
+    isEnemyAlive()
+    {
+        return this.isAlive;
+    }
+    
+    
 }
