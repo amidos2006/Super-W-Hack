@@ -82,6 +82,10 @@ class Weapon {
 
     attackInLine(result: number[][], intAttPosX: number, intAttPosY: number,
         playerPos: Phaser.Point, faceDirection: Phaser.Point, valueMatrix: TileTypeEnum[][], quantSpaces: number): number[][] {
+        if (intAttPosX == playerPos.x && intAttPosY == playerPos.y) {
+            intAttPosX += 1 * faceDirection.x;
+            intAttPosY += 1 * faceDirection.y;
+        }
 
         if (faceDirection.x > 0) {
             for (var i: number = intAttPosX; (i < intAttPosX + quantSpaces || quantSpaces == -1)
@@ -95,13 +99,13 @@ class Weapon {
                 result[intAttPosY][i] = this.damage;
             }
         } else {
-            if (faceDirection.y > 0) {
+            if (faceDirection.y > 0) {  
                 for (var i: number = intAttPosY; (i < intAttPosY + quantSpaces || quantSpaces == -1) && i < result.length &&
                     valueMatrix[i][intAttPosX] != TileTypeEnum.Wall; i++) {
                     result[i][intAttPosX] = this.damage;
                 }
             } else if (faceDirection.y < 0) {
-                for (var i: number = intAttPosY; i > (intAttPosY - quantSpaces || quantSpaces == -1)
+                for (var i: number = intAttPosY; (i > intAttPosY - quantSpaces || quantSpaces == -1)
                     && i >= 0 && valueMatrix[i][intAttPosX] != TileTypeEnum.Wall; i--) {
                     result[i][intAttPosX] = this.damage;
                 }
@@ -166,16 +170,19 @@ class Weapon {
 
     getCurrentCoolDown():number	{
 
-        return null;
+        return this.curCooldown;
     }
 
     //LeftOnFloor():List of FloorObject{}	
 
-    updateCoolDown()	{}
+    updateCoolDown() {
+        if(this.curCooldown > -5) {
+            this.curCooldown--;
+        }
+    }
 
-    isWeaponReady():Boolean {
-
-        return null;
+    isWeaponReady(): Boolean {
+        return (this.curCooldown <= 0 ? true : false);
     }
     
     fireWeapon() {
