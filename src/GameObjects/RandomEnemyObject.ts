@@ -4,6 +4,7 @@ class RandomEnemyObject extends BaseGameObject{
     enemyHealth:number;
     enemySpeed:number;
     isAlive:boolean;
+    directions:Phaser.Point[];
     
     constructor(game:Phaser.Game, x:number, y:number, speed:number){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
@@ -16,6 +17,120 @@ class RandomEnemyObject extends BaseGameObject{
         this.enemySpeed = speed;
         this.isAlive = true;
         this.add(this.enemySprite);
+        this.setDirections();
+    }
+    
+    chaser(player:PlayerObject)
+    {
+        if((this.getTilePosition().x < player.getTilePosition().x)
+        && (this.getTilePosition().y < player.getTilePosition().y))
+        {
+            var difX = player.getTilePosition().x - this.getTilePosition().x;
+            var difY = player.getTilePosition().y - this.getTilePosition().y;
+            
+            if(difX >= difY)
+            {
+                this.x += Global.TILE_SIZE * this.enemySpeed;
+            }
+            else
+            {
+                this.y += Global.TILE_SIZE * this.enemySpeed;
+            }
+        }
+        
+        if((this.getTilePosition().x < player.getTilePosition().x)
+        && (this.getTilePosition().y > player.getTilePosition().y))
+        {
+            var difX = player.getTilePosition().x - this.getTilePosition().x;
+            var difY = this.getTilePosition().y - player.getTilePosition().y;
+            
+            if(difX >= difY)
+            {
+                this.x += Global.TILE_SIZE * this.enemySpeed;
+            }
+            else
+            {
+                this.y -= Global.TILE_SIZE * this.enemySpeed;
+            }
+        }
+        
+        if((this.getTilePosition().x > player.getTilePosition().x)
+        && (this.getTilePosition().y < player.getTilePosition().y))
+        {
+            var difX = this.getTilePosition().x - player.getTilePosition().x;
+            var difY = player.getTilePosition().y - this.getTilePosition().y;
+            
+            if(difX >= difY)
+            {
+                this.x -= Global.TILE_SIZE * this.enemySpeed;
+            }
+            else
+            {
+                this.y += Global.TILE_SIZE * this.enemySpeed;
+            }
+        }
+        
+        if((this.getTilePosition().x > player.getTilePosition().x)
+        && (this.getTilePosition().y > player.getTilePosition().y))
+        {
+            var difX = player.getTilePosition().x - this.getTilePosition().x;
+            var difY = player.getTilePosition().y - this.getTilePosition().y;
+            
+            if(difX >= difY)
+            {
+                this.x -= Global.TILE_SIZE * this.enemySpeed;
+            }
+            else
+            {
+                this.y -= Global.TILE_SIZE * this.enemySpeed;
+            }
+        }
+    }
+    
+    setDirections()
+    {
+       this.directions = [new Phaser.Point(0,0), 
+                          new Phaser.Point(1,0),
+                          new Phaser.Point(0,1),
+                          new Phaser.Point(-1,0),
+                          new Phaser.Point(0,-1)];
+    }
+    
+    pickDirection()
+    {
+        var dir:Phaser.Point;
+        var choose:number = Math.floor(Math.random() * 4) + 1;
+        dir = this.directions[choose];
+        return dir;
+    }
+    
+    findDirectionIndex(dir:Phaser.Point)
+    {
+        var indexReturn = 1;
+        for (var index = 1; index < this.directions.length; index++) {
+           if(dir.equals(this.directions[index]))
+           {
+               indexReturn = index;
+           } 
+        }
+        return indexReturn;
+    }
+    
+    pickDirectionWithThisConstraint(constraint:number)
+    {
+        var choose:number = (Math.floor(Math.random() * 4) + 1) % constraint;
+        return this.directions[choose];
+    }
+    
+    moveEnemy()
+    {
+        var enemyDirection = this.pickDirection();
+        if(!this.updateEnemy(enemyDirection, Global.getCurrentRoom().getMatrix()))
+        {
+            var newDir = this.pickDirectionWithThisConstraint(this.findDirectionIndex(enemyDirection));
+            this.updateEnemy(newDir, Global.getCurrentRoom().getMatrix());
+            this.updateEnemy(newDir, Global.getCurrentRoom().getMatrix());
+        }
     }
     
     updateEnemy(enemyDirection:Phaser.Point, tileMap:TileTypeEnum[][])
