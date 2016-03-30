@@ -40,7 +40,7 @@ class RoomInfoObject{
             }
         }
         
-        if(this.cleared){
+        if(this.cleared || this.difficulty == DifficultyEnum.None){
             if(this.checkDoor(new Phaser.Point(-1, 0))){
                 returnMatrix[0][Math.floor(Global.ROOM_HEIGHT / 2)] = TileTypeEnum.Passable;
             }

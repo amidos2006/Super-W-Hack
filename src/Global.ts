@@ -50,7 +50,7 @@ class Global{
     }
     
     static constructLevel(random:Phaser.RandomDataGenerator){
-        var probabilityOfEmptyPlace:number = 0.1;
+        var probabilityOfEmptyPlace:number = 0.2;
         var precentageCovered:number = 0.5;
         
         Global.mapWidth = random.integerInRange(4, 5);
@@ -79,7 +79,6 @@ class Global{
                     diff = 0;
                 }
                 Global.levelRooms[p.x][p.y] = new RoomInfoObject(diff);
-                Global.levelRooms[p.x][p.y].cleared = true;
                 sets.push(new RoomSet(p));
                 roomNumbers += 1;
             }
@@ -94,6 +93,9 @@ class Global{
                 }
             }
         }
+        
+        Global.levelRooms[Global.currentX][Global.currentY].difficulty = DifficultyEnum.None;
+        Global.levelRooms[Global.currentX][Global.currentY].cleared = true;
         
         while(sets.length > 1){
             var firstIndex:number = random.integerInRange(0, sets.length - 1);
