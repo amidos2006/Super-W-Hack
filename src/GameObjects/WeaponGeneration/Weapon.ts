@@ -4,10 +4,10 @@ enum WeaponShape {
     LINE_1,
     LINE_2,
     LINE_3,
-    LINE_INF,
+    LINE_INF/*,
     CONE_2,
     CONE_3,
-    CONE_4
+    CONE_4*/
 }
 
 enum WeaponOnColision {
@@ -49,14 +49,14 @@ class Weapon {
     
     /** Where the weapon attack start: 0, 1, 2, 3 (squares ahead the player) */
     static MIN_SHIFT:number = 0;
-    static MAX_SHIFT:number = 3;
+    static MAX_SHIFT:number = 2;
     static SHIFT_INTERVAL:number = 1;
     startPointShif: number = 1;
     
     /**The way the shooting area is presented */
     shape: WeaponShape = WeaponShape.LINE_1;
     static WEAPON_SHAPE: WeaponShape[] = [WeaponShape.LINE_1, WeaponShape.LINE_2, WeaponShape.LINE_3, WeaponShape.LINE_INF,
-        WeaponShape.AREA, WeaponShape.CONE_2, WeaponShape.CONE_3, WeaponShape.CONE_4];
+        WeaponShape.AREA/*, WeaponShape.CONE_2, WeaponShape.CONE_3, WeaponShape.CONE_4*/];
 
     /** Type of the shot: normal or leave_behind (e.g. mine) */
     static SHOT_TYPE: ShotType[] = [ShotType.NORMAL, ShotType.LEAVE_OBJECT];
@@ -114,30 +114,19 @@ class Weapon {
     attackInArea(result: number[][], intAttPosX: number, intAttPosY: number,
         playerPos: Phaser.Point, faceDirection: Phaser.Point, valueMatrix: TileTypeEnum[][]): number[][] {
 
-        if (faceDirection.x > 0) {
-            for (var i: number = intAttPosX; i < intAttPosX + 3
-                && i < result[0].length &&
-                valueMatrix[intAttPosY][i] != TileTypeEnum.Wall; i++) {
-                result[intAttPosY][i] = this.damage;
+        var topx: number = (intAttPosX - 1 < 0 ? 0 : intAttPosX - 1);
+        var topy: number = (intAttPosY - 1 < 0 ? 0 : intAttPosY - 1);
+        var bottomx: number = (valueMatrix[0].length < intAttPosX + 2 ? valueMatrix[0].length : intAttPosX + 2);
+        var bottomy: number = (valueMatrix.length < intAttPosY + 2 ? valueMatrix.length : intAttPosY + 2);
+        var s: String = "";
+        for (var j: number = topy; j < bottomy; j++) {
+            for (var i: number = topx; i < bottomx; i++) {
+                result[j][i] = this.damage;
+                s += result[j][i]+"";
             }
-        } else if (faceDirection.x < 0) {
-            for (var i: number = intAttPosX; (i > intAttPosX - 3)
-                && i >= 0 && valueMatrix[intAttPosY][i] != TileTypeEnum.Wall; i--) {
-                result[intAttPosY][i] = this.damage;
-            }
-        } else {
-            if (faceDirection.y > 0) {
-                for (var i: number = intAttPosY; (i < intAttPosY + 3) && i < result.length &&
-                    valueMatrix[i][intAttPosX] != TileTypeEnum.Wall; i++) {
-                    result[i][intAttPosX] = this.damage;
-                }
-            } else if (faceDirection.y < 0) {
-                for (var i: number = intAttPosY; i > (intAttPosY - 3)
-                    && i >= 0 && valueMatrix[i][intAttPosX] != TileTypeEnum.Wall; i--) {
-                    result[i][intAttPosX] = this.damage;
-                }
-            }
+            s += "\n";
         }
+        console.log(s);
 
         return result;
     }
@@ -166,34 +155,7 @@ class Weapon {
             return this.attackInLine(result, inAttPosX, inAttPosY, playerPos, faceDirection, valueMatrix, -1);
         } else if (this.shape == WeaponShape.AREA) {
             return this.attackInArea(result, inAttPosX, inAttPosY, playerPos, faceDirection, valueMatrix);
-        } else {
-            switch(faceDirection.x) {
-                case 1:
-                    for(var j:number = inAttPosX; j < valueMatrix[0].length && inAttPosX-j < 1; j++) {
-                        result[inAttPosY][j] = this.damage;
-                    }
-                break;
-                case -1:
-                     for(var j:number = inAttPosX; j >= 0 && inAttPosX-j < 1; j--) {
-                        result[inAttPosY][j] = this.damage;
-                    }
-                break;
-                default:
-                switch(faceDirection.y) {
-                    case 1:
-                    for(var i:number = inAttPosY; i < valueMatrix.length && inAttPosY-i < 1; i++) {
-                            result[i][j] = this.damage;
-                        
-                    }
-                    break;
-                    case -1:
-                    for(var i:number = inAttPosY; i >= 0 && inAttPosY-i < 1; i--) {
-                            result[i][j] = this.damage;
-                    }
-                    break;
-                }
-            }
-        }
+        } 
         return result;
     }
 
