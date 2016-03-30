@@ -147,7 +147,7 @@ class GameplayState extends BaseGameState{
                 listOfIndeces.push(i);
             }
         }
-        for(var i:number = listOfIndeces.length - 1; i >= 0; i++){
+        for(var i:number = listOfIndeces.length - 1; i >= 0; i--){
             this.enemyObjects.splice(listOfIndeces[i], 1);
         }
         
@@ -247,6 +247,9 @@ class GameplayState extends BaseGameState{
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
                 this.unhighlight();
                 this.playerObject.getWeapon().fireWeapon();
+                this.handleAttack(this.playerObject.getWeapon().getWeaponPositions(
+                    this.playerObject.getTilePosition(), this.lastDirection, 
+                    Global.getCurrentRoom().getMatrix(this.enemyObjects)));
                 this.stepUpdate();
                 this.game.input.keyboard.reset();
             }
