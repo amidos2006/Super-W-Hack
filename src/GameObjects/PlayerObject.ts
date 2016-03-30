@@ -21,8 +21,10 @@ class PlayerObject extends BaseGameObject{
         let canMove:boolean = false; 
         if (cursors.x > 0)
         {
-            if(mapMatrix[this.getTilePosition().x + Global.TILE_SIZE][this.getTilePosition().y] == TileTypeEnum.Passable)
+            if(mapMatrix[this.getTilePosition().x + 1][this.getTilePosition().y] == TileTypeEnum.Passable
+            || mapMatrix[this.getTilePosition().x + 1][this.getTilePosition().y] == TileTypeEnum.Enemy)
             {
+                this.x = this.getTilePosition().x + 1;
                 canMove = true;
             }
             else
@@ -33,8 +35,10 @@ class PlayerObject extends BaseGameObject{
         
         if(cursors.x < 0)
         {
-            if(mapMatrix[this.getTilePosition().x - Global.TILE_SIZE][this.getTilePosition().y] == TileTypeEnum.Passable)
+            if(mapMatrix[this.getTilePosition().x - 1][this.getTilePosition().y] == TileTypeEnum.Passable
+            || mapMatrix[this.getTilePosition().x - 1][this.getTilePosition().y] == TileTypeEnum.Enemy)
             {
+                this.x = this.getTilePosition().x - 1;
                 canMove = true;
             }
             else
@@ -45,8 +49,10 @@ class PlayerObject extends BaseGameObject{
         
         if(cursors.y > 0)
         {
-            if(mapMatrix[this.getTilePosition().x][this.getTilePosition().y + Global.TILE_SIZE] == TileTypeEnum.Passable)
+            if(mapMatrix[this.getTilePosition().x][this.getTilePosition().y + 1] == TileTypeEnum.Passable
+            || mapMatrix[this.getTilePosition().x][this.getTilePosition().y + 1] == TileTypeEnum.Enemy)
             {
+                this.y = this.getTilePosition().y + 1;
                 canMove = true;
             }
             else
@@ -57,8 +63,10 @@ class PlayerObject extends BaseGameObject{
         
         if(cursors.y < 0)
         {
-            if(mapMatrix[this.getTilePosition().x][this.getTilePosition().y - Global.TILE_SIZE] == TileTypeEnum.Passable)
+            if(mapMatrix[this.getTilePosition().x][this.getTilePosition().y - 1] == TileTypeEnum.Passable
+            || mapMatrix[this.getTilePosition().x][this.getTilePosition().y - 1] == TileTypeEnum.Enemy)
             {
+                this.y = this.getTilePosition().y - 1;
                 canMove = true;
             }
             else
@@ -79,8 +87,8 @@ class PlayerObject extends BaseGameObject{
         return this.playerWeapon;
     }
     
-     takeDamage(damage:number)
-     {
+    takeDamage(damage:number)
+    {
         if(this.playerHealth > 0)
         {
             this.playerHealth = this.playerHealth - damage;
@@ -95,6 +103,5 @@ class PlayerObject extends BaseGameObject{
     {
         return this.isAlive;
     }
-    
     
 }
