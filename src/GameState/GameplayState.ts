@@ -26,7 +26,6 @@ class GameplayState extends BaseGameState{
         var index:number = 0;
         for(var y:number=0; y<Global.ROOM_HEIGHT; y++){
             for(var x:number=0; x<Global.ROOM_WIDTH; x++){
-                console.log(damageMatrix[y][x]);
                 if(damageMatrix[x][y] > 0){
                     this.highlightTiles[index].x = x * Global.TILE_SIZE;
                     this.highlightTiles[index].y = y * Global.TILE_SIZE;
@@ -98,23 +97,11 @@ class GameplayState extends BaseGameState{
         this.playerObject = new PlayerObject(this.game, Math.floor(Global.ROOM_WIDTH / 2) + 
             Global.previousDirection.x * (Math.floor(Global.ROOM_WIDTH / 2) - 1), 
             Math.floor(Global.ROOM_HEIGHT / 2) + 
-            Global.previousDirection.y * (Math.floor(Global.ROOM_HEIGHT / 2) - 1));
+            Global.previousDirection.y * (Math.floor(Global.ROOM_HEIGHT / 2) - 1),
+            WeaponGenerator.GenerateWeapon(null, this.game.rnd));
         this.game.add.existing(this.playerObject);
     }
-    
-    getHackAttack(){
-        var result:number[][] = [];
-                for(var x:number=0; x<Global.ROOM_WIDTH; x++){
-                    result.push([]);
-                    for(var y:number=0; y<Global.ROOM_HEIGHT; y++){
-                        result[x].push(0);
-                    }
-                }
-                result[this.playerObject.getTilePosition().x + this.lastDirection.x]
-                    [this.playerObject.getTilePosition().y + this.lastDirection.y] = 1;
-                    return result;
-    }
-    
+
     stepUpdate(){
         //enemies move
         
@@ -159,7 +146,9 @@ class GameplayState extends BaseGameState{
         if(this.isHighlighted()){
             if(direction.x != 0 || direction.y != 0){
                 this.lastDirection = direction;
-                this.highlight(this.getHackAttack())
+                this.highlight(this.playerObject.getWeapon().getWeaponPositions(
+                    this.playerObject.getTilePosition(), this.lastDirection, 
+                    Global.getCurrentRoom().getMatrix()));
                 this.game.input.keyboard.reset();
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
@@ -181,7 +170,10 @@ class GameplayState extends BaseGameState{
                 this.game.input.keyboard.reset();
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
-                this.highlight(this.getHackAttack());
+                this.highlight(this.playerObject.getWeapon().getWeaponPositions(
+                    this.playerObject.getTilePosition(), this.lastDirection, 
+                    Global.getCurrentRoom().getMatrix()));
+                console.log(this.playerObject.getWeapon().shape);
                 this.game.input.keyboard.reset();
             }
         }

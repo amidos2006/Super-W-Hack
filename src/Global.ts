@@ -56,8 +56,6 @@ class Global{
                 }
             }
         }
-        
-        console.log(Global.levelRooms);
     }
     
     static getCurrentRoom():RoomInfoObject{
