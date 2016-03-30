@@ -16,4 +16,8 @@ class BaseGameObject extends Phaser.Group{
     checkCollision(xTile:number, yTile:number){
         return this.getTilePosition().equals(new Phaser.Point(xTile, yTile));
     }
+    
+    killObject(){
+        this.destroy(true);
+    }
 }

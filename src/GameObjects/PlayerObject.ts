@@ -104,9 +104,4 @@ class PlayerObject extends BaseGameObject{
     {
         return this.isAlive;
     }
-    
-    killPlayer(){
-        this.destroy(true);
-    }
-    
 }

@@ -201,7 +201,7 @@ class RandomEnemyObject extends BaseGameObject{
         else
         {
             this.isAlive = false;
-            this.destroy(true);
+            super.killObject();
             return true;
         } 
         

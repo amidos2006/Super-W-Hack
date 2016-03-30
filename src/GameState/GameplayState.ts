@@ -176,7 +176,7 @@ class GameplayState extends BaseGameState{
         
         for(var i:number=0; i<this.enemyObjects.length; i++){
             if(this.enemyObjects[i].checkCollision(playerPosition.x, playerPosition.y)){
-                this.playerObject.killPlayer();
+                this.playerObject.killObject();
                 return true;
             }
         }
@@ -197,6 +197,18 @@ class GameplayState extends BaseGameState{
         return false;
     }
     
+    handleEnemyCollision(){
+        var playerPosition:Phaser.Point = this.playerObject.getTilePosition();
+        for(var i:number=0; i<this.enemyObjects.length; i++){
+            if(this.enemyObjects[i].checkCollision(playerPosition.x, playerPosition.y)){
+                this.playerObject.killObject();
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     stepUpdate(){
         if(this.handleCollision()){
             return;
@@ -207,7 +219,7 @@ class GameplayState extends BaseGameState{
                 Global.getCurrentRoom().getMatrix(this.enemyObjects));
         }
         
-        if(this.handleCollision()){
+        if(this.handleEnemyCollision()){
             return;
         }
         
