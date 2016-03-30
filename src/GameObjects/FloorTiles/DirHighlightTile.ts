@@ -32,7 +32,6 @@ class DirHighlightTile extends BaseTile{
         
         var index:number = Math.abs(direction.x) + Math.abs(direction.y) * 2 + 
             Phaser.Math.sign(direction.x + direction.y);
-        console.log(this.sprites.length);
         this.sprites[index].alpha = 1;
     }
     
