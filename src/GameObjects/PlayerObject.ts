@@ -24,7 +24,7 @@ class PlayerObject extends BaseGameObject{
             if(mapMatrix[this.getTilePosition().x + 1][this.getTilePosition().y] == TileTypeEnum.Passable
             || mapMatrix[this.getTilePosition().x + 1][this.getTilePosition().y] == TileTypeEnum.Enemy)
             {
-                this.x = this.getTilePosition().x + 1;
+                this.x += Global.TILE_SIZE;
                 canMove = true;
             }
             else
@@ -38,7 +38,7 @@ class PlayerObject extends BaseGameObject{
             if(mapMatrix[this.getTilePosition().x - 1][this.getTilePosition().y] == TileTypeEnum.Passable
             || mapMatrix[this.getTilePosition().x - 1][this.getTilePosition().y] == TileTypeEnum.Enemy)
             {
-                this.x = this.getTilePosition().x - 1;
+                this.x -= Global.TILE_SIZE;
                 canMove = true;
             }
             else
@@ -52,7 +52,7 @@ class PlayerObject extends BaseGameObject{
             if(mapMatrix[this.getTilePosition().x][this.getTilePosition().y + 1] == TileTypeEnum.Passable
             || mapMatrix[this.getTilePosition().x][this.getTilePosition().y + 1] == TileTypeEnum.Enemy)
             {
-                this.y = this.getTilePosition().y + 1;
+                this.y += Global.TILE_SIZE;
                 canMove = true;
             }
             else
@@ -66,7 +66,7 @@ class PlayerObject extends BaseGameObject{
             if(mapMatrix[this.getTilePosition().x][this.getTilePosition().y - 1] == TileTypeEnum.Passable
             || mapMatrix[this.getTilePosition().x][this.getTilePosition().y - 1] == TileTypeEnum.Enemy)
             {
-                this.y = this.getTilePosition().y - 1;
+                this.y -= Global.TILE_SIZE;
                 canMove = true;
             }
             else
@@ -99,7 +99,7 @@ class PlayerObject extends BaseGameObject{
         }    
     }
     
-    isEnemyAlive()
+    isPlayerAlive()
     {
         return this.isAlive;
     }
