@@ -2,6 +2,8 @@ class GameplayState extends BaseGameState{
     currentDoors:DoorTile[];
     highlightTiles:HighlightTile[];
     playerObject:PlayerObject;
+    enemyObjects:RandomEnemyObject[];
+    boxObject:BoxObject;
     lastDirection:Phaser.Point;
     
     constructor(){
@@ -17,32 +19,6 @@ class GameplayState extends BaseGameState{
         
         this.createCurrentRoom(Global.getCurrentRoom());
         this.lastDirection = new Phaser.Point(0, 1);
-    }
-    
-    highlight(damageMatrix:number[][]){
-        this.unhighlight();
-        
-        var index:number = 0;
-        for(var y:number=0; y<Global.ROOM_HEIGHT; y++){
-            for(var x:number=0; x<Global.ROOM_WIDTH; x++){
-                if(damageMatrix[y][x] > 0){
-                    this.highlightTiles[index].x = x * Global.TILE_SIZE;
-                    this.highlightTiles[index].y = y * Global.TILE_SIZE;
-                    this.highlightTiles[index].show();
-                    index++;
-                }
-            }
-        }
-    }
-    
-    unhighlight(){
-        for(var i:number=0; i<this.highlightTiles.length; i++){
-            this.highlightTiles[i].hide();
-        }
-    }
-    
-    isHighlighted(){
-        return this.highlightTiles[0].alpha == 1;
     }
     
     addDoor(direction:Phaser.Point, cleared:boolean){
@@ -97,12 +73,53 @@ class GameplayState extends BaseGameState{
             Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd);
         }
         
+        this.boxObject = new BoxObject(this.game);
+        this.game.add.existing(this.boxObject);
+        
+        this.enemyObjects = [];
+        //Add enemies based on difficulty
+        
         this.playerObject = new PlayerObject(this.game, Math.floor(Global.ROOM_WIDTH / 2) + 
                 Global.previousDirection.x * (Math.floor(Global.ROOM_WIDTH / 2) - 1), 
                 Math.floor(Global.ROOM_HEIGHT / 2) + 
                 Global.previousDirection.y * (Math.floor(Global.ROOM_HEIGHT / 2) - 1), 
                 Global.currentWeapon);
         this.game.add.existing(this.playerObject);
+    }
+
+    highlight(damageMatrix:number[][]){
+        this.unhighlight();
+        
+        var index:number = 0;
+        for(var y:number=0; y<Global.ROOM_HEIGHT; y++){
+            for(var x:number=0; x<Global.ROOM_WIDTH; x++){
+                if(damageMatrix[y][x] > 0){
+                    this.highlightTiles[index].x = x * Global.TILE_SIZE;
+                    this.highlightTiles[index].y = y * Global.TILE_SIZE;
+                    this.highlightTiles[index].show();
+                    index++;
+                }
+            }
+        }
+    }
+    
+    unhighlight(){
+        for(var i:number=0; i<this.highlightTiles.length; i++){
+            this.highlightTiles[i].hide();
+        }
+    }
+    
+    isHighlighted(){
+        return this.highlightTiles[0].alpha == 1;
+    }
+
+    handleAttack(damage:number[][]){
+        var lastEnemyDied:boolean = false;
+        //handle damage over enemies
+        
+        if(lastEnemyDied && this.enemyObjects.length <= 0){
+            this.boxObject.show(this.playerObject.getTilePosition(), Global.getCurrentRoom().getMatrix());
+        }
     }
 
     stepUpdate(){
@@ -116,6 +133,18 @@ class GameplayState extends BaseGameState{
                 Global.previousDirection.set(-this.currentDoors[i].direction.x, -this.currentDoors[i].direction.y);
                 this.game.state.start("gameplay", true);
                 break;
+            }
+        }
+        
+        if(!Global.getCurrentRoom().cleared && this.enemyObjects.length <= 0){
+            if(this.boxObject.checkCollision(playerPosition.x, playerPosition.y)){
+                Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd);
+                this.playerObject.setWeapon(Global.currentWeapon);
+                this.boxObject.destroy();
+                for(var i:number=0; i<this.currentDoors.length; i++){
+                    this.currentDoors[i].unlock();
+                }
+                Global.getCurrentRoom().cleared = true;
             }
         }
         
