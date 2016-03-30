@@ -17,7 +17,6 @@ class GameplayState extends BaseGameState{
         
         this.createCurrentRoom(Global.getCurrentRoom());
         this.lastDirection = new Phaser.Point(0, 1);
-        Global.constructLevel(this.game.rnd);
     }
     
     highlight(damageMatrix:number[][]){
@@ -94,11 +93,15 @@ class GameplayState extends BaseGameState{
             this.game.add.existing(tempTile);
         }
         
+        if(Global.currentWeapon == null){
+            Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd);
+        }
+        
         this.playerObject = new PlayerObject(this.game, Math.floor(Global.ROOM_WIDTH / 2) + 
-            Global.previousDirection.x * (Math.floor(Global.ROOM_WIDTH / 2) - 1), 
-            Math.floor(Global.ROOM_HEIGHT / 2) + 
-            Global.previousDirection.y * (Math.floor(Global.ROOM_HEIGHT / 2) - 1),
-            WeaponGenerator.GenerateWeapon(null, this.game.rnd));
+                Global.previousDirection.x * (Math.floor(Global.ROOM_WIDTH / 2) - 1), 
+                Math.floor(Global.ROOM_HEIGHT / 2) + 
+                Global.previousDirection.y * (Math.floor(Global.ROOM_HEIGHT / 2) - 1), 
+                Global.currentWeapon);
         this.game.add.existing(this.playerObject);
     }
 

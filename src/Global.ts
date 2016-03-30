@@ -36,6 +36,7 @@ class Global{
     static levelRooms:RoomInfoObject[][];
     static levelNumber:number = 0;
     static crateNumber:number = 0;
+    static currentWeapon:Weapon = null;
     static currentX:number = 0;
     static currentY:number = 0;
     static mapWidth:number = 0;
@@ -45,6 +46,7 @@ class Global{
     static initialize(){
         Global.levelNumber = 0;
         Global.crateNumber = 0;
+        Global.currentWeapon = null;
     }
     
     static constructLevel(random:Phaser.RandomDataGenerator){

@@ -9,11 +9,12 @@ class PlayerObject extends BaseGameObject{
         
         this.playerSprite = this.game.add.sprite(0, 0, 'graphics');
         this.playerSprite.animations.add("normal", [3]);
+        this.add(this.playerSprite);
+        
         this.playerWeapon = weapon;
         this.playerSprite.animations.play("normal");
         this.playerHealth = 1;
         this.isAlive = true;
-        this.add(this.playerSprite);
     } 
     
     move(cursors:Phaser.Point, mapMatrix:TileTypeEnum[][])
