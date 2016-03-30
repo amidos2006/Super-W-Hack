@@ -129,7 +129,6 @@ class RandomEnemyObject extends BaseGameObject{
         {
             var newDir = this.pickDirectionWithThisConstraint(this.findDirectionIndex(enemyDirection));
             this.updateEnemy(newDir, tileMatrix);
-            this.updateEnemy(newDir, tileMatrix);
         }
     }
     
