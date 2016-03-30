@@ -122,14 +122,14 @@ class RandomEnemyObject extends BaseGameObject{
         return this.directions[choose];
     }
     
-    moveEnemy()
+    moveEnemy(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
     {
         var enemyDirection = this.pickDirection();
-        if(!this.updateEnemy(enemyDirection, Global.getCurrentRoom().getMatrix()))
+        if(!this.updateEnemy(enemyDirection, tileMatrix))
         {
             var newDir = this.pickDirectionWithThisConstraint(this.findDirectionIndex(enemyDirection));
-            this.updateEnemy(newDir, Global.getCurrentRoom().getMatrix());
-            this.updateEnemy(newDir, Global.getCurrentRoom().getMatrix());
+            this.updateEnemy(newDir, tileMatrix);
+            this.updateEnemy(newDir, tileMatrix);
         }
     }
     

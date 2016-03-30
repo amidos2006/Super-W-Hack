@@ -77,7 +77,20 @@ class GameplayState extends BaseGameState{
         this.game.add.existing(this.boxObject);
         
         this.enemyObjects = [];
-        //Add enemies based on difficulty
+        var numOfEnemies:number = room.difficulty * 2;
+        if(room.cleared){
+            numOfEnemies = 0;
+        }
+        var tiles:TileTypeEnum[][] = room.getMatrix(this.enemyObjects);
+        for(var i:number=0; i<numOfEnemies; i++){
+            var list:Phaser.Point[] = this.getEmptyTiles(tiles);
+            var point:Phaser.Point = list[this.game.rnd.integerInRange(0, list.length - 1)];
+            tiles[point.x][point.y] = TileTypeEnum.Enemy;
+            
+            var tempEnemy:RandomEnemyObject = new RandomEnemyObject(this.game, point.x, point.y, 1);
+            this.enemyObjects.push(tempEnemy);
+            this.game.add.existing(tempEnemy);
+        }
         
         this.playerObject = new PlayerObject(this.game, Math.floor(Global.ROOM_WIDTH / 2) + 
                 Global.previousDirection.x * (Math.floor(Global.ROOM_WIDTH / 2) - 1), 
@@ -112,19 +125,30 @@ class GameplayState extends BaseGameState{
     isHighlighted(){
         return this.highlightTiles[0].alpha == 1;
     }
+    
+    getEmptyTiles(tiles:TileTypeEnum[][]){
+        var result:Phaser.Point[] = [];
+        for (var x = 0; x < tiles.length; x++) {
+            for (var y = 0; y < tiles[x].length; y++) {
+                if(tiles[x][y] == TileTypeEnum.Passable){
+                    result.push(new Phaser.Point(x, y));
+                }
+            }
+        }
+        return result;
+    }
 
     handleAttack(damage:number[][]){
         var lastEnemyDied:boolean = false;
         //handle damage over enemies
         
         if(lastEnemyDied && this.enemyObjects.length <= 0){
-            this.boxObject.show(this.playerObject.getTilePosition(), Global.getCurrentRoom().getMatrix());
+            this.boxObject.show(this.playerObject.getTilePosition(), 
+            Global.getCurrentRoom().getMatrix(this.enemyObjects));
         }
     }
-
-    stepUpdate(){
-        //enemies move
-        
+    
+    handleCollision(){
         var playerPosition:Phaser.Point = this.playerObject.getTilePosition();
         for(var i:number=0; i<this.currentDoors.length; i++){
             if(this.currentDoors[i].checkCollision(playerPosition.x, playerPosition.y)){
@@ -133,6 +157,13 @@ class GameplayState extends BaseGameState{
                 Global.previousDirection.set(-this.currentDoors[i].direction.x, -this.currentDoors[i].direction.y);
                 this.game.state.start("gameplay", true);
                 break;
+            }
+        }
+        
+        for(var i:number=0; i<this.enemyObjects.length; i++){
+            if(this.enemyObjects[i].checkCollision(playerPosition.x, playerPosition.y)){
+                this.playerObject.killPlayer();
+                return true;
             }
         }
         
@@ -145,7 +176,25 @@ class GameplayState extends BaseGameState{
                     this.currentDoors[i].unlock();
                 }
                 Global.getCurrentRoom().cleared = true;
+                Global.crateNumber += 1;
             }
+        }
+        
+        return false;
+    }
+    
+    stepUpdate(){
+        if(this.handleCollision()){
+            return;
+        }
+        
+        for (var i = 0; i < this.enemyObjects.length; i++) {
+            this.enemyObjects[i].moveEnemy(this.playerObject.getTilePosition(), 
+                Global.getCurrentRoom().getMatrix(this.enemyObjects));
+        }
+        
+        if(this.handleCollision()){
+            return;
         }
         
         this.playerObject.getWeapon().updateCoolDown();
@@ -183,7 +232,7 @@ class GameplayState extends BaseGameState{
                 this.lastDirection = direction;
                 this.highlight(this.playerObject.getWeapon().getWeaponPositions(
                     this.playerObject.getTilePosition(), this.lastDirection, 
-                    Global.getCurrentRoom().getMatrix()));
+                    Global.getCurrentRoom().getMatrix(this.enemyObjects)));
                 this.game.input.keyboard.reset();
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
@@ -200,14 +249,14 @@ class GameplayState extends BaseGameState{
         else{
             if(direction.x != 0 || direction.y != 0){
                 this.lastDirection = direction;
-                this.playerObject.move(direction, Global.getCurrentRoom().getMatrix());
+                this.playerObject.move(direction, Global.getCurrentRoom().getMatrix(this.enemyObjects));
                 this.stepUpdate();
                 this.game.input.keyboard.reset();
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
                 this.highlight(this.playerObject.getWeapon().getWeaponPositions(
                     this.playerObject.getTilePosition(), this.lastDirection, 
-                    Global.getCurrentRoom().getMatrix()));
+                    Global.getCurrentRoom().getMatrix(this.enemyObjects)));
                 console.log(this.playerObject.getWeapon().shape);
                 this.game.input.keyboard.reset();
             }

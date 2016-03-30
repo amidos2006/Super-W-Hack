@@ -31,13 +31,18 @@ class RoomInfoObject{
         }
     }
     
-    getMatrix(){
+    getMatrix(enemyList:RandomEnemyObject[]){
         var returnMatrix:TileTypeEnum[][] = [];
         for(var x:number=0; x<Global.ROOM_WIDTH; x++){
             returnMatrix.push([]);
             for(var y:number=0; y<Global.ROOM_HEIGHT; y++){
                 returnMatrix[x].push(this.tileMatrix[x][y]);
             }
+        }
+        
+        for (var i = 0; i < enemyList.length; i++) {
+            var enemyPosition:Phaser.Point = enemyList[i].getTilePosition();
+            returnMatrix[enemyPosition.x][enemyPosition.y] = TileTypeEnum.Enemy;
         }
         
         if(this.cleared || this.difficulty == DifficultyEnum.None){

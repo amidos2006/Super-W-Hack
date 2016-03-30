@@ -14,5 +14,6 @@ class BoxObject extends BaseGameObject{
     
     show(playerPos:Phaser.Point, roomMatrix:TileTypeEnum[][]){
         this.sprite.alpha = 1;
+        
     }
 }
