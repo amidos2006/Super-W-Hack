@@ -247,6 +247,10 @@ class GameplayState extends BaseGameState{
     update(){
         super.update();
         
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
+            console.log(this.playerObject.getWeapon().toString());
+        }
+        
         if(this.playerObject == null){
             return;
         }
