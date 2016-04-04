@@ -5,6 +5,9 @@ class RandomEnemyObject extends BaseGameObject{
     enemySpeed:number;
     isAlive:boolean;
     directions:Phaser.Point[];
+    keepDirection:number;
+    factorDirectionChange:number;
+    enemyDirection:Phaser.Point;
     
     constructor(game:Phaser.Game, x:number, y:number, speed:number){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
@@ -18,6 +21,8 @@ class RandomEnemyObject extends BaseGameObject{
         this.isAlive = true;
         this.add(this.enemySprite);
         this.setDirections();
+        this.keepDirection = 0;
+        this.factorDirectionChange = 2;
     }
     
     chaser(player:PlayerObject)
@@ -120,6 +125,21 @@ class RandomEnemyObject extends BaseGameObject{
     {
         var choose:number = (Math.floor(Math.random() * 4) + 1) % constraint;
         return this.directions[choose];
+    }
+    
+    moveAndKeepDirection(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
+    {
+        if(this.keepDirection % this.factorDirectionChange == 0)
+        {
+            this.enemyDirection = this.pickDirection();
+        }
+        this.keepDirection++;
+        
+        if(!this.updateEnemy(this.enemyDirection, tileMatrix))
+        {
+            var newDir = this.pickDirectionWithThisConstraint(this.findDirectionIndex(this.enemyDirection));
+            this.updateEnemy(newDir, tileMatrix);
+        }
     }
     
     moveEnemy(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
