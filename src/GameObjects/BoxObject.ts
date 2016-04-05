@@ -1,3 +1,5 @@
+/// <reference path="BaseGameObject.ts"/>
+
 class BoxObject extends BaseGameObject{
     sprite:Phaser.Sprite;
     

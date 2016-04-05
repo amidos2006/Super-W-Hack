@@ -1,3 +1,5 @@
+/// <reference path="BaseTile.ts"/>
+
 class EmptyTile extends BaseTile{
     sprite:Phaser.Sprite;
     

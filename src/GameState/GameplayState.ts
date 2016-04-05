@@ -1,3 +1,5 @@
+/// <reference path="BaseGameState.ts"/>
+
 class GameplayState extends BaseGameState{    
     currentDoors:DoorTile[];
     highlightTiles:HighlightTile[];

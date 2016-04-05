@@ -1,3 +1,6 @@
+/// <reference path="DifficultyEnum.ts"/>
+/// <reference path="TileTypeEnum.ts"/>
+
 class RoomInfoObject{
     tileMatrix:TileTypeEnum[][];
     cleared:boolean;

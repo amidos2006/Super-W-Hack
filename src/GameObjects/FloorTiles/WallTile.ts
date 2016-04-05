@@ -1,3 +1,5 @@
+/// <reference path="BaseTile.ts"/>
+
 class WallTile extends BaseTile{
     sprite:Phaser.Sprite;
     

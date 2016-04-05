@@ -1,3 +1,5 @@
+/// <reference path="BaseTile.ts"/>
+
 class DoorTile extends BaseTile{
     floorSprite:EmptyTile;
     sprite:Phaser.Sprite;

@@ -1,3 +1,5 @@
+/// <reference path="BaseTile.ts"/>
+
 class HighlightTile extends BaseTile{
     sprite:Phaser.Sprite;
     constructor(game:Phaser.Game){

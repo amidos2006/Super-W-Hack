@@ -1,3 +1,5 @@
+/// <reference path="BaseTile.ts"/>
+
 class DirHighlightTile extends BaseTile{
     sprites:Phaser.Sprite[];
     
