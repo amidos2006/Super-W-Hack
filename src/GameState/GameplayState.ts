@@ -284,7 +284,7 @@ class GameplayState extends BaseGameState{
                 this.arrowHighlight.show(this.playerObject.getTilePosition(), this.lastDirection);
                 this.highlight(this.playerObject.getWeapon().getWeaponPositions(
                     this.playerObject.getTilePosition(), this.lastDirection, 
-                    Global.getCurrentRoom().getMatrix(this.enemyObjects)));
+                    Global.matrixTranspose(Global.getCurrentRoom().getMatrix(this.enemyObjects))));
                 this.game.input.keyboard.reset();
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
@@ -293,7 +293,7 @@ class GameplayState extends BaseGameState{
                 this.playerObject.getWeapon().fireWeapon();
                 this.handleAttack(this.playerObject.getWeapon().getWeaponPositions(
                     this.playerObject.getTilePosition(), this.lastDirection, 
-                    Global.getCurrentRoom().getMatrix(this.enemyObjects)));
+                    Global.matrixTranspose(Global.getCurrentRoom().getMatrix(this.enemyObjects))));
                 this.stepUpdate();
                 this.game.input.keyboard.reset();
             }
@@ -314,7 +314,7 @@ class GameplayState extends BaseGameState{
                 this.arrowHighlight.show(this.playerObject.getTilePosition(), this.lastDirection);
                 this.highlight(this.playerObject.getWeapon().getWeaponPositions(
                     this.playerObject.getTilePosition(), this.lastDirection, 
-                    Global.getCurrentRoom().getMatrix(this.enemyObjects)));
+                    Global.matrixTranspose(Global.getCurrentRoom().getMatrix(this.enemyObjects))));
                 this.game.input.keyboard.reset();
             }
         }

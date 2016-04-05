@@ -49,6 +49,19 @@ class Global{
         Global.currentWeapon = null;
     }
     
+    static matrixTranspose(matrix:TileTypeEnum[][]){
+        var result:TileTypeEnum[][] = [];
+        
+        for(var y:number = 0; y < matrix[0].length; y++){
+            result.push([])
+            for(var x:number = 0; x < matrix.length; x++){
+                result[y].push(matrix[x][y]);
+            }
+        }
+        
+        return result;
+    }
+    
     static constructLevel(random:Phaser.RandomDataGenerator){
         var probabilityOfEmptyPlace:number = 0.15;
         var precentageCovered:number = 0.6;
@@ -78,7 +91,7 @@ class Global{
                 if(Math.random() < probabilityOfEmptyPlace){
                     diff = 0;
                 }
-                Global.levelRooms[p.x][p.y] = new RoomInfoObject(diff);
+                Global.levelRooms[p.x][p.y] = new RoomInfoObject(diff, random);
                 sets.push(new RoomSet(p));
                 roomNumbers += 1;
             }

@@ -4,14 +4,14 @@ class RoomInfoObject{
     difficulty:DifficultyEnum;
     connections:number;
     
-    constructor(difficulty:DifficultyEnum){
+    constructor(difficulty:DifficultyEnum, random:Phaser.RandomDataGenerator){
         this.difficulty = difficulty;
         this.cleared = false;
         this.connections = 0;
-        this.constMatrix();
+        this.constMatrix(random);
     }
     
-    constMatrix(){
+    constMatrix(random:Phaser.RandomDataGenerator){
         this.tileMatrix = [];
         for(var x:number=0; x<Global.ROOM_WIDTH; x++){
             this.tileMatrix.push([]);
@@ -29,6 +29,46 @@ class RoomInfoObject{
             this.tileMatrix[0][y] = TileTypeEnum.Wall;
             this.tileMatrix[Global.ROOM_WIDTH - 1][y] = TileTypeEnum.Wall;
         }
+        
+       var shapeSize:number = random.integerInRange(1, 4);
+       var numberOfShapes:number = random.integerInRange(0, 2);
+       
+       for(var s:number=0; s<numberOfShapes; s++){
+            var pattern:Phaser.Point[] = [];
+            var direction:Phaser.Point = new Phaser.Point();
+            var tileType:number = TileTypeEnum.Wall;
+            var tempX:number = random.integerInRange(1, Math.floor(Global.ROOM_WIDTH / 2) - 1);
+            var tempY:number = random.integerInRange(1, Math.floor(Global.ROOM_HEIGHT / 2) - 1);
+            for(var i:number=0; i<shapeSize; i++){
+                pattern.push(new Phaser.Point(tempX + direction.x, tempY + direction.y));
+                if(Math.random() < 0.5){
+                    direction.x = random.integerInRange(0, 1) * 2 - 1;
+                    if(x <= 1){
+                        direction.x = 1;
+                    }
+                    if(x >= Global.ROOM_WIDTH / 2 - 1){
+                        direction.x = -1;
+                    }
+                }
+                else{
+                    direction.y = random.integerInRange(0, 1) * 2 - 1;
+                    if(y <= 1){
+                        direction.y = 1;
+                    }
+                    if(y >= Global.ROOM_HEIGHT / 2 - 1){
+                        direction.y = -1;
+                    }
+                }
+            }
+            for(var i:number=0; i<pattern.length; i++){
+                var p:Phaser.Point = pattern[i];
+                this.tileMatrix[p.x][p.y] = tileType;
+                this.tileMatrix[Global.ROOM_WIDTH - p.x - 1][p.y] = tileType;
+                this.tileMatrix[p.x][Global.ROOM_HEIGHT - p.y - 1] = tileType;
+                this.tileMatrix[Global.ROOM_WIDTH - p.x - 1][Global.ROOM_HEIGHT - p.y - 1] = tileType;
+            } 
+       }
+       
     }
     
     getMatrix(enemyList:EnemyObject[]){
