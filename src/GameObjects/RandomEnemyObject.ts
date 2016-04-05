@@ -8,6 +8,7 @@ class RandomEnemyObject extends BaseGameObject{
     keepDirection:number;
     factorDirectionChange:number;
     enemyDirection:Phaser.Point;
+    hitWall:boolean;
     
     constructor(game:Phaser.Game, x:number, y:number, speed:number){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
@@ -23,6 +24,8 @@ class RandomEnemyObject extends BaseGameObject{
         this.setDirections();
         this.keepDirection = 0;
         this.factorDirectionChange = 2;
+        this.hitWall = false;
+        this.enemyDirection = this.pickDirection();
     }
     
     chaser(player:PlayerObject)
@@ -127,6 +130,21 @@ class RandomEnemyObject extends BaseGameObject{
         return this.directions[choose];
     }
     
+    moveUntilFindWall(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
+    {
+        if(this.keepDirection % this.factorDirectionChange == 0)
+        {
+            this.enemyDirection = this.pickDirection();
+        }
+        this.keepDirection++;
+        
+        if(!this.updateEnemy(this.enemyDirection, tileMatrix))
+        {
+            var newDir = this.pickDirectionWithThisConstraint(this.findDirectionIndex(this.enemyDirection));
+            this.updateEnemy(newDir, tileMatrix);
+        }
+    }
+    
     moveAndKeepDirection(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
     {
         if(this.keepDirection % this.factorDirectionChange == 0)
@@ -139,6 +157,21 @@ class RandomEnemyObject extends BaseGameObject{
         {
             var newDir = this.pickDirectionWithThisConstraint(this.findDirectionIndex(this.enemyDirection));
             this.updateEnemy(newDir, tileMatrix);
+        }
+    }
+    
+    reverseDirection(dir:Phaser.Point)
+    {
+        dir.x = dir.x * (-1);
+        dir.y = dir.y * (-1);
+        return dir;
+    }
+    
+    moveBackAndForth(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
+    {
+         if(!this.updateEnemy(this.enemyDirection, tileMatrix))
+        {
+            this.updateEnemy(this.reverseDirection(this.enemyDirection), tileMatrix);
         }
     }
     
