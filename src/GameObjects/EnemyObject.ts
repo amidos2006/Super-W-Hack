@@ -1,4 +1,4 @@
-class RandomEnemyObject extends BaseGameObject{
+class EnemyObject extends BaseGameObject{
     
     enemySprite:Phaser.Sprite;
     enemyHealth:number;

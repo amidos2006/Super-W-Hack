@@ -3,7 +3,7 @@ class GameplayState extends BaseGameState{
     highlightTiles:HighlightTile[];
     arrowHighlight:DirHighlightTile;
     playerObject:PlayerObject;
-    enemyObjects:RandomEnemyObject[];
+    enemyObjects:EnemyObject[];
     boxObject:BoxObject;
     lastDirection:Phaser.Point;
     
@@ -94,7 +94,7 @@ class GameplayState extends BaseGameState{
             var point:Phaser.Point = list[this.game.rnd.integerInRange(0, list.length - 1)];
             tiles[point.x][point.y] = TileTypeEnum.Enemy;
             
-            var tempEnemy:RandomEnemyObject = new RandomEnemyObject(this.game, point.x, point.y, 1);
+            var tempEnemy:EnemyObject = new EnemyObject(this.game, point.x, point.y, 1);
             this.enemyObjects.push(tempEnemy);
             this.game.add.existing(tempEnemy);
         }

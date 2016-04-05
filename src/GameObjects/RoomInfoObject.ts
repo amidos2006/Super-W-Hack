@@ -31,7 +31,7 @@ class RoomInfoObject{
         }
     }
     
-    getMatrix(enemyList:RandomEnemyObject[]){
+    getMatrix(enemyList:EnemyObject[]){
         var returnMatrix:TileTypeEnum[][] = [];
         for(var x:number=0; x<Global.ROOM_WIDTH; x++){
             returnMatrix.push([]);
