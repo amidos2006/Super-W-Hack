@@ -9,6 +9,8 @@ class EnemyObject extends BaseGameObject{
     factorDirectionChange:number;
     enemyDirection:Phaser.Point;
     hitWall:boolean;
+    cannon:CannonObject;
+    movementType:EnemyTypeEnum;
     
     constructor(game:Phaser.Game, x:number, y:number, speed:number){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
@@ -26,6 +28,25 @@ class EnemyObject extends BaseGameObject{
         this.factorDirectionChange = 2;
         this.hitWall = false;
         this.enemyDirection = this.pickDirection();
+        this.cannon = new CannonObject(game, this.x, this.y, this.pickDirection());
+        this.movementType = EnemyObject.chooseMovement();
+    }
+    
+    static chooseMovement()
+    {
+        var choose:number = Math.floor(Math.random() * 3) + 1;
+        if (choose == 1)
+        {
+            return EnemyTypeEnum.Chaser;
+        }
+        if (choose == 2)
+        {
+            return EnemyTypeEnum.BackAndForth;
+        }
+        if (choose == 3)
+        {
+            return EnemyTypeEnum.Random;
+        }
     }
     
     chaser(player:PlayerObject)
@@ -185,8 +206,13 @@ class EnemyObject extends BaseGameObject{
         }
     }
     
-    updateEnemy(enemyDirection:Phaser.Point, tileMap:TileTypeEnum[][])
+    enemyShot(player:PlayerObject)
     {
+        return this.cannon.shoot(player, this);
+    }
+    
+    updateEnemy(enemyDirection:Phaser.Point, tileMap:TileTypeEnum[][])
+    {   
         let canMove:boolean = false;
         
         if (enemyDirection.x > 0)
@@ -242,6 +268,26 @@ class EnemyObject extends BaseGameObject{
         }
         
         return canMove;
+    }
+    
+    movement(player:PlayerObject, tileMap:TileTypeEnum[][])
+    {
+
+       console.log("movType : " + this.movementType);
+       if(this.movementType == EnemyTypeEnum.BackAndForth)
+       {
+           this.moveBackAndForth(player.position, tileMap);
+       }
+       
+       if(this.movementType == EnemyTypeEnum.Chaser)
+       {
+           this.chaser(player);
+       }
+       
+       if(this.movementType == EnemyTypeEnum.Random)
+       {
+           this.moveAndKeepDirection(player.position, tileMap);
+       }
     }
     
     takeDamage(damage:number)
