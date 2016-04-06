@@ -63,12 +63,23 @@ class RoomInfoObject{
                     }
                 }
             }
+            var coverP:number = random.integerInRange(0, 3);
             for(var i:number=0; i<pattern.length; i++){
                 var p:Phaser.Point = pattern[i];
-                this.tileMatrix[p.x][p.y] = tileType;
-                this.tileMatrix[Global.ROOM_WIDTH - p.x - 1][p.y] = tileType;
-                this.tileMatrix[p.x][Global.ROOM_HEIGHT - p.y - 1] = tileType;
-                this.tileMatrix[Global.ROOM_WIDTH - p.x - 1][Global.ROOM_HEIGHT - p.y - 1] = tileType;
+                if(coverP == 0 || coverP == 1){
+                    this.tileMatrix[p.x][p.y] = tileType;
+                    this.tileMatrix[Global.ROOM_WIDTH - p.x - 1][p.y] = tileType;
+                    this.tileMatrix[p.x][Global.ROOM_HEIGHT - p.y - 1] = tileType;
+                    this.tileMatrix[Global.ROOM_WIDTH - p.x - 1][Global.ROOM_HEIGHT - p.y - 1] = tileType;
+                }
+                else if(coverP == 2){
+                    this.tileMatrix[p.x][p.y] = tileType;
+                    this.tileMatrix[Global.ROOM_WIDTH - p.x - 1][Global.ROOM_HEIGHT - p.y - 1] = tileType;
+                }
+                else if(coverP == 3){
+                    this.tileMatrix[Global.ROOM_WIDTH - p.x - 1][p.y] = tileType;
+                    this.tileMatrix[p.x][Global.ROOM_HEIGHT - p.y - 1] = tileType;
+                }
             } 
        }
        
