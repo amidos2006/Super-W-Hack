@@ -31,6 +31,7 @@ class GameplayState extends BaseGameState{
         
         this.createCurrentRoom(Global.getCurrentRoom());
         this.lastDirection = new Phaser.Point(0, 1);
+        Global.levelRooms[Global.currentX][Global.currentY].visited = true;
         this.createHUDElements();
     }
     

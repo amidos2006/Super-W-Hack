@@ -14,11 +14,22 @@ class MiniMap extends BaseUIObject{
         this.add(this.outline);
         
         this.graphics = this.game.add.graphics(x, y, this);
+        this.updateGraphics();
+        
+        this.player = this.game.add.graphics(0, 0, this);
+        this.player.beginFill(0x111111, 1);
+        this.player.drawRect(-2, -2, 4, 4);
+        this.player.endFill();
+        this.add(this.player);
+    }
+    
+    updateGraphics(){
         for(var x:number=0; x<Global.mapWidth; x++){
             for(var y:number=0; y<Global.mapHeight; y++){
                 var mapX:number = x * Global.MAP_SIZE;
                 var mapY:number = y * Global.MAP_SIZE;
-                if(Global.levelRooms[x][y] != null){
+                if(Global.levelRooms[x][y] != null && 
+                    Global.levelRooms[x][y].visited){
                     this.graphics.beginFill(0xFFFFFF, 1);
                     this.graphics.drawRect(mapX + 1, mapY + 1, Global.MAP_SIZE - 2, Global.MAP_SIZE - 2);
                     this.graphics.endFill();
@@ -27,6 +38,7 @@ class MiniMap extends BaseUIObject{
                 for(var dx:number=-1; dx<=1; dx++){
                     for(var dy:number=-1;dy<=1;dy++){
                         if(Global.levelRooms[x][y] != null && 
+                            Global.levelRooms[x][y].visited && 
                             Global.levelRooms[x][y].checkDoor(new Phaser.Point(dx, dy))){
                             mapX = x * Global.MAP_SIZE + (1 + dx) * Global.MAP_SIZE / 2;
                             mapY = y * Global.MAP_SIZE + (1 + dy) * Global.MAP_SIZE / 2;
@@ -40,12 +52,6 @@ class MiniMap extends BaseUIObject{
                 }
             }
         }
-        
-        this.player = this.game.add.graphics(0, 0, this);
-        this.player.beginFill(0x111111, 1);
-        this.player.drawRect(-2, -2, 4, 4);
-        this.player.endFill();
-        this.add(this.player);
     }
     
     update(){

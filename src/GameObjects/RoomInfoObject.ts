@@ -6,10 +6,12 @@ class RoomInfoObject{
     cleared:boolean;
     difficulty:DifficultyEnum;
     connections:number;
+    visited:boolean;
     
     constructor(difficulty:DifficultyEnum, random:Phaser.RandomDataGenerator){
         this.difficulty = difficulty;
         this.cleared = false;
+        this.visited = false;
         this.connections = 0;
         this.constMatrix(random);
     }
