@@ -9,17 +9,18 @@ class EnemyObject extends BaseGameObject{
     factorDirectionChange:number;
     enemyDirection:Phaser.Point;
     hitWall:boolean;
-    cannon:CannonObject;
+    cannons:CannonObject[];
     enemyType:EnemyTypeEnum;
     
-    constructor(game:Phaser.Game, x:number, y:number, speed:number){
+    constructor(game:Phaser.Game, x:number, y:number, health:number, speed:number, numberOfCannons:number,
+        typeOfEnemy:EnemyTypeEnum){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
         
         this.enemySprite = this.game.add.sprite(0, 0, 'graphics');
         this.enemySprite.animations.add("normal", [6]);
         this.enemySprite.animations.play("normal");
         this.enemySprite.tint = 0xcc6668;
-        this.enemyHealth = 1;
+        this.enemyHealth = health;
         this.enemySpeed = speed;
         this.isAlive = true;
         this.add(this.enemySprite);
@@ -28,11 +29,32 @@ class EnemyObject extends BaseGameObject{
         this.factorDirectionChange = 2;
         this.hitWall = false;
         this.enemyDirection = this.pickDirection();
-        this.cannon = new CannonObject(game, this.x, this.y, this.pickDirection());
-        //this.movementType = EnemyObject.chooseMovement();
+        this.cannons = this.initializeCannons(numberOfCannons, this.x, this.y);
+        this.enemyType = typeOfEnemy;
     }
     
-    static defineEnemyType(choose:number)
+    initializeCannons(numberOfCannons:number, x:number, y:number)
+    {
+        var cannons:CannonObject[];
+        if(numberOfCannons == 0)
+        {
+            cannons = [];
+        }
+        else if(numberOfCannons == 1)
+        {
+           cannons = [new CannonObject(this.game, x, y, this.pickDirection())]; 
+        }
+        else if(numberOfCannons == 2)
+        {
+            var direction = this.pickDirection();
+            cannons = [new CannonObject(this.game, x, y, this.pickDirection()),
+                      new CannonObject(this.game, x, y,
+                      this.pickDirectionWithThisConstraint(this.findDirectionIndex(direction)))]; 
+        }
+        return cannons;
+    }
+    
+    defineEnemyType(choose:number)
     {
         if (choose == 0)
         {
@@ -207,7 +229,20 @@ class EnemyObject extends BaseGameObject{
     
     enemyShot(player:PlayerObject)
     {
-        return this.cannon.shoot(player, this);
+        if (typeof this.cannons == 'undefined')
+        {
+            return false;
+        }
+        if(this.cannons.length == 1)
+        {
+            return this.cannons[0].shoot(player, this);
+        }
+        if(this.cannons.length == 2)
+        {
+            var shoot1 = this.cannons[0].shoot(player, this);
+            var shoot2 = this.cannons[1].shoot(player, this);
+            return (shoot1 || shoot2);
+        }
     }
     
     updateEnemy(enemyDirection:Phaser.Point, tileMap:TileTypeEnum[][])
@@ -308,5 +343,11 @@ class EnemyObject extends BaseGameObject{
     isEnemyAlive()
     {
         return this.isAlive;
+    }
+    
+    static getEnemey(game:Phaser.Game, x:number, y:number, health:number, speed:number, numberOfCannons:number,
+        typeOfEnemy:EnemyTypeEnum)
+    {
+        return new EnemyObject(game, x, y, health, speed, numberOfCannons, typeOfEnemy);
     }
 }
