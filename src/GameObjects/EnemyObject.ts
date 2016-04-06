@@ -34,15 +34,15 @@ class EnemyObject extends BaseGameObject{
     
     static defineEnemyType(choose:number)
     {
-        if (choose == 1)
+        if (choose == 0)
         {
             return EnemyTypeEnum.Chaser;
         }
-        if (choose == 2)
+        if (choose == 1)
         {
             return EnemyTypeEnum.BackAndForth;
         }
-        if (choose == 3)
+        if (choose == 2)
         {
             return EnemyTypeEnum.Random;
         }
