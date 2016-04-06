@@ -10,7 +10,7 @@ class EnemyObject extends BaseGameObject{
     enemyDirection:Phaser.Point;
     hitWall:boolean;
     cannon:CannonObject;
-    movementType:EnemyTypeEnum;
+    enemyType:EnemyTypeEnum;
     
     constructor(game:Phaser.Game, x:number, y:number, speed:number){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
@@ -29,12 +29,11 @@ class EnemyObject extends BaseGameObject{
         this.hitWall = false;
         this.enemyDirection = this.pickDirection();
         this.cannon = new CannonObject(game, this.x, this.y, this.pickDirection());
-        this.movementType = EnemyObject.chooseMovement();
+        //this.movementType = EnemyObject.chooseMovement();
     }
     
-    static chooseMovement()
+    static chooseMovement(choose:number)
     {
-        var choose:number = Math.floor(Math.random() * 3) + 1;
         if (choose == 1)
         {
             return EnemyTypeEnum.Chaser;
@@ -273,18 +272,18 @@ class EnemyObject extends BaseGameObject{
     movement(player:PlayerObject, tileMap:TileTypeEnum[][])
     {
 
-       console.log("movType : " + this.movementType);
-       if(this.movementType == EnemyTypeEnum.BackAndForth)
+       console.log("movType : " + this.enemyType);
+       if(this.enemyType == EnemyTypeEnum.BackAndForth)
        {
            this.moveBackAndForth(player.position, tileMap);
        }
        
-       if(this.movementType == EnemyTypeEnum.Chaser)
+       if(this.enemyType == EnemyTypeEnum.Chaser)
        {
            this.chaser(player);
        }
        
-       if(this.movementType == EnemyTypeEnum.Random)
+       if(this.enemyType == EnemyTypeEnum.Random)
        {
            this.moveAndKeepDirection(player.position, tileMap);
        }
