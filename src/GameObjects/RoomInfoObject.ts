@@ -136,16 +136,16 @@ class RoomInfoObject{
     }
     
     checkDoor(direction:Phaser.Point):boolean{
-        if(direction.x < 0){
+        if(direction.x < 0 && direction.y == 0){
             return (this.connections & 0x1) > 0;
         }
-        if(direction.x > 0){
+        if(direction.x > 0 && direction.y == 0){
             return (this.connections & 0x2) > 0;
         }
-        if(direction.y < 0){
+        if(direction.y < 0 && direction.x == 0){
             return (this.connections & 0x4) > 0;
         }
-        if(direction.y > 0){
+        if(direction.y > 0 && direction.x == 0){
             return (this.connections & 0x8) > 0;
         }
         

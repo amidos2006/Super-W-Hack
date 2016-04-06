@@ -30,6 +30,7 @@ class RoomSet{
 
 class Global{
     static TILE_SIZE:number = 32;
+    static MAP_SIZE:number = 10;
     static ROOM_WIDTH:number = 11;
     static ROOM_HEIGHT:number = 11;
     

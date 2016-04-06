@@ -118,6 +118,7 @@ var Global = (function () {
         return Global.levelRooms[Global.currentX][Global.currentY];
     };
     Global.TILE_SIZE = 32;
+    Global.MAP_SIZE = 10;
     Global.ROOM_WIDTH = 11;
     Global.ROOM_HEIGHT = 11;
     Global.levelNumber = 0;
@@ -158,13 +159,13 @@ var BaseGameObject = (function (_super) {
 })(Phaser.Group);
 var BaseUIObject = (function (_super) {
     __extends(BaseUIObject, _super);
-    function BaseUIObject(game, x, y) {
+    function BaseUIObject(game) {
         _super.call(this, game);
-        this.x = x;
-        this.y = y;
+        this.fixedToCamera = true;
     }
     return BaseUIObject;
 })(Phaser.Group);
+/// <reference path="BaseGameObject.ts"/>
 var BoxObject = (function (_super) {
     __extends(BoxObject, _super);
     function BoxObject(game) {
@@ -185,14 +186,16 @@ var BoxObject = (function (_super) {
 })(BaseGameObject);
 var CannonObject = (function (_super) {
     __extends(CannonObject, _super);
-    function CannonObject(game, x, y, speed, cannonDirection) {
+    function CannonObject(game, x, y, cannonDirection) {
         _super.call(this, game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
         this.cannonDirection = cannonDirection;
     }
     CannonObject.prototype.blockShoot = function (mapMatrix) {
         var allowedToShoot = true;
         if (this.cannonDirection.equals(new Phaser.Point(1, 0))) {
+            console.log();
             for (var index = this.getTilePosition().x + 1; index < 10; index++) {
+                console.log("matrix[index][posY] : " + index + " " + this.getTilePosition().x + 1);
                 if (mapMatrix[index][this.getTilePosition().y] == TileTypeEnum.Hole
                     || mapMatrix[index][this.getTilePosition().y] == TileTypeEnum.Wall) {
                     allowedToShoot = false;
@@ -204,6 +207,7 @@ var CannonObject = (function (_super) {
                 if (mapMatrix[index][this.getTilePosition().y] == TileTypeEnum.Hole
                     || mapMatrix[index][this.getTilePosition().y] == TileTypeEnum.Wall) {
                     allowedToShoot = false;
+                    console.log("-------");
                 }
             }
         }
@@ -212,6 +216,7 @@ var CannonObject = (function (_super) {
                 if (mapMatrix[this.getTilePosition().x][index] == TileTypeEnum.Hole
                     || mapMatrix[this.getTilePosition().x][index] == TileTypeEnum.Wall) {
                     allowedToShoot = false;
+                    console.log("-------");
                 }
             }
         }
@@ -220,37 +225,45 @@ var CannonObject = (function (_super) {
                 if (mapMatrix[this.getTilePosition().x][index] == TileTypeEnum.Hole
                     || mapMatrix[this.getTilePosition().x][index] == TileTypeEnum.Wall) {
                     allowedToShoot = false;
+                    console.log("-------");
                 }
             }
         }
         else {
             allowedToShoot = true;
+            console.log("-------");
         }
+        return allowedToShoot;
     };
-    CannonObject.prototype.shoot = function (player, mapMatrix) {
+    CannonObject.prototype.shoot = function (player, enemy) {
         var shot = false;
-        if (this.blockShoot(mapMatrix)) {
-            if (this.getTilePosition().y == player.getTilePosition().y
-                && this.getTilePosition().x > player.getTilePosition().x
-                && this.cannonDirection.equals(new Phaser.Point(-1, 0))) {
-                shot = true;
-            }
-            else if (this.getTilePosition().y == player.getTilePosition().y
-                && this.getTilePosition().x < player.getTilePosition().x
-                && this.cannonDirection.equals(new Phaser.Point(1, 0))) {
-                shot = true;
-            }
-            else if (this.getTilePosition().x == player.getTilePosition().x
-                && this.getTilePosition().y < player.getTilePosition().y
-                && this.cannonDirection.equals(new Phaser.Point(0, 1))) {
-                shot = true;
-            }
-            else if (this.getTilePosition().x == player.getTilePosition().x
-                && this.getTilePosition().y > player.getTilePosition().y
-                && this.cannonDirection.equals(new Phaser.Point(0, -1))) {
-                shot = true;
-            }
+        console.log("player.x: " + player.x);
+        console.log("player.y: " + player.y);
+        console.log("this.x: " + enemy.getTilePosition().x);
+        console.log("this.y: " + enemy.getTilePosition().y);
+        // if (this.blockShoot(mapMatrix)) 
+        // {
+        if (enemy.position.y == player.y
+            && enemy.position.x > player.x
+            && this.cannonDirection.equals(new Phaser.Point(-1, 0))) {
+            shot = true;
         }
+        if (enemy.position.y == player.y
+            && enemy.position.x < player.x
+            && this.cannonDirection.equals(new Phaser.Point(1, 0))) {
+            shot = true;
+        }
+        if (enemy.position.x == player.x
+            && enemy.position.y < player.y
+            && this.cannonDirection.equals(new Phaser.Point(0, 1))) {
+            shot = true;
+        }
+        if (enemy.position.x == player.x
+            && enemy.position.y > player.y
+            && this.cannonDirection.equals(new Phaser.Point(0, -1))) {
+            shot = true;
+        }
+        //}
         return shot;
     };
     CannonObject.prototype.getCannonDirection = function () {
@@ -283,7 +296,21 @@ var EnemyObject = (function (_super) {
         this.factorDirectionChange = 2;
         this.hitWall = false;
         this.enemyDirection = this.pickDirection();
+        this.cannon = new CannonObject(game, this.x, this.y, this.pickDirection());
+        this.movementType = EnemyObject.chooseMovement();
     }
+    EnemyObject.chooseMovement = function () {
+        var choose = Math.floor(Math.random() * 3) + 1;
+        if (choose == 1) {
+            return EnemyTypeEnum.Chaser;
+        }
+        if (choose == 2) {
+            return EnemyTypeEnum.BackAndForth;
+        }
+        if (choose == 3) {
+            return EnemyTypeEnum.Random;
+        }
+    };
     EnemyObject.prototype.chaser = function (player) {
         if ((this.getTilePosition().x < player.getTilePosition().x)
             && (this.getTilePosition().y < player.getTilePosition().y)) {
@@ -393,6 +420,9 @@ var EnemyObject = (function (_super) {
             this.updateEnemy(newDir, tileMatrix);
         }
     };
+    EnemyObject.prototype.enemyShot = function (player) {
+        return this.cannon.shoot(player, this);
+    };
     EnemyObject.prototype.updateEnemy = function (enemyDirection, tileMap) {
         var canMove = false;
         if (enemyDirection.x > 0) {
@@ -433,6 +463,18 @@ var EnemyObject = (function (_super) {
         }
         return canMove;
     };
+    EnemyObject.prototype.movement = function (player, tileMap) {
+        console.log("movType : " + this.movementType);
+        if (this.movementType == EnemyTypeEnum.BackAndForth) {
+            this.moveBackAndForth(player.position, tileMap);
+        }
+        if (this.movementType == EnemyTypeEnum.Chaser) {
+            this.chaser(player);
+        }
+        if (this.movementType == EnemyTypeEnum.Random) {
+            this.moveAndKeepDirection(player.position, tileMap);
+        }
+    };
     EnemyObject.prototype.takeDamage = function (damage) {
         if (this.enemyHealth - damage > 0) {
             this.enemyHealth = this.enemyHealth - damage;
@@ -449,6 +491,12 @@ var EnemyObject = (function (_super) {
     };
     return EnemyObject;
 })(BaseGameObject);
+var EnemyTypeEnum;
+(function (EnemyTypeEnum) {
+    EnemyTypeEnum[EnemyTypeEnum["Chaser"] = 0] = "Chaser";
+    EnemyTypeEnum[EnemyTypeEnum["Random"] = 1] = "Random";
+    EnemyTypeEnum[EnemyTypeEnum["BackAndForth"] = 2] = "BackAndForth";
+})(EnemyTypeEnum || (EnemyTypeEnum = {}));
 var PlayerObject = (function (_super) {
     __extends(PlayerObject, _super);
     function PlayerObject(game, x, y, weapon) {
@@ -524,6 +572,16 @@ var PlayerObject = (function (_super) {
     };
     return PlayerObject;
 })(BaseGameObject);
+var TileTypeEnum;
+(function (TileTypeEnum) {
+    TileTypeEnum[TileTypeEnum["Passable"] = 0] = "Passable";
+    TileTypeEnum[TileTypeEnum["Hole"] = 1] = "Hole";
+    TileTypeEnum[TileTypeEnum["Wall"] = 2] = "Wall";
+    TileTypeEnum[TileTypeEnum["Door"] = 3] = "Door";
+    TileTypeEnum[TileTypeEnum["Enemy"] = 4] = "Enemy";
+})(TileTypeEnum || (TileTypeEnum = {}));
+/// <reference path="DifficultyEnum.ts"/>
+/// <reference path="TileTypeEnum.ts"/>
 var RoomInfoObject = (function () {
     function RoomInfoObject(difficulty, random) {
         this.difficulty = difficulty;
@@ -576,12 +634,23 @@ var RoomInfoObject = (function () {
                     }
                 }
             }
+            var coverP = random.integerInRange(0, 3);
             for (var i = 0; i < pattern.length; i++) {
                 var p = pattern[i];
-                this.tileMatrix[p.x][p.y] = tileType;
-                this.tileMatrix[Global.ROOM_WIDTH - p.x - 1][p.y] = tileType;
-                this.tileMatrix[p.x][Global.ROOM_HEIGHT - p.y - 1] = tileType;
-                this.tileMatrix[Global.ROOM_WIDTH - p.x - 1][Global.ROOM_HEIGHT - p.y - 1] = tileType;
+                if (coverP == 0 || coverP == 1) {
+                    this.tileMatrix[p.x][p.y] = tileType;
+                    this.tileMatrix[Global.ROOM_WIDTH - p.x - 1][p.y] = tileType;
+                    this.tileMatrix[p.x][Global.ROOM_HEIGHT - p.y - 1] = tileType;
+                    this.tileMatrix[Global.ROOM_WIDTH - p.x - 1][Global.ROOM_HEIGHT - p.y - 1] = tileType;
+                }
+                else if (coverP == 2) {
+                    this.tileMatrix[p.x][p.y] = tileType;
+                    this.tileMatrix[Global.ROOM_WIDTH - p.x - 1][Global.ROOM_HEIGHT - p.y - 1] = tileType;
+                }
+                else if (coverP == 3) {
+                    this.tileMatrix[Global.ROOM_WIDTH - p.x - 1][p.y] = tileType;
+                    this.tileMatrix[p.x][Global.ROOM_HEIGHT - p.y - 1] = tileType;
+                }
             }
         }
     };
@@ -629,30 +698,22 @@ var RoomInfoObject = (function () {
         this.tileMatrix[Math.floor((direction.x + 1) * Global.ROOM_WIDTH / 2) - Math.floor((direction.x + 1) / 2)][Math.floor((direction.y + 1) * Global.ROOM_HEIGHT / 2) - Math.floor((direction.y + 1) / 2)] = TileTypeEnum.Door;
     };
     RoomInfoObject.prototype.checkDoor = function (direction) {
-        if (direction.x < 0) {
+        if (direction.x < 0 && direction.y == 0) {
             return (this.connections & 0x1) > 0;
         }
-        if (direction.x > 0) {
+        if (direction.x > 0 && direction.y == 0) {
             return (this.connections & 0x2) > 0;
         }
-        if (direction.y < 0) {
+        if (direction.y < 0 && direction.x == 0) {
             return (this.connections & 0x4) > 0;
         }
-        if (direction.y > 0) {
+        if (direction.y > 0 && direction.x == 0) {
             return (this.connections & 0x8) > 0;
         }
         return false;
     };
     return RoomInfoObject;
 })();
-var TileTypeEnum;
-(function (TileTypeEnum) {
-    TileTypeEnum[TileTypeEnum["Passable"] = 0] = "Passable";
-    TileTypeEnum[TileTypeEnum["Hole"] = 1] = "Hole";
-    TileTypeEnum[TileTypeEnum["Wall"] = 2] = "Wall";
-    TileTypeEnum[TileTypeEnum["Door"] = 3] = "Door";
-    TileTypeEnum[TileTypeEnum["Enemy"] = 4] = "Enemy";
-})(TileTypeEnum || (TileTypeEnum = {}));
 var BaseTile = (function (_super) {
     __extends(BaseTile, _super);
     function BaseTile(game, xTile, yTile) {
@@ -660,6 +721,7 @@ var BaseTile = (function (_super) {
     }
     return BaseTile;
 })(BaseGameObject);
+/// <reference path="BaseTile.ts"/>
 var DirHighlightTile = (function (_super) {
     __extends(DirHighlightTile, _super);
     function DirHighlightTile(game) {
@@ -700,6 +762,7 @@ var DirHighlightTile = (function (_super) {
     };
     return DirHighlightTile;
 })(BaseTile);
+/// <reference path="BaseTile.ts"/>
 var DoorTile = (function (_super) {
     __extends(DoorTile, _super);
     function DoorTile(game, direction) {
@@ -723,6 +786,7 @@ var DoorTile = (function (_super) {
     };
     return DoorTile;
 })(BaseTile);
+/// <reference path="BaseTile.ts"/>
 var EmptyTile = (function (_super) {
     __extends(EmptyTile, _super);
     function EmptyTile(game, xTile, yTile) {
@@ -735,6 +799,7 @@ var EmptyTile = (function (_super) {
     }
     return EmptyTile;
 })(BaseTile);
+/// <reference path="BaseTile.ts"/>
 var HighlightTile = (function (_super) {
     __extends(HighlightTile, _super);
     function HighlightTile(game) {
@@ -754,6 +819,7 @@ var HighlightTile = (function (_super) {
     };
     return HighlightTile;
 })(BaseTile);
+/// <reference path="BaseTile.ts"/>
 var WallTile = (function (_super) {
     __extends(WallTile, _super);
     function WallTile(game, xTile, yTile) {
@@ -766,6 +832,48 @@ var WallTile = (function (_super) {
     }
     return WallTile;
 })(BaseTile);
+/// <reference path="../BaseUIObject.ts"/>
+var MiniMap = (function (_super) {
+    __extends(MiniMap, _super);
+    function MiniMap(game, x, y) {
+        _super.call(this, game);
+        this.graphics = this.game.add.graphics(x, y, this);
+        for (var x = 0; x < Global.mapWidth; x++) {
+            for (var y = 0; y < Global.mapHeight; y++) {
+                var mapX = x * Global.MAP_SIZE;
+                var mapY = y * Global.MAP_SIZE;
+                if (Global.levelRooms[x][y] != null) {
+                    this.graphics.beginFill(0xFFFFFF, 1);
+                    this.graphics.drawRect(mapX + 1, mapY + 1, Global.MAP_SIZE - 2, Global.MAP_SIZE - 2);
+                    this.graphics.endFill();
+                }
+                for (var dx = -1; dx <= 1; dx++) {
+                    for (var dy = -1; dy <= 1; dy++) {
+                        if (Global.levelRooms[x][y] != null &&
+                            Global.levelRooms[x][y].checkDoor(new Phaser.Point(dx, dy))) {
+                            mapX = x * Global.MAP_SIZE + (1 + dx) * Global.MAP_SIZE / 2;
+                            mapY = y * Global.MAP_SIZE + (1 + dy) * Global.MAP_SIZE / 2;
+                            this.graphics.beginFill(0xFFFFFF, 1);
+                            this.graphics.drawRect(mapX - Math.abs(dy) - Math.floor((dx + 1) / 2), mapY - Math.abs(dx) - Math.floor((dy + 1) / 2), 1 + Math.abs(dy), 1 + Math.abs(dx));
+                            this.graphics.endFill();
+                        }
+                    }
+                }
+            }
+        }
+        this.player = this.game.add.graphics(0, 0, this);
+        this.player.beginFill(0x111111, 1);
+        this.player.drawRect(-2, -2, 4, 4);
+        this.player.endFill();
+        this.add(this.player);
+    }
+    MiniMap.prototype.update = function () {
+        _super.prototype.update.call(this);
+        this.player.x = this.graphics.x + (Global.currentX + 0.5) * Global.MAP_SIZE;
+        this.player.y = this.graphics.y + (Global.currentY + 0.5) * Global.MAP_SIZE;
+    };
+    return MiniMap;
+})(BaseUIObject);
 //import WeaponShape = require('WeaponShape'); 
 var WeaponShape;
 (function (WeaponShape) {
@@ -969,6 +1077,14 @@ var BaseGameState = (function (_super) {
     }
     return BaseGameState;
 })(Phaser.State);
+/// <reference path="BaseGameState.ts"/>
+/// <reference path="../GameObjects/FloorTiles/DoorTile.ts"/>
+/// <reference path="../GameObjects/FloorTiles/HighlightTile.ts"/>
+/// <reference path="../GameObjects/FloorTiles/DirHighlightTile.ts"/>
+/// <reference path="../GameObjects/BoxObject.ts"/>
+/// <reference path="../GameObjects/EnemyObject.ts"/>
+/// <reference path="../GameObjects/PlayerObject.ts"/>
+/// <reference path="../GameObjects/HUDElements/MiniMap.ts"/>
 var GameplayState = (function (_super) {
     __extends(GameplayState, _super);
     function GameplayState() {
@@ -981,6 +1097,11 @@ var GameplayState = (function (_super) {
         _super.prototype.create.call(this);
         this.createCurrentRoom(Global.getCurrentRoom());
         this.lastDirection = new Phaser.Point(0, 1);
+        this.createHUDElements();
+    };
+    GameplayState.prototype.createHUDElements = function () {
+        this.miniMap = new MiniMap(this.game, this.game.width / 2, this.game.height - 50);
+        this.game.add.existing(this.miniMap);
     };
     GameplayState.prototype.addDoor = function (direction, cleared) {
         var tempDoor = new DoorTile(this.game, direction);
@@ -1038,10 +1159,10 @@ var GameplayState = (function (_super) {
             numOfEnemies = 0;
         }
         var tiles = room.getMatrix(this.enemyObjects);
-        tiles[Math.floor(Global.ROOM_WIDTH / 2)][0] = TileTypeEnum.Wall;
-        tiles[Math.floor(Global.ROOM_WIDTH / 2)][Global.ROOM_HEIGHT - 1] = TileTypeEnum.Wall;
-        tiles[0][Math.floor(Global.ROOM_HEIGHT / 2)] = TileTypeEnum.Wall;
-        tiles[Global.ROOM_WIDTH - 1][Math.floor(Global.ROOM_HEIGHT / 2)] = TileTypeEnum.Wall;
+        tiles[Math.floor(Global.ROOM_WIDTH / 2)][1] = TileTypeEnum.Wall;
+        tiles[Math.floor(Global.ROOM_WIDTH / 2)][Global.ROOM_HEIGHT - 2] = TileTypeEnum.Wall;
+        tiles[1][Math.floor(Global.ROOM_HEIGHT / 2)] = TileTypeEnum.Wall;
+        tiles[Global.ROOM_WIDTH - 2][Math.floor(Global.ROOM_HEIGHT / 2)] = TileTypeEnum.Wall;
         for (var i = 0; i < numOfEnemies; i++) {
             var list = this.getEmptyTiles(tiles);
             var point = list[this.game.rnd.integerInRange(0, list.length - 1)];

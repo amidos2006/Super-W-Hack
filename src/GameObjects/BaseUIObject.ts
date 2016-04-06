@@ -1,7 +1,7 @@
 class BaseUIObject extends Phaser.Group{
-    constructor(game:Phaser.Game, x:number, y:number){
+    constructor(game:Phaser.Game){
         super(game);
-        this.x = x;
-        this.y = y;
+        
+        this.fixedToCamera = true;
     }
 }

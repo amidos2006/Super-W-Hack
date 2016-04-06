@@ -1,4 +1,11 @@
 /// <reference path="BaseGameState.ts"/>
+/// <reference path="../GameObjects/FloorTiles/DoorTile.ts"/>
+/// <reference path="../GameObjects/FloorTiles/HighlightTile.ts"/>
+/// <reference path="../GameObjects/FloorTiles/DirHighlightTile.ts"/>
+/// <reference path="../GameObjects/BoxObject.ts"/>
+/// <reference path="../GameObjects/EnemyObject.ts"/>
+/// <reference path="../GameObjects/PlayerObject.ts"/>
+/// <reference path="../GameObjects/HUDElements/MiniMap.ts"/>
 
 class GameplayState extends BaseGameState{    
     currentDoors:DoorTile[];
@@ -8,6 +15,7 @@ class GameplayState extends BaseGameState{
     enemyObjects:EnemyObject[];
     boxObject:BoxObject;
     lastDirection:Phaser.Point;
+    miniMap:MiniMap;
     
     constructor(){
         super();
@@ -22,6 +30,12 @@ class GameplayState extends BaseGameState{
         
         this.createCurrentRoom(Global.getCurrentRoom());
         this.lastDirection = new Phaser.Point(0, 1);
+        this.createHUDElements();
+    }
+    
+    createHUDElements(){
+        this.miniMap = new MiniMap(this.game, this.game.width/2, this.game.height - 50);
+        this.game.add.existing(this.miniMap);
     }
     
     addDoor(direction:Phaser.Point, cleared:boolean){
