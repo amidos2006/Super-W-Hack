@@ -12,16 +12,15 @@ class EnemyObject extends BaseGameObject{
     cannons:CannonObject[];
     enemyType:EnemyTypeEnum;
     
-    constructor(game:Phaser.Game, x:number, y:number, health:number, speed:number, numberOfCannons:number,
-        typeOfEnemy:EnemyTypeEnum){
+    constructor(game:Phaser.Game, x:number, y:number, params:number[]){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
         
         this.enemySprite = this.game.add.sprite(0, 0, 'graphics');
         this.enemySprite.animations.add("normal", [6]);
         this.enemySprite.animations.play("normal");
         this.enemySprite.tint = 0xcc6668;
-        this.enemyHealth = health;
-        this.enemySpeed = speed;
+        this.enemyHealth = params[0];
+        this.enemySpeed = params[1];
         this.isAlive = true;
         this.add(this.enemySprite);
         this.setDirections();
@@ -29,8 +28,8 @@ class EnemyObject extends BaseGameObject{
         this.factorDirectionChange = 2;
         this.hitWall = false;
         this.enemyDirection = this.pickDirection();
-        this.cannons = this.initializeCannons(numberOfCannons, this.x, this.y);
-        this.enemyType = typeOfEnemy;
+        this.cannons = this.initializeCannons(params[2], this.x, this.y);
+        this.enemyType = this.defineEnemyType(params[3]);
     }
     
     initializeCannons(numberOfCannons:number, x:number, y:number)
@@ -345,9 +344,8 @@ class EnemyObject extends BaseGameObject{
         return this.isAlive;
     }
     
-    static getEnemey(game:Phaser.Game, x:number, y:number, health:number, speed:number, numberOfCannons:number,
-        typeOfEnemy:EnemyTypeEnum)
+    static getEnemey(game:Phaser.Game, x:number, y:number, params:number[])
     {
-        return new EnemyObject(game, x, y, health, speed, numberOfCannons, typeOfEnemy);
+        return new EnemyObject(game, x, y, params);
     }
 }
