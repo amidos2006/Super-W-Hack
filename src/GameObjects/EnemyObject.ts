@@ -29,7 +29,7 @@ class EnemyObject extends BaseGameObject{
         this.hitWall = false;
         this.enemyDirection = this.pickDirection();
         this.cannons = this.initializeCannons(Math.floor(Math.random() * 2) + 0, this.x, this.y);
-        this.enemyType = this.defineEnemyType(Math.floor(Math.random() * 2) + 0);
+        this.enemyType = this.defineEnemyType(Math.floor(Math.random() * 3) + 1);
     }
     
     initializeCannons(numberOfCannons:number, x:number, y:number)
@@ -55,15 +55,15 @@ class EnemyObject extends BaseGameObject{
     
     defineEnemyType(choose:number)
     {
-        if (choose == 0)
+        if (choose == 1)
         {
             return EnemyTypeEnum.Chaser;
         }
-        if (choose == 1)
+        if (choose == 2)
         {
             return EnemyTypeEnum.BackAndForth;
         }
-        if (choose == 2)
+        if (choose == 3)
         {
             return EnemyTypeEnum.Random;
         }
