@@ -1,5 +1,6 @@
 class EnemyObject extends BaseGameObject{
     
+    static enemySpriteNumbers:number[] = [8, 6, 9];
     enemySprite:Phaser.Sprite;
     enemyHealth:number;
     enemySpeed:number;
@@ -15,14 +16,10 @@ class EnemyObject extends BaseGameObject{
     constructor(game:Phaser.Game, x:number, y:number, params:number[]){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
         
-        this.enemySprite = this.game.add.sprite(0, 0, 'graphics');
-        this.enemySprite.animations.add("normal", [6]);
-        this.enemySprite.animations.play("normal");
         this.enemySprite.tint = 0xcc6668;
         this.enemyHealth = this.selectHealthValue(params[0]);
         this.enemySpeed = this.selectSpeedOrCannonValues(params[1]);
-        this.isAlive = true;
-        this.add(this.enemySprite);
+        this.isAlive = true;        
         this.setDirections();
         this.keepDirection = 0;
         this.factorDirectionChange = 2;
@@ -30,6 +27,11 @@ class EnemyObject extends BaseGameObject{
         this.enemyDirection = this.pickDirection();
         this.cannons = this.initializeCannons(this.selectSpeedOrCannonValues(params[2]), this.x, this.y);
         this.enemyType = this.selectTypeOfEnemey(params[3]);
+        
+        this.enemySprite = this.game.add.sprite(0, 0, 'graphics');
+        this.enemySprite.animations.add("normal", [EnemyObject.enemySpriteNumbers[this.enemyType]]);
+        this.enemySprite.animations.play("normal");
+        this.add(this.enemySprite);
     }
     
     initializeCannons(numberOfCannons:number, x:number, y:number)

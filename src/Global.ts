@@ -48,6 +48,8 @@ class Global{
         Global.levelNumber = 0;
         Global.crateNumber = 0;
         Global.currentWeapon = null;
+        EnemyObject.enemySpriteNumbers = Phaser.ArrayUtils.shuffle(EnemyObject.enemySpriteNumbers);
+        EnemyObject.enemySpriteNumbers.push(EnemyObject.enemySpriteNumbers[EnemyObject.enemySpriteNumbers.length - 1]);
     }
     
     static matrixTranspose(matrix:TileTypeEnum[][]){
