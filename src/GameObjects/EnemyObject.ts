@@ -16,16 +16,16 @@ class EnemyObject extends BaseGameObject{
     constructor(game:Phaser.Game, x:number, y:number, params:number[]){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
         
-        this.enemyHealth = this.selectHealthValue(params[0]);
-        this.enemySpeed = this.selectSpeedOrCannonValues(params[1]);
+        this.enemyHealth = 1;
+        this.enemySpeed = 1;
         this.isAlive = true;        
         this.setDirections();
         this.keepDirection = 0;
         this.factorDirectionChange = 2;
         this.hitWall = false;
         this.enemyDirection = this.pickDirection();
-        this.cannons = this.initializeCannons(this.selectSpeedOrCannonValues(params[2]), this.x, this.y);
-        this.enemyType = this.selectTypeOfEnemey(params[3]);
+        this.cannons = this.initializeCannons(0, this.x, this.y);
+        this.enemyType = this.game.rnd.integerInRange(0, 3);
         
         this.enemySprite = this.game.add.sprite(0, 0, 'graphics');
         this.enemySprite.animations.add("normal", [EnemyObject.enemySpriteNumbers[this.enemyType]]);
