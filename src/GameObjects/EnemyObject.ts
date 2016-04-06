@@ -65,7 +65,7 @@ class EnemyObject extends BaseGameObject{
         }
         if (choose == 3)
         {
-            return EnemyTypeEnum.CircleClockWise;
+            return EnemyTypeEnum.ClockMovement;
         }
         if (choose == 4)
         {
@@ -240,6 +240,23 @@ class EnemyObject extends BaseGameObject{
         }
     }
     
+    moveCircleCounterClockWise(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
+    {
+        if(this.keepDirection % this.factorDirectionChange == 0)
+        {
+            this.enemyDirection = this.circleDirectionClockWise(this.enemyDirection);
+            this.enemyDirection.x = this.enemyDirection.x * (-1);
+            this.enemyDirection.y = this.enemyDirection.y * (-1);
+        }
+        this.keepDirection++;
+        
+        if(!this.updateEnemy(this.enemyDirection, tileMatrix))
+        {
+            var newDir = this.pickDirectionWithThisConstraint(this.findDirectionIndex(this.enemyDirection));
+            this.updateEnemy(newDir, tileMatrix);
+        }
+    }
+    
     reverseDirection(dir:Phaser.Point)
     {
         dir.x = dir.x * (-1);
@@ -344,7 +361,6 @@ class EnemyObject extends BaseGameObject{
     
     movement(player:PlayerObject, tileMap:TileTypeEnum[][])
     {
-
        console.log("movType : " + this.enemyType);
        if(this.enemyType == EnemyTypeEnum.BackAndForth)
        {
@@ -359,6 +375,19 @@ class EnemyObject extends BaseGameObject{
        if(this.enemyType == EnemyTypeEnum.Random)
        {
            this.moveAndKeepDirection(player.position, tileMap);
+       }
+       
+       if(this.enemyType == EnemyTypeEnum.ClockMovement)
+       {
+           var choice = Math.floor(Math.random() * 2) + 1;
+           if(choice % 2 == 0)
+           {
+               this.moveCircleClockWise(player.position, tileMap);
+           }
+           else
+           {
+               this.moveCircleCounterClockWise(player.position, tileMap);
+           }
        }
     }
     
