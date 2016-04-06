@@ -30,7 +30,10 @@ class GameplayState extends BaseGameState{
         super.create();        
         
         this.createCurrentRoom(Global.getCurrentRoom());
-        this.lastDirection = new Phaser.Point(0, 1);
+        this.lastDirection = new Phaser.Point(-Global.previousDirection.x, -Global.previousDirection.y);
+        if(this.lastDirection.getMagnitude() == 0){
+            this.lastDirection.y = 1;
+        }
         Global.levelRooms[Global.currentX][Global.currentY].visited = true;
         this.createHUDElements();
     }
@@ -132,7 +135,7 @@ class GameplayState extends BaseGameState{
         this.game.add.existing(this.playerObject);
         
         if(room.difficulty == DifficultyEnum.None && !room.cleared){
-            this.showBoxObject();
+            this.showBoxObject(new Phaser.Point(Math.floor(Global.ROOM_WIDTH / 2), Math.floor(Global.ROOM_HEIGHT / 2)));
         }
     }
 
@@ -175,7 +178,7 @@ class GameplayState extends BaseGameState{
     }
 
     handleAttack(damage:number[][]){
-        var lastEnemyDied:boolean = false;
+        var lastEnemyDied:Phaser.Point = null;
         var listOfIndeces:number[] = [];
         for (var i:number = 0; i < this.enemyObjects.length; i++) {
             var eP = this.enemyObjects[i].getTilePosition();
@@ -184,22 +187,18 @@ class GameplayState extends BaseGameState{
             }
         }
         for(var i:number = listOfIndeces.length - 1; i >= 0; i--){
+            lastEnemyDied = this.enemyObjects[i].getTilePosition();
             this.enemyObjects.splice(listOfIndeces[i], 1);
-            lastEnemyDied = true;
         }
         
         
-        if(lastEnemyDied && this.enemyObjects.length <= 0){
-            this.showBoxObject();
+        if(lastEnemyDied != null && this.enemyObjects.length <= 0){
+            this.showBoxObject(lastEnemyDied);
         }
     }
     
-    showBoxObject(){
-        var matrix:TileTypeEnum[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
-        var freePositions:Phaser.Point[] = this.getEmptyTiles(matrix);
-            
-        matrix[this.playerObject.getTilePosition().x][this.playerObject.getTilePosition().y] = TileTypeEnum.Wall;
-        this.boxObject.show(freePositions[this.game.rnd.integerInRange(0, freePositions.length - 1)], matrix);
+    showBoxObject(position:Phaser.Point){
+        this.boxObject.show(position);
     }
     
     handleCollision(){

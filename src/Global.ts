@@ -42,7 +42,7 @@ class Global{
     static currentY:number = 0;
     static mapWidth:number = 0;
     static mapHeight:number = 0;
-    static previousDirection:Phaser.Point = new Phaser.Point();
+    static previousDirection:Phaser.Point = new Phaser.Point(0, 0);
     
     static initialize(){
         Global.levelNumber = 0;

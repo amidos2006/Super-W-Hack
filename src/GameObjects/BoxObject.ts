@@ -14,7 +14,7 @@ class BoxObject extends BaseGameObject{
         this.add(this.sprite);
     }
     
-    show(tilePosition:Phaser.Point, roomMatrix:TileTypeEnum[][]){
+    show(tilePosition:Phaser.Point){
         this.sprite.alpha = 1;
         this.x = tilePosition.x * Global.TILE_SIZE;
         this.y = tilePosition.y * Global.TILE_SIZE;
