@@ -41,6 +41,9 @@ class GameplayState extends BaseGameState{
         
         this.buttonText = new ButtonTutorial(this.game, 5, this.game.height);
         this.game.add.existing(this.buttonText);
+        
+        this.game.add.existing(new CrateText(this.game, this.game.width/2, this.game.height - 
+            (this.game.height - this.game.width) + 8));
     }
     
     addDoor(direction:Phaser.Point, cleared:boolean){
@@ -115,7 +118,7 @@ class GameplayState extends BaseGameState{
             var point:Phaser.Point = list[this.game.rnd.integerInRange(0, list.length - 1)];
             tiles[point.x][point.y] = TileTypeEnum.Enemy;
             
-            var tempEnemy:EnemyObject = EnemyObject.getEnemey(this.game, point.x, point.y, 1, 1, 0, EnemyTypeEnum.Random);
+            var tempEnemy:EnemyObject = EnemyObject.getEnemey(this.game, point.x, point.y, null);
             this.enemyObjects.push(tempEnemy);
             this.game.add.existing(tempEnemy);
         }
@@ -333,7 +336,8 @@ class GameplayState extends BaseGameState{
                 this.stepUpdate();
                 this.game.input.keyboard.reset();
             }
-            if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
+            if(this.game.input.keyboard.isDown(Phaser.Keyboard.X) && 
+                this.playerObject.getWeapon().getCurrentCoolDown() <= 0){
                 this.arrowHighlight.show(this.playerObject.getTilePosition(), this.lastDirection);
                 this.highlight(this.playerObject.getWeapon().getWeaponPositions(
                     this.playerObject.getTilePosition(), this.lastDirection, 
