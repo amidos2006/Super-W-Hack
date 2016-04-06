@@ -16,6 +16,7 @@ class GameplayState extends BaseGameState{
     boxObject:BoxObject;
     lastDirection:Phaser.Point;
     miniMap:MiniMap;
+    buttonText:ButtonTutorial;
     
     constructor(){
         super();
@@ -34,8 +35,12 @@ class GameplayState extends BaseGameState{
     }
     
     createHUDElements(){
-        this.miniMap = new MiniMap(this.game, this.game.width/2, this.game.height - 50);
+        this.miniMap = new MiniMap(this.game, this.game.width - (Global.mapWidth + 1.5) * Global.MAP_SIZE, 
+            this.game.height - (this.game.height - this.game.width) / 2 - Global.mapHeight * Global.MAP_SIZE / 2 - 10);
         this.game.add.existing(this.miniMap);
+        
+        this.buttonText = new ButtonTutorial(this.game, 10, this.game.height);
+        this.game.add.existing(this.buttonText);
     }
     
     addDoor(direction:Phaser.Point, cleared:boolean){
@@ -110,9 +115,9 @@ class GameplayState extends BaseGameState{
             var point:Phaser.Point = list[this.game.rnd.integerInRange(0, list.length - 1)];
             tiles[point.x][point.y] = TileTypeEnum.Enemy;
             
-            var tempEnemy:EnemyObject = new EnemyObject(this.game, point.x, point.y, 1);
-            this.enemyObjects.push(tempEnemy);
-            this.game.add.existing(tempEnemy);
+            // var tempEnemy:EnemyObject = new EnemyObject(this.game, point.x, point.y, 1);
+            // this.enemyObjects.push(tempEnemy);
+            // this.game.add.existing(tempEnemy);
         }
         
         this.playerObject = new PlayerObject(this.game, Math.floor(Global.ROOM_WIDTH / 2) + 
@@ -312,11 +317,13 @@ class GameplayState extends BaseGameState{
                     Global.matrixTranspose(Global.getCurrentRoom().getMatrix(this.enemyObjects))));
                 this.stepUpdate();
                 this.game.input.keyboard.reset();
+                this.buttonText.normalMode();
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.Z)){
                 this.arrowHighlight.hide();
                 this.unhighlight();
                 this.game.input.keyboard.reset();
+                this.buttonText.normalMode();
             }
         }
         else{
@@ -332,6 +339,7 @@ class GameplayState extends BaseGameState{
                     this.playerObject.getTilePosition(), this.lastDirection, 
                     Global.matrixTranspose(Global.getCurrentRoom().getMatrix(this.enemyObjects))));
                 this.game.input.keyboard.reset();
+                this.buttonText.aimMode();
             }
         }
         

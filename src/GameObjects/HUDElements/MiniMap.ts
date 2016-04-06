@@ -1,11 +1,17 @@
 /// <reference path="../BaseUIObject.ts"/>
 
 class MiniMap extends BaseUIObject{
+    outline:Phaser.Graphics;
     graphics:Phaser.Graphics;
     player:Phaser.Graphics;
     
     constructor(game:Phaser.Game, x:number, y:number){
         super(game);
+        
+        this.outline = this.game.add.graphics(x - Global.MAP_SIZE / 2, y - Global.MAP_SIZE / 2, this);
+        this.outline.lineStyle(2, 0xffffff, 1);
+        this.outline.drawRect(0, 0, (Global.mapWidth + 1) * Global.MAP_SIZE, (Global.mapHeight + 1) * Global.MAP_SIZE);
+        this.add(this.outline);
         
         this.graphics = this.game.add.graphics(x, y, this);
         for(var x:number=0; x<Global.mapWidth; x++){
