@@ -331,8 +331,9 @@ class GameplayState extends BaseGameState{
         else{
             if(direction.x != 0 || direction.y != 0){
                 this.lastDirection = direction;
-                this.playerObject.move(direction, Global.getCurrentRoom().getMatrix(this.enemyObjects));
-                this.stepUpdate();
+                if(this.playerObject.move(direction, Global.getCurrentRoom().getMatrix(this.enemyObjects))){
+                    this.stepUpdate();
+                }
                 this.game.input.keyboard.reset();
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.X) && 

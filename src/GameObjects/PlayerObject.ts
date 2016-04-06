@@ -18,10 +18,17 @@ class PlayerObject extends BaseGameObject{
         this.isAlive = true;
         
         var style = { font: "10px pixelFont", fill: "#ffffff", align: "left" };
-        this.coolDownText = this.game.add.text(Global.TILE_SIZE - 3, Global.TILE_SIZE - 10, "0", style, this);
+        this.coolDownText = this.game.add.text(Global.TILE_SIZE - 3, Global.TILE_SIZE - 10, 
+            this.getWeapon().getCurrentCoolDown().toString(), style, this);
         this.coolDownText.anchor.set(0, 0);
-        this.coolDownText.alpha = 0;
         this.add(this.coolDownText);
+        
+        if(this.getWeapon().getCurrentCoolDown() > 0){
+            this.coolDownText.alpha = 1;
+        }
+        else{
+            this.coolDownText.alpha = 0;
+        }
         
     } 
     
