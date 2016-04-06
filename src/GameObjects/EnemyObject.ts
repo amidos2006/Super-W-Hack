@@ -344,9 +344,8 @@ class EnemyObject extends BaseGameObject{
         return this.isAlive;
     }
     
-    static getEnemey(game:Phaser.Game, x:number, y:number, health:number, speed:number, numberOfCannons:number,
-        typeOfEnemy:EnemyTypeEnum)
+    static getEnemey(game:Phaser.Game, x:number, y:number, params:number[])
     {
-        return new EnemyObject(game, x, y, health, speed, numberOfCannons, typeOfEnemy);
+        return new EnemyObject(game, x, y, params);
     }
 }
