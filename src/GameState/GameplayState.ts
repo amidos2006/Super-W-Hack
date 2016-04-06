@@ -39,7 +39,7 @@ class GameplayState extends BaseGameState{
             this.game.height - (this.game.height - this.game.width) / 2 - Global.mapHeight * Global.MAP_SIZE / 2 - 10);
         this.game.add.existing(this.miniMap);
         
-        this.buttonText = new ButtonTutorial(this.game, 10, this.game.height);
+        this.buttonText = new ButtonTutorial(this.game, 5, this.game.height);
         this.game.add.existing(this.buttonText);
     }
     
@@ -115,9 +115,9 @@ class GameplayState extends BaseGameState{
             var point:Phaser.Point = list[this.game.rnd.integerInRange(0, list.length - 1)];
             tiles[point.x][point.y] = TileTypeEnum.Enemy;
             
-            // var tempEnemy:EnemyObject = new EnemyObject(this.game, point.x, point.y, 1);
-            // this.enemyObjects.push(tempEnemy);
-            // this.game.add.existing(tempEnemy);
+            var tempEnemy:EnemyObject = EnemyObject.getEnemey(this.game, point.x, point.y, 1, 1, 0, EnemyTypeEnum.Random);
+            this.enemyObjects.push(tempEnemy);
+            this.game.add.existing(tempEnemy);
         }
         
         this.playerObject = new PlayerObject(this.game, Math.floor(Global.ROOM_WIDTH / 2) + 
