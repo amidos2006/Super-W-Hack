@@ -264,8 +264,7 @@ class GameplayState extends BaseGameState{
             return;
         }
         
-        this.playerObject.getWeapon().updateCoolDown();
-        console.log(this.playerObject.getWeapon().getCurrentCoolDown())
+        this.playerObject.updateCoolDown();
     }
     
     update(){
