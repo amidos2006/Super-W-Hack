@@ -126,7 +126,7 @@ class WeaponGenerator {
        var i: number = Math.floor(Weapon.MAX_COOLDOWN - Weapon.MIN_COOLDOWN / Weapon.COOLDOWN_INTERVAL) + 1;
        weapon.cooldown = random.integerInRange(0, i) * Weapon.COOLDOWN_INTERVAL + Weapon.MIN_COOLDOWN;
        weapon.curCooldown = 0;
-       weapon.poinson = random.frac < 0.2 ? true : false;
+       weapon.poison = random.frac() < 0.2 ? true : false;
        console.log("LOGGING " + weapon.toString());
        
        /*
