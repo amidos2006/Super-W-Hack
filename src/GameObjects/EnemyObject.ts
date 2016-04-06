@@ -32,7 +32,7 @@ class EnemyObject extends BaseGameObject{
         //this.movementType = EnemyObject.chooseMovement();
     }
     
-    static chooseMovement(choose:number)
+    static defineEnemyType(choose:number)
     {
         if (choose == 1)
         {
