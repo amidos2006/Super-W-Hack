@@ -19,8 +19,8 @@ class EnemyObject extends BaseGameObject{
         this.enemySprite.animations.add("normal", [6]);
         this.enemySprite.animations.play("normal");
         this.enemySprite.tint = 0xcc6668;
-        this.enemyHealth = 1;
-        this.enemySpeed = 1;
+        this.enemyHealth = this.selectHealthValue(params[0]);
+        this.enemySpeed = this.selectSpeedOrCannonValues(params[1]);
         this.isAlive = true;
         this.add(this.enemySprite);
         this.setDirections();
@@ -28,8 +28,8 @@ class EnemyObject extends BaseGameObject{
         this.factorDirectionChange = 2;
         this.hitWall = false;
         this.enemyDirection = this.pickDirection();
-        this.cannons = this.initializeCannons(Math.floor(Math.random() * 2) + 0, this.x, this.y);
-        this.enemyType = this.defineEnemyType(Math.floor(Math.random() * 3) + 1);
+        this.cannons = this.initializeCannons(this.selectSpeedOrCannonValues(params[2]), this.x, this.y);
+        this.enemyType = this.selectTypeOfEnemey(params[3]);
     }
     
     initializeCannons(numberOfCannons:number, x:number, y:number)
@@ -57,15 +57,15 @@ class EnemyObject extends BaseGameObject{
     {
         if (choose == 1)
         {
-            return EnemyTypeEnum.Chaser;
+            return EnemyTypeEnum.BackAndForth;
         }
         if (choose == 2)
         {
-            return EnemyTypeEnum.BackAndForth;
+            return EnemyTypeEnum.Random;
         }
         if (choose == 3)
         {
-            return EnemyTypeEnum.Random;
+            return EnemyTypeEnum.Chaser;
         }
     }
     
@@ -342,6 +342,78 @@ class EnemyObject extends BaseGameObject{
     isEnemyAlive()
     {
         return this.isAlive;
+    }
+    
+    selectHealthValue(selector:number)
+    {
+        if(selector == -4 || selector == -3)
+        {
+            return 1;
+        }
+        if(selector == -2 || selector == -1)
+        {
+            return Math.floor(Math.random() * 2) + 1;
+        }
+        if(selector == 0)
+        {
+            return Math.floor(Math.random() * 3) + 1;
+        }
+        if(selector == 1 || selector == 2)
+        {
+            return Math.floor(Math.random() * 3) + 2;
+        }
+        if(selector == 3 || selector == 4)
+        {
+            return 3;
+        }
+    }
+    
+    selectSpeedOrCannonValues(selector:number)
+    {
+        if(selector == -4 || selector == -3)
+        {
+            return 0;
+        }
+        if(selector == -2 || selector == -1)
+        {
+            return (Math.floor(Math.random() * 2) + 1) - 1;
+        }
+        if(selector == 0)
+        {
+            return (Math.floor(Math.random() * 3) + 1) - 1;
+        }
+        if(selector == 1 || selector == 2)
+        {
+            return (Math.floor(Math.random() * 3) + 2) - 1;
+        }
+        if(selector == 3 || selector == 4)
+        {
+            return 2;
+        }
+    }
+    
+    selectTypeOfEnemey(selector:number)
+    {
+         if(selector == -4 || selector == -3)
+        {
+            return EnemyTypeEnum.BackAndForth;
+        }
+        if(selector == -2 || selector == -1)
+        {
+            return this.defineEnemyType(Math.floor(Math.random() * 2) + 1);
+        }
+        if(selector == 0)
+        {
+            return this.defineEnemyType(Math.floor(Math.random() * 3) + 1);
+        }
+        if(selector == 1 || selector == 2)
+        {
+            return this.defineEnemyType(Math.floor(Math.random() * 3) + 2);
+        }
+        if(selector == 3 || selector == 4)
+        {
+            return EnemyTypeEnum.Chaser;
+        }
     }
     
     static getEnemey(game:Phaser.Game, x:number, y:number, params:number[])
