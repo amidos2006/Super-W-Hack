@@ -1,5 +1,6 @@
 enum EnemyTypeEnum{
     Chaser,
     Random,
-    BackAndForth
+    BackAndForth,
+    circleClockWise
 }

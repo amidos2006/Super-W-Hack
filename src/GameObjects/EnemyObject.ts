@@ -65,6 +65,10 @@ class EnemyObject extends BaseGameObject{
         }
         if (choose == 3)
         {
+            return EnemyTypeEnum.CircleClockWise;
+        }
+        if (choose == 4)
+        {
             return EnemyTypeEnum.Chaser;
         }
     }
@@ -191,6 +195,41 @@ class EnemyObject extends BaseGameObject{
         if(this.keepDirection % this.factorDirectionChange == 0)
         {
             this.enemyDirection = this.pickDirection();
+        }
+        this.keepDirection++;
+        
+        if(!this.updateEnemy(this.enemyDirection, tileMatrix))
+        {
+            var newDir = this.pickDirectionWithThisConstraint(this.findDirectionIndex(this.enemyDirection));
+            this.updateEnemy(newDir, tileMatrix);
+        }
+    }
+    
+    circleDirectionClockWise(direction:Phaser.Point)
+    {
+        if(direction.equals(new Phaser.Point(1,0)))
+        {
+            return new Phaser.Point(0,1);
+        }
+        if(direction.equals(new Phaser.Point(0,1)))
+        {
+            return new Phaser.Point(-1,0);
+        }
+        if(direction.equals(new Phaser.Point(-1,0)))
+        {
+            return new Phaser.Point(0,-1);
+        }
+        if(direction.equals(new Phaser.Point(0,-1)))
+        {
+            return new Phaser.Point(1,0);
+        }
+    }
+    
+    moveCircleClockWise(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
+    {
+        if(this.keepDirection % this.factorDirectionChange == 0)
+        {
+            this.enemyDirection = this.circleDirectionClockWise(this.enemyDirection);
         }
         this.keepDirection++;
         
@@ -400,15 +439,15 @@ class EnemyObject extends BaseGameObject{
         }
         if(selector == -2 || selector == -1)
         {
-            return this.defineEnemyType(Math.floor(Math.random() * 2) + 1);
+            return this.defineEnemyType(Math.floor(Math.random() * 3) + 1);
         }
         if(selector == 0)
         {
-            return this.defineEnemyType(Math.floor(Math.random() * 3) + 1);
+            return this.defineEnemyType(Math.floor(Math.random() * 4) + 1);
         }
         if(selector == 1 || selector == 2)
         {
-            return this.defineEnemyType(Math.floor(Math.random() * 3) + 2);
+            return this.defineEnemyType(Math.floor(Math.random() * 4) + 2);
         }
         if(selector == 3 || selector == 4)
         {
