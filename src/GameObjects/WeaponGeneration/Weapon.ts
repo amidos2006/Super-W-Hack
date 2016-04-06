@@ -73,10 +73,18 @@ class Weapon {
     /** What happen when time is out from LeaveObj */
     static ENDING_TYPES: ColidedEndingType[] = [ColidedEndingType.NOTHING, ColidedEndingType.EXPLODE];
     endingType: ColidedEndingType = ColidedEndingType.NOTHING;	
-    
+
+    static CHANCE_CENTERED: number = 0.4;
+    static CHANCE_REPEAT: number = 0.3;
+
+    poison: boolean = false;
+    centered: boolean = false;
+    repeat: boolean = false;
+    direction: Phaser.Point;
+    pattern: number[][];
 
     constructor() {
-         this.shape = WeaponShape.LINE_1;
+        this.shape = WeaponShape.LINE_1;
 
     }
 
@@ -138,14 +146,14 @@ class Weapon {
     getWeaponPositions(playerPos:Phaser.Point, faceDirection:Phaser.Point, valueMatrix:TileTypeEnum[][]): number[][]	 {
         
         var result = new Array(valueMatrix.length);
-        for (var i = 0; i < valueMatrix.length; i++) {
+        for (var i: number = 0; i < valueMatrix.length; i++) {
              result[i] = new Array(valueMatrix[0].length);
              for(var j:number = 0; j < valueMatrix[0].length; j++) {
                 result[i][j] = 0;
             }
         }
       
-        //
+        /*
         var inAttPosX:number = playerPos.x + (this.startPointShif*faceDirection.x);
         var inAttPosY:number = playerPos.y + (this.startPointShif*faceDirection.y);
         
@@ -159,8 +167,133 @@ class Weapon {
             return this.attackInLine(result, inAttPosX, inAttPosY, playerPos, faceDirection, valueMatrix, -1);
         } else if (this.shape == WeaponShape.AREA) {
             return this.attackInArea(result, inAttPosX, inAttPosY, playerPos, faceDirection, valueMatrix);
-        } 
+        }
+        */
+
+        var w: number = (faceDirection.x == 1 || faceDirection.x == -1) ? this.pattern.length : this.pattern[0].length;
+        var h: number = (faceDirection.x == 1 || faceDirection.x == -1) ? this.pattern[0].length : this.pattern.length;
+        var pathRightDir = new Array(h);
+        for (var i: number = 0; i < h; i++) {
+            pathRightDir[i] = new Array(w);
+            for (var j: number = 0; j < w; j++) {
+                pathRightDir[i][j] = 0;
+            }
+        }
+
+        if (faceDirection.x == -1) {
+            pathRightDir = this.invertColumn(this.transpose(pathRightDir, w, h));
+        } else if (faceDirection.x == 1) {
+            pathRightDir = this.invertRow(this.transpose(pathRightDir, w, h));
+        } else if (faceDirection.y == 1) {
+            pathRightDir = this.invertRow(this.invertColumn(this.pattern));
+        } else {
+            pathRightDir = this.pattern;
+        }
+
+        var topLeft: Phaser.Point = new Phaser.Point(0, 0);
+        if (this.centered) {
+            if (faceDirection.x == 1) {
+                topLeft.x = playerPos.x - Math.floor(pathRightDir[0].length / 2);
+                topLeft.y = playerPos.y - Math.floor(pathRightDir.length / 2);
+            } else if (faceDirection.x == -1) {
+                topLeft.x = playerPos.x - Math.floor(pathRightDir[0].length / 2);
+                topLeft.y = playerPos.y - Math.floor(pathRightDir.length / 2);
+            } else if (faceDirection.y == 1) {
+                topLeft.x = playerPos.x - Math.floor(pathRightDir[0].length / 2);
+                topLeft.y = playerPos.y - Math.floor(pathRightDir.length / 2);
+            } else if (faceDirection.y == -1) {
+                topLeft.x = playerPos.x - Math.floor(pathRightDir[0].length / 2);
+                topLeft.y = playerPos.y - Math.floor(pathRightDir.length / 2);
+            }
+        } else {
+            if (faceDirection.x == 1) {
+                topLeft.x = playerPos.x + 1;
+                topLeft.y = playerPos.y - Math.floor(pathRightDir.length / 2);
+            } else if (faceDirection.x == -1) {
+                topLeft.x = playerPos.x - pathRightDir[0].length;
+                topLeft.y = playerPos.y - Math.floor(pathRightDir.length/2);
+            } else if (faceDirection.y == 1) {
+                topLeft.x = playerPos.x - Math.floor(pathRightDir[0].length / 2);
+                topLeft.y = playerPos.y + 1;
+            } else if (faceDirection.y == -1) {
+                topLeft.x = playerPos.x - Math.floor(pathRightDir[0].length / 2);
+                topLeft.y = playerPos.y - pathRightDir.length;
+            }
+        }
+
+        var t: String = "";
+        for (var i: number = 0; i < pathRightDir.length; i++) {
+            for (var j: number = 0; j < pathRightDir[0].length; j++) {
+                t += pathRightDir[i][j];
+            }
+            t += "\n";
+        }
+        console.log("dir: " + faceDirection.x + "x" + faceDirection.y + " " + topLeft.x + "x" + topLeft.y + "\n" + t);
+
+        /*if(this.repeat) {
+            for (var i: number = (topLeft.y < 0 ? 0 : topLeft.y),
+                iR: number = ((topLeft.y < 0 ? 0 : topLeft.y)); iR < result.length; i++ , iR++) {
+                if (i == pathRightDir.length)
+                    i = 0;
+                for (var j: number = (topLeft.x < 0 ? 0 : topLeft.x),
+                    jR: number = (topLeft.x < 0 ? 0 : topLeft.x); jR < result[0].length; j++ , jR++) {
+                    if (j == pathRightDir[0].length)
+                        j = 0;
+                    if (pathRightDir[i][j] == 1) {
+                        result[iR][jR] = this.damage;
+                    }
+                }
+            }
+        } else {*/
+            for (var i: number = (topLeft.y < 0 ? 0 : topLeft.y); i - topLeft.y < pathRightDir.length && i < result.length; i++) {
+                for (var j: number = (topLeft.x < 0 ? 0 : topLeft.x); j - topLeft.x < pathRightDir[0].length && j < result[0].length; j++) {
+                    if (pathRightDir[i - topLeft.y][j - topLeft.x] == 1) {
+                        result[i][j] = this.damage;
+                    }
+                }
+            }
+        //}
         return result;
+    }
+
+    invertRow(matrix: number[][]) {
+        var aux = new Array(matrix.length);
+        for (var i: number = 0; i < matrix.length; i++) {
+            aux[i] = new Array(matrix[0].length);
+            for(var j = 0; j < matrix[0].length; j++) {
+                aux[i][j] = 0;
+            }
+        }
+
+        for (var i = 0; i < matrix.length; i++) {
+            for (var j = 0; j < matrix[0].length; j++) {
+                aux[i][j] = matrix[i][matrix[0].length - j - 1];
+            }
+        }
+        return aux;
+    }
+
+    invertColumn(matrix: number[][]) {
+        var aux = new Array(matrix.length);
+        for (var i: number = 0; i < matrix.length; i++) {
+            aux[i] = new Array(matrix[0].length);
+        }
+
+        for (var i = 0; i < matrix.length; i++) {
+            for (var j = 0; j < matrix[0].length; j++) {
+                aux[i][j] = matrix[matrix.length - i - 1][j];
+            }
+        }
+        return aux;
+    }
+
+    transpose(pathRightDir: number[][], w: number, h: number): number[][] {
+        for (var i: number = 0; i < h; i++) {
+            for (var j: number = 0; j < w; j++) {
+                pathRightDir[i][j] = this.pattern[j][i];
+            }
+        }
+        return pathRightDir;
     }
 
     getWeaponName():String	{
@@ -181,8 +314,12 @@ class Weapon {
         }
     }
 
-    isWeaponReady(): Boolean {
+    isWeaponReady(): boolean {
         return (this.curCooldown <= 0 ? true : false);
+    }
+
+    isWeaponPoisoned(): boolean {
+        return this.poison;
     }
     
     fireWeapon() {
@@ -192,7 +329,15 @@ class Weapon {
     toString():string{
         var text: string = "";
         text += "Damage: " + this.damage + ", Cooldown: " + this.cooldown + " , Shift: " + this.startPointShif + ", "
-            + this.endingType+",";
+            + this.endingType + ", Size pattern: " + this.pattern.length + "x" + this.pattern[0].length + ", centered: " +
+        this.centered+", repeat?"+this. repeat+"\n";
+        for (var i: number = 0; i < this.pattern.length; i++) {
+            for (var j: number = 0; j < this.pattern[0].length; j++) {
+                text += this.pattern[i][j];
+            }
+            text += "\n";
+        }
+        text += "---\n";
         return text;
     }
 }
