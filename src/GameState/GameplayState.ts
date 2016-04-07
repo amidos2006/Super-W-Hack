@@ -267,6 +267,11 @@ class GameplayState extends BaseGameState{
     update(){
         super.update();
         
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.R)){
+            this.game.state.start("loading", true);
+            this.game.input.keyboard.reset();
+        }
+        
         if(this.playerObject == null){
             return;
         }
