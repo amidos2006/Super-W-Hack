@@ -267,12 +267,19 @@ class GameplayState extends BaseGameState{
     update(){
         super.update();
         
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
-            console.log(this.playerObject.getWeapon().toString());
-        }
-        
         if(this.playerObject == null){
             return;
+        }
+        
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
+            console.log(this.playerObject.getWeapon().toString());
+            this.game.input.keyboard.reset();
+        }
+        
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.E)){
+            console.log("New Weapon is Assigned Press W to view details");
+            this.playerObject.setWeapon(WeaponGenerator.GenerateWeapon(null, this.game.rnd));
+            this.game.input.keyboard.reset();
         }
         
         var direction:Phaser.Point = new Phaser.Point();
