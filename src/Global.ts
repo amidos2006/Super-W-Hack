@@ -36,6 +36,7 @@ class Global{
     
     static levelRooms:RoomInfoObject[][];
     static levelNumber:number = 0;
+    static levelName:string = "";
     static crateNumber:number = 0;
     static currentWeapon:Weapon = null;
     static currentX:number = 0;
@@ -52,6 +53,15 @@ class Global{
         EnemyObject.enemySpriteNumbers.push(EnemyObject.enemySpriteNumbers[EnemyObject.enemySpriteNumbers.length - 1]);
     }
     
+    static constructLevelName(inputText:string, random:Phaser.RandomDataGenerator){
+        var text:string[] = inputText.split("\n");
+        var f1:string = text[random.integerInRange(0, text.length-1)].split(",")[0].trim();
+        var f2:string = text[random.integerInRange(0, text.length-1)].split(",")[1].trim();
+        var f3:string = text[random.integerInRange(0, text.length-1)].split(",")[2].trim();
+        
+        Global.levelName = "The " + f1 + " of the " + f2 + " " + f3;
+    }
+    
     static matrixTranspose(matrix:TileTypeEnum[][]){
         var result:TileTypeEnum[][] = [];
         
@@ -65,7 +75,9 @@ class Global{
         return result;
     }
     
-    static constructLevel(random:Phaser.RandomDataGenerator){
+    static constructLevel(text:string, random:Phaser.RandomDataGenerator){
+        Global.constructLevelName(text, random);
+        
         var probabilityOfEmptyPlace:number = 0.15;
         var precentageCovered:number = 0.6;
         

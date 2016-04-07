@@ -22,10 +22,6 @@ class GameplayState extends BaseGameState{
         super();
     }
     
-    preload(){
-        this.game.load.spritesheet("graphics", "assets/graphics/gameGraphics.png", 32, 32);
-    }
-    
     create(){
         super.create();        
         
@@ -40,14 +36,15 @@ class GameplayState extends BaseGameState{
     
     createHUDElements(){
         this.miniMap = new MiniMap(this.game, this.game.width - (Global.mapWidth + 1.5) * Global.MAP_SIZE, 
-            this.game.height - (this.game.height - this.game.width) / 2 - Global.mapHeight * Global.MAP_SIZE / 2 - 10);
+            this.game.height - (this.game.height - this.game.width) / 2 - Global.mapHeight * Global.MAP_SIZE / 2 + 5);
         this.game.add.existing(this.miniMap);
         
         this.buttonText = new ButtonTutorial(this.game, 5, this.game.height);
         this.game.add.existing(this.buttonText);
         
         this.game.add.existing(new CrateText(this.game, this.game.width/2, this.game.height - 
-            (this.game.height - this.game.width) + 8));
+            (this.game.height - this.game.width) + 40));
+        this.game.add.existing(new LevelName(this.game, this.game.width/2, 0));
     }
     
     addDoor(direction:Phaser.Point, cleared:boolean){
