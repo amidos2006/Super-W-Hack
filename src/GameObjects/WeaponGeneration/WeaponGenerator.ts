@@ -2,182 +2,185 @@ class WeaponGenerator {
     
     static GenerateWeapon(paramSet, random: Phaser.RandomDataGenerator, oldWeapon: Weapon): Weapon {
        var weapon: Weapon = new Weapon();
-       var previousRandom:Phaser.RandomDataGenerator = random;
+       var previousRandom: Phaser.RandomDataGenerator = random;
+       var a: number = -1 % 5;
+       do {
+           var width: number = 1;//paramSet.get("width");
+           var height: number = 1;//= paramSet.get("height");
 
-       var width: number = 1;//paramSet.get("width");
-       var height: number = 1;//= paramSet.get("height");
+           var aux: number = random.integerInRange(1, 4);
+           switch (aux) {
+               case 1: weapon.direction = new Phaser.Point(1, 0); break;
+               case 2: weapon.direction = new Phaser.Point(0, 1); break;
+               case 3: weapon.direction = new Phaser.Point(-1, 0); break;
+               case 4: weapon.direction = new Phaser.Point(0, -1); break;
+           }
 
-       var aux: number = random.integerInRange(1, 4);
-       switch (aux) {
-           case 1: weapon.direction = new Phaser.Point(1, 0); break;
-           case 2: weapon.direction = new Phaser.Point(0, 1); break;
-           case 3: weapon.direction = new Phaser.Point(-1, 0); break;
-           case 4: weapon.direction = new Phaser.Point(0, -1); break;
-       }
 
-      
-       
-       if (random.realInRange(0, 1) < Weapon.CHANCE_CENTERED) {
-           weapon.centered = true;
-           width = random.integerInRange(3, Math.ceil(Global.ROOM_WIDTH / 2) > 3 ? Math.ceil(Global.ROOM_WIDTH / 2):3 );
-           height = random.integerInRange(3, Math.ceil(Global.ROOM_HEIGHT / 2) > 3 ? Math.ceil(Global.ROOM_HEIGHT / 2) : 3);
-           weapon.repeat = false;
-       } else {
-           weapon.centered = false;
 
-           if (random.realInRange(0, 1) < Weapon.CHANCE_REPEAT)
-               weapon.repeat = true;
-           else
+           if (random.realInRange(0, 1) < Weapon.CHANCE_CENTERED) {
+               weapon.centered = true;
+               width = random.integerInRange(3, Math.ceil(Global.ROOM_WIDTH / 2) > 3 ? Math.ceil(Global.ROOM_WIDTH / 2) : 3);
+               height = random.integerInRange(3, Math.ceil(Global.ROOM_HEIGHT / 2) > 3 ? Math.ceil(Global.ROOM_HEIGHT / 2) : 3);
                weapon.repeat = false;
-           
-           width = random.integerInRange(1, Math.ceil(Global.ROOM_WIDTH / 3));
-           height = random.integerInRange(1, Math.ceil(Global.ROOM_HEIGHT / 3));
-       }
+           } else {
+               weapon.centered = false;
 
-       if (width % 2 == 0) {
-           if (width > 2)
-               width--;
-           else
-               width++;
-       }
-       if (height % 2 == 0) {
-           if (height > 2)
-               height--;
-           else
-               height++;
-       }
-
-       
-       //initialize variable
-       var hasAnyFilled: boolean = false;
-       var pattern = new Array(height);
-       for (var i: number = 0; i < height; i++) {
-           pattern[i] = new Array(width);
-           for (var j: number = 0; j < width; j++) {
-               pattern[i][j] = 0;
-           }
-       }
-
-       console.log("checking " + height+ "x" + width +" "+pattern.length+"x"+pattern[0].length);
-
-
-       if (width == 1) {
-           hasAnyFilled = false;
-           for (var i: number = 0; i < height; i++) {
-               //randomize half
-               if (random.frac() < 0.5) {
-                   pattern[i][0] = 1;
-                   hasAnyFilled = true;
-               }
-           }
-
-           if (!hasAnyFilled) {
-               if (height > 1)
-                   pattern[random.integerInRange(0, height - 1)][0] = 1;
+               if (random.realInRange(0, 1) < Weapon.CHANCE_REPEAT)
+                   weapon.repeat = true;
                else
-                   pattern[0][0] = 1;
-           }
-       } else if (height == 1) {
-           hasAnyFilled = false;
-          
-            //randomize half
-            for (var j: number = 0; j < Math.floor(width / 2); j++) {
-                if (random.frac() < 0.5)
-                    pattern[0][j] = 0;
-                else {
-                    pattern[0][j] = 1;
-                    hasAnyFilled = true;
-                }
-            }
+                   weapon.repeat = false;
 
-           if (!hasAnyFilled) {
+               width = random.integerInRange(1, Math.ceil(Global.ROOM_WIDTH / 3));
+               height = random.integerInRange(1, Math.ceil(Global.ROOM_HEIGHT / 3));
+           }
+
+           if (width % 2 == 0) {
                if (width > 2)
-                   pattern[random.integerInRange(0, Math.floor(width / 2) - 1)][0] = 1;
+                   width--;
                else
-                   pattern[0][0] = 1;
+                   width++;
+           }
+           if (height % 2 == 0) {
+               if (height > 2)
+                   height--;
+               else
+                   height++;
            }
 
-           for (var i: number = 0; i < height; i++) {
-               //if odd number, add one row with random
-               if (random.frac() < 0.5)
-                   pattern[i][Math.floor(width / 2)] = 0;
-               else
-                   pattern[i][Math.floor(width / 2)] = 1;
-           }
 
-
+           //initialize variable
+           var hasAnyFilled: boolean = false;
+           var pattern = new Array(height);
            for (var i: number = 0; i < height; i++) {
-               //copy other half
-               var half: number = 2;
-               for (var j: number = width - 1; j > Math.floor(width / 2); j--) {
-                   pattern[i][j] = pattern[i][width - j - 1];
+               pattern[i] = new Array(width);
+               for (var j: number = 0; j < width; j++) {
+                   pattern[i][j] = 0;
                }
            }
-       } else {
-           hasAnyFilled = false;
-           for (var i: number = 0; i < height; i++) {
+
+           console.log("checking " + height + "x" + width + " " + pattern.length + "x" + pattern[0].length);
+
+
+           if (width == 1) {
+               hasAnyFilled = false;
+               for (var i: number = 0; i < height; i++) {
+                   //randomize half
+                   if (random.frac() < 0.5) {
+                       pattern[i][0] = 1;
+                       hasAnyFilled = true;
+                   }
+               }
+
+               if (!hasAnyFilled) {
+                   if (height > 1)
+                       pattern[random.integerInRange(0, height - 1)][0] = 1;
+                   else
+                       pattern[0][0] = 1;
+               }
+           } else if (height == 1) {
+               hasAnyFilled = false;
+
                //randomize half
                for (var j: number = 0; j < Math.floor(width / 2); j++) {
                    if (random.frac() < 0.5)
-                       pattern[i][j] = 0;
+                       pattern[0][j] = 0;
                    else {
-                       pattern[i][j] = 1;
+                       pattern[0][j] = 1;
                        hasAnyFilled = true;
+                   }
+               }
+
+               if (!hasAnyFilled) {
+                   if (width > 2)
+                       pattern[random.integerInRange(0, Math.floor(width / 2) - 1)][0] = 1;
+                   else
+                       pattern[0][0] = 1;
+               }
+
+               for (var i: number = 0; i < height; i++) {
+                   //if odd number, add one row with random
+                   if (random.frac() < 0.5)
+                       pattern[i][Math.floor(width / 2)] = 0;
+                   else
+                       pattern[i][Math.floor(width / 2)] = 1;
+               }
+
+
+               for (var i: number = 0; i < height; i++) {
+                   //copy other half
+                   var half: number = 2;
+                   for (var j: number = width - 1; j > Math.floor(width / 2); j--) {
+                       pattern[i][j] = pattern[i][width - j - 1];
+                   }
+               }
+           } else {
+               hasAnyFilled = false;
+               for (var i: number = 0; i < height; i++) {
+                   //randomize half
+                   for (var j: number = 0; j < Math.floor(width / 2); j++) {
+                       if (random.frac() < 0.5)
+                           pattern[i][j] = 0;
+                       else {
+                           pattern[i][j] = 1;
+                           hasAnyFilled = true;
+                       }
+                   }
+               }
+
+               if (!hasAnyFilled) {
+                   if (width > 2 && height > 1)
+                       pattern[random.integerInRange(0, Math.floor(width / 2) - 1)]
+                       [random.integerInRange(0, height - 1)] = 1;
+                   else
+                       pattern[0][0] = 1;
+               }
+
+               for (var i: number = 0; i < height; i++) {
+                   //if odd number, add one row with random
+                   if (random.frac() < 0.5)
+                       pattern[i][Math.floor(width / 2)] = 0;
+                   else
+                       pattern[i][Math.floor(width / 2)] = 1;
+               }
+
+
+               for (var i: number = 0; i < height; i++) {
+                   //copy other half
+                   var half: number = 2;
+                   for (var j: number = width - 1; j > Math.floor(width / 2); j--) {
+                       pattern[i][j] = pattern[i][width - j - 1];
                    }
                }
            }
 
-           if (!hasAnyFilled) {
-               if (width > 2 && height > 1)
-                   pattern[random.integerInRange(0, Math.floor(width / 2) - 1)]
-                   [random.integerInRange(0, height - 1)] = 1;
-               else
-                   pattern[0][0] = 1;
+           //clear player position
+           if (weapon.centered) {
+               var center: Phaser.Point = new Phaser.Point(Math.floor(width / 2), Math.floor(height / 2));
+               pattern[center.y][center.x] = 0;
            }
 
-           for (var i: number = 0; i < height; i++) {
-               //if odd number, add one row with random
-               if (random.frac() < 0.5)
-                   pattern[i][Math.floor(width / 2)] = 0;
-               else
-                   pattern[i][Math.floor(width / 2)] = 1;
-           }
-       
-
+           var t: String = "";
            for (var i: number = 0; i < height; i++) {
                //copy other half
-               var half: number = 2;
-               for (var j: number = width - 1; j > Math.floor(width / 2); j--) {
-                   pattern[i][j] = pattern[i][width - j - 1];
+               for (var j: number = 0; j < width; j++) {
+                   t += pattern[i][j]
                }
+               t += "\n";
            }
-       }
+           console.log("before " + t);
 
-       //clear player position
-       if (weapon.centered) {
-           var center: Phaser.Point = new Phaser.Point(Math.floor(width / 2), Math.floor(height / 2));
-           pattern[center.y][center.x] = 0;
-       }
+           weapon.pattern = pattern;
 
-       var t: String = "";
-       for (var i: number = 0; i < height; i++) {
-           //copy other half
-           for (var j: number = 0; j < width; j++) {
-               t+=pattern[i][j]
-           }
-           t += "\n";
-       }
-       console.log("before " + t);
+           weapon.damage = random.integerInRange(0, Weapon.MAX_DAMAGE - Weapon.MIN_DAMAGE) + Weapon.MIN_DAMAGE;
+           var i: number = Math.floor(Weapon.MAX_COOLDOWN - Weapon.MIN_COOLDOWN / Weapon.COOLDOWN_INTERVAL) + 1;
+           weapon.cooldown = random.integerInRange(0, Weapon.MAX_COOLDOWN);
+           weapon.curCooldown = 0;
+           weapon.poison = random.frac() < 0.2 ? true : false;
+           console.log("LOGGING " + weapon.toString());
+           weapon.lingering = random.frac() < 0.3 ? true : false;
 
-       weapon.pattern = pattern;
-
-       weapon.damage = random.integerInRange(0, Weapon.MAX_DAMAGE - Weapon.MIN_DAMAGE) + Weapon.MIN_DAMAGE;
-       var i: number = Math.floor(Weapon.MAX_COOLDOWN - Weapon.MIN_COOLDOWN / Weapon.COOLDOWN_INTERVAL) + 1;
-       weapon.cooldown = random.integerInRange(0, Weapon.MAX_COOLDOWN);
-       weapon.curCooldown = 0;
-       weapon.poison = random.frac() < 0.2 ? true : false;
-       console.log("LOGGING " + weapon.toString());
-       weapon.lingering = random.frac() < 0.3 ? true : false;
+       } while (oldWeapon != null && WeaponGenerator.isSame(weapon, oldWeapon)); 
        /*
        
        i = Math.floor(Weapon.MAX_SHIFT - Weapon.MIN_SHIFT / Weapon.SHIFT_INTERVAL) + 1;
@@ -191,6 +194,25 @@ class WeaponGenerator {
        */
        random = previousRandom;
        return weapon;
-   }	
+    }	
+
+    static isSame(a: Weapon, b: Weapon): boolean {
+        if (a.pattern.length != b.pattern.length || a.pattern[0].length != b.pattern[0].length) {
+            return false;
+        }
+        if (a.cooldown != b.cooldown || a.centered != b.centered ||
+            a.poison != b.poison || a.lingering != b.lingering)
+            return false;
+
+        for (var i: number = 0; i < a.pattern.length; i++) {
+            for (var j: number = 0; j < a.pattern[0].length; j++) {
+                if (a.pattern[i][j] != b.pattern[i][j]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
     
 }
