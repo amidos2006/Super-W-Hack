@@ -102,8 +102,8 @@ class GameplayState extends BaseGameState{
             Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd, null);
         }
         
-        if(Global.currentSpecial == null){
-            Global.currentSpecial = new ChangeWeaponSpecial();
+        if(Global.currentPlayer == null){
+            Global.currentPlayer = new TatPlayerData(this.game.cache.getText("playerdata"));
         }
         
         this.boxObject = new BoxObject(this.game);
@@ -364,8 +364,9 @@ class GameplayState extends BaseGameState{
                 Global.crateNumber >= Global.getCurrentCost()){
                 Global.crateNumber -= Global.getCurrentCost();
                 Global.itemUsage += 1;
-                Global.currentSpecial.useSpecial(this);
+                Global.currentPlayer.specialAbility.useSpecial(this);
                 this.buttonText.normalMode();
+                this.game.input.keyboard.reset();
             }
         }
         

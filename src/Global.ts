@@ -40,22 +40,23 @@ class Global{
     static crateNumber:number = 0;
     static itemUsage:number = 0;
     static currentWeapon:Weapon = null;
-    static currentSpecial:BaseSpecial = null;
+    static currentPlayer:BasePlayerData = null;
     static currentX:number = 0;
     static currentY:number = 0;
     static mapWidth:number = 0;
     static mapHeight:number = 0;
     static previousDirection:Phaser.Point;
     
-    static initialize(){
+    static initialize(text:string, random:Phaser.RandomDataGenerator){
         Global.levelNumber = 0;
         Global.crateNumber = 0;
         Global.currentWeapon = null;
-        Global.currentSpecial = null;
+        Global.currentPlayer = null;
         Global.itemUsage = 0;
         Global.previousDirection = new Phaser.Point(0, 0);
         EnemyObject.enemySpriteNumbers = Phaser.ArrayUtils.shuffle(EnemyObject.enemySpriteNumbers);
         EnemyObject.enemySpriteNumbers.push(EnemyObject.enemySpriteNumbers[EnemyObject.enemySpriteNumbers.length - 1]);
+        Global.constructLevelName(text, random);
     }
     
     static constructLevelName(inputText:string, random:Phaser.RandomDataGenerator){
@@ -68,7 +69,7 @@ class Global{
     }
     
     static getCurrentCost(){
-        return Math.pow(2, Global.itemUsage) * Global.currentSpecial.specialCost;
+        return Math.pow(2, Global.itemUsage) * Global.currentPlayer.specialAbility.specialCost;
     }
     
     static matrixTranspose(matrix:TileTypeEnum[][]){
@@ -84,9 +85,7 @@ class Global{
         return result;
     }
     
-    static constructLevel(text:string, random:Phaser.RandomDataGenerator){
-        Global.constructLevelName(text, random);
-        
+    static constructLevel(random:Phaser.RandomDataGenerator){
         var probabilityOfEmptyPlace:number = 0.15;
         var precentageCovered:number = 0.6;
         

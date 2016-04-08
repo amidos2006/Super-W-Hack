@@ -9,7 +9,7 @@ class PlayerObject extends BaseGameObject{
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
         
         this.playerSprite = this.game.add.sprite(0, 0, 'graphics');
-        this.playerSprite.animations.add("normal", [3]);
+        this.playerSprite.animations.add("normal", [Global.currentPlayer.graphicsIndex]);
         this.add(this.playerSprite);
         
         this.playerWeapon = weapon;
