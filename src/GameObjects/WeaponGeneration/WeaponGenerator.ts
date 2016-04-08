@@ -1,6 +1,6 @@
 class WeaponGenerator {
     
-   static GenerateWeapon(paramSet, random: Phaser.RandomDataGenerator): Weapon {
+    static GenerateWeapon(paramSet, random: Phaser.RandomDataGenerator, oldWeapon: Weapon): Weapon {
        var weapon: Weapon = new Weapon();
        var previousRandom:Phaser.RandomDataGenerator = random;
 
@@ -19,8 +19,8 @@ class WeaponGenerator {
        
        if (random.realInRange(0, 1) < Weapon.CHANCE_CENTERED) {
            weapon.centered = true;
-           width = random.integerInRange(3, Math.ceil(Global.ROOM_WIDTH / 3) > 3 ? Math.ceil(Global.ROOM_WIDTH / 3):3 );
-           height = random.integerInRange(3, Math.ceil(Global.ROOM_HEIGHT / 3) > 3 ? Math.ceil(Global.ROOM_HEIGHT / 3) : 3);
+           width = random.integerInRange(3, Math.ceil(Global.ROOM_WIDTH / 2) > 3 ? Math.ceil(Global.ROOM_WIDTH / 2):3 );
+           height = random.integerInRange(3, Math.ceil(Global.ROOM_HEIGHT / 2) > 3 ? Math.ceil(Global.ROOM_HEIGHT / 2) : 3);
            weapon.repeat = false;
        } else {
            weapon.centered = false;
@@ -73,7 +73,7 @@ class WeaponGenerator {
 
            if (!hasAnyFilled) {
                if (height > 1)
-                   pattern[0][random.integerInRange(0, height - 1)] = 1;
+                   pattern[random.integerInRange(0, height - 1)][0] = 1;
                else
                    pattern[0][0] = 1;
            }
@@ -153,6 +153,12 @@ class WeaponGenerator {
            }
        }
 
+       //clear player position
+       if (weapon.centered) {
+           var center: Phaser.Point = new Phaser.Point(Math.floor(width / 2), Math.floor(height / 2));
+           pattern[center.y][center.x] = 0;
+       }
+
        var t: String = "";
        for (var i: number = 0; i < height; i++) {
            //copy other half
@@ -167,11 +173,11 @@ class WeaponGenerator {
 
        weapon.damage = random.integerInRange(0, Weapon.MAX_DAMAGE - Weapon.MIN_DAMAGE) + Weapon.MIN_DAMAGE;
        var i: number = Math.floor(Weapon.MAX_COOLDOWN - Weapon.MIN_COOLDOWN / Weapon.COOLDOWN_INTERVAL) + 1;
-       weapon.cooldown = random.integerInRange(0, (Weapon.MAX_COOLDOWN - Weapon.MIN_COOLDOWN) / Weapon.COOLDOWN_INTERVAL) * Weapon.COOLDOWN_INTERVAL + Weapon.MIN_COOLDOWN;
+       weapon.cooldown = random.integerInRange(0, Weapon.MAX_COOLDOWN);
        weapon.curCooldown = 0;
        weapon.poison = random.frac() < 0.2 ? true : false;
        console.log("LOGGING " + weapon.toString());
-       
+       weapon.lingering = random.frac() < 0.3 ? true : false;
        /*
        
        i = Math.floor(Weapon.MAX_SHIFT - Weapon.MIN_SHIFT / Weapon.SHIFT_INTERVAL) + 1;
