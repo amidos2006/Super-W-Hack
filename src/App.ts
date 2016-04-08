@@ -5,6 +5,7 @@ class SimpleGame {
         this.game = new Phaser.Game(372, 480, Phaser.AUTO, 'content');
         this.game.state.add("loading", LoadingState, false)
         this.game.state.add("gameplay", GameplayState, false);
+        this.game.state.add("playerselect", PlayerSelectState, false);
         
         this.game.state.start("loading", false, false);
     }

@@ -14,9 +14,8 @@ class LoadingState extends BaseGameState{
     }
     
     create(){
-        Global.initialize(this.game.cache.getText("dungeonNames"), this.game.rnd);
-        Global.constructLevel(this.game.rnd);
+        super.create();
         
-        this.game.state.start("gameplay", true);
+        this.game.state.start("playerselect", true);
     }
 }
