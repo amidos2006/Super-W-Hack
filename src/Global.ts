@@ -33,11 +33,13 @@ class Global{
     static MAP_SIZE:number = 10;
     static ROOM_WIDTH:number = 11;
     static ROOM_HEIGHT:number = 11;
+    static ITEM_COST:number = 5;
     
     static levelRooms:RoomInfoObject[][];
     static levelNumber:number = 0;
     static levelName:string = "";
     static crateNumber:number = 0;
+    static itemUsage:number = 0;
     static currentWeapon:Weapon = null;
     static currentX:number = 0;
     static currentY:number = 0;
@@ -49,6 +51,7 @@ class Global{
         Global.levelNumber = 0;
         Global.crateNumber = 0;
         Global.currentWeapon = null;
+        Global.itemUsage = 0;
         EnemyObject.enemySpriteNumbers = Phaser.ArrayUtils.shuffle(EnemyObject.enemySpriteNumbers);
         EnemyObject.enemySpriteNumbers.push(EnemyObject.enemySpriteNumbers[EnemyObject.enemySpriteNumbers.length - 1]);
     }
@@ -60,6 +63,10 @@ class Global{
         var f3:string = text[random.integerInRange(0, text.length-1)].split(",")[2].trim();
         
         Global.levelName = "The " + f1 + " of the " + f2 + " " + f3;
+    }
+    
+    static getCurrentCost(){
+        return Math.pow(2, Global.itemUsage) * Global.ITEM_COST;
     }
     
     static matrixTranspose(matrix:TileTypeEnum[][]){

@@ -98,7 +98,7 @@ class GameplayState extends BaseGameState{
         this.game.add.existing(this.arrowHighlight);
         
         if(Global.currentWeapon == null){
-            Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd);
+            Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd, null);
         }
         
         this.boxObject = new BoxObject(this.game);
@@ -220,7 +220,7 @@ class GameplayState extends BaseGameState{
         
         if(!Global.getCurrentRoom().cleared && this.enemyObjects.length <= 0){
             if(this.boxObject.checkCollision(playerPosition.x, playerPosition.y)){
-                Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd);
+                Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd, this.playerObject.getWeapon());
                 this.playerObject.setWeapon(Global.currentWeapon);
                 this.boxObject.destroy();
                 for(var i:number=0; i<this.currentDoors.length; i++){
@@ -283,7 +283,7 @@ class GameplayState extends BaseGameState{
         
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.E)){
             console.log("New Weapon is Assigned Press W to view details");
-            this.playerObject.setWeapon(WeaponGenerator.GenerateWeapon(null, this.game.rnd));
+            this.playerObject.setWeapon(WeaponGenerator.GenerateWeapon(null, this.game.rnd, this.playerObject.getWeapon()));
             this.game.input.keyboard.reset();
         }
         
@@ -353,6 +353,13 @@ class GameplayState extends BaseGameState{
                     Global.matrixTranspose(Global.getCurrentRoom().getMatrix(this.enemyObjects))));
                 this.game.input.keyboard.reset();
                 this.buttonText.aimMode();
+            }
+            
+            if(this.game.input.keyboard.isDown(Phaser.Keyboard.Z) && 
+                Global.crateNumber >= Global.getCurrentCost()){
+                Global.crateNumber -= Global.getCurrentCost();
+                Global.itemUsage += 1;
+                this.buttonText.normalMode();
             }
         }
         
