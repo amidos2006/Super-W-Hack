@@ -1,3 +1,5 @@
+/// <reference path="BaseGameState.ts"/>
+
 class LoadingState extends BaseGameState{
     constructor(){
         super();

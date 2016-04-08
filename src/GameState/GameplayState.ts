@@ -43,8 +43,9 @@ class GameplayState extends BaseGameState{
         this.game.add.existing(this.buttonText);
         
         this.game.add.existing(new CrateText(this.game, this.game.width/2, this.game.height - 
-            (this.game.height - this.game.width) + 40));
-        this.game.add.existing(new LevelName(this.game, this.game.width/2, 0));
+            (this.game.height - this.game.width) + 25));
+        this.game.add.existing(new LevelName(this.game, this.game.width/2, 5));
+        this.game.add.existing(new WhiteLayout(this.game, -this.game.camera.x, -this.game.camera.y));
     }
     
     addDoor(direction:Phaser.Point, cleared:boolean){
@@ -99,6 +100,10 @@ class GameplayState extends BaseGameState{
         
         if(Global.currentWeapon == null){
             Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd, null);
+        }
+        
+        if(Global.currentSpecial == null){
+            Global.currentSpecial = new ChangeWeaponSpecial();
         }
         
         this.boxObject = new BoxObject(this.game);
@@ -359,6 +364,7 @@ class GameplayState extends BaseGameState{
                 Global.crateNumber >= Global.getCurrentCost()){
                 Global.crateNumber -= Global.getCurrentCost();
                 Global.itemUsage += 1;
+                Global.currentSpecial.useSpecial(this);
                 this.buttonText.normalMode();
             }
         }

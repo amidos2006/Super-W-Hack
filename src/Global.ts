@@ -33,7 +33,6 @@ class Global{
     static MAP_SIZE:number = 10;
     static ROOM_WIDTH:number = 11;
     static ROOM_HEIGHT:number = 11;
-    static ITEM_COST:number = 5;
     
     static levelRooms:RoomInfoObject[][];
     static levelNumber:number = 0;
@@ -41,17 +40,20 @@ class Global{
     static crateNumber:number = 0;
     static itemUsage:number = 0;
     static currentWeapon:Weapon = null;
+    static currentSpecial:BaseSpecial = null;
     static currentX:number = 0;
     static currentY:number = 0;
     static mapWidth:number = 0;
     static mapHeight:number = 0;
-    static previousDirection:Phaser.Point = new Phaser.Point(0, 0);
+    static previousDirection:Phaser.Point;
     
     static initialize(){
         Global.levelNumber = 0;
         Global.crateNumber = 0;
         Global.currentWeapon = null;
+        Global.currentSpecial = null;
         Global.itemUsage = 0;
+        Global.previousDirection = new Phaser.Point(0, 0);
         EnemyObject.enemySpriteNumbers = Phaser.ArrayUtils.shuffle(EnemyObject.enemySpriteNumbers);
         EnemyObject.enemySpriteNumbers.push(EnemyObject.enemySpriteNumbers[EnemyObject.enemySpriteNumbers.length - 1]);
     }
@@ -66,7 +68,7 @@ class Global{
     }
     
     static getCurrentCost(){
-        return Math.pow(2, Global.itemUsage) * Global.ITEM_COST;
+        return Math.pow(2, Global.itemUsage) * Global.currentSpecial.specialCost;
     }
     
     static matrixTranspose(matrix:TileTypeEnum[][]){
