@@ -1,6 +1,19 @@
 class WeaponGenerator {
     
-    static GenerateWeapon(paramSet, random: Phaser.RandomDataGenerator, oldWeapon: Weapon): Weapon {
+    static DAMAGE: number = 0;
+    static SIZE: number = 1;
+    static COOLDOWN: number = 2;
+    static SPECIAL: number = 3;
+
+
+    static GenerateWeapon(paramSet: number[], random: Phaser.RandomDataGenerator, oldWeapon: Weapon): Weapon {
+       
+        if (paramSet == null) {
+            paramSet = new Array(4);
+            for (var i: number = 0; i < paramSet.length; i++) {
+                paramSet[i] = 0;
+            }
+        }
        var weapon: Weapon = new Weapon();
        var previousRandom: Phaser.RandomDataGenerator = random;
        var a: number = -1 % 5;
