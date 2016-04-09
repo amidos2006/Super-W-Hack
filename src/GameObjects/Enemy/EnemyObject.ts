@@ -16,16 +16,16 @@ class EnemyObject extends BaseGameObject{
     constructor(game:Phaser.Game, x:number, y:number, params:number[]){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
         
-        this.enemyHealth = 1;
-        this.enemySpeed = 1;
+        this.enemyHealth = this.selectParameters(params[0]);
+        this.enemySpeed = 1;//this.selectParameters(params[1]);
         this.isAlive = true;        
         this.setDirections();
         this.keepDirection = 0;
         this.factorDirectionChange = 2;
         this.hitWall = false;
         this.enemyDirection = this.pickDirection();
-        this.cannons = this.initializeCannons(0, this.x, this.y);
-        this.enemyType = this.game.rnd.integerInRange(0, 3);
+        this.cannons = this.initializeCannons(this.selectParameters(params[2])-1, this.x, this.y);
+        this.enemyType = this.defineEnemyType(this.selectParameters(params[3]));
         
         this.enemySprite = this.game.add.sprite(0, 0, 'graphics');
         this.enemySprite.animations.add("normal", [EnemyObject.enemySpriteNumbers[this.enemyType]]);
@@ -59,87 +59,94 @@ class EnemyObject extends BaseGameObject{
     {
         if (choose == 1)
         {
-            return EnemyTypeEnum.BackAndForth;
+            return EnemyTypeEnum.Random;
         }
         if (choose == 2)
         {
-            return EnemyTypeEnum.Random;
+            return EnemyTypeEnum.BackAndForth;
         }
         if (choose == 3)
-        {
-            return EnemyTypeEnum.ClockMovement;
-        }
-        if (choose == 4)
         {
             return EnemyTypeEnum.Chaser;
         }
     }
     
-    chaser(player:PlayerObject)
+    chaser(playerPosition:Phaser.Point)
     {
-        if((this.getTilePosition().x < player.getTilePosition().x)
-        && (this.getTilePosition().y < player.getTilePosition().y))
+        var enemyDirection:Phaser.Point = new Phaser.Point(0,0);
+        
+        if((this.getTilePosition().x < playerPosition.x)
+        && (this.getTilePosition().y <= playerPosition.y))
         {
-            var difX = player.getTilePosition().x - this.getTilePosition().x;
-            var difY = player.getTilePosition().y - this.getTilePosition().y;
+            var difX = playerPosition.x - this.getTilePosition().x;
+            var difY = playerPosition.y - this.getTilePosition().y;
             
             if(difX >= difY)
             {
-                this.x += Global.TILE_SIZE * this.enemySpeed;
+                //this.x += Global.TILE_SIZE * this.enemySpeed;
+                enemyDirection = new Phaser.Point(1,0);
             }
             else
             {
-                this.y += Global.TILE_SIZE * this.enemySpeed;
+                //this.y += Global.TILE_SIZE * this.enemySpeed;
+                enemyDirection = new Phaser.Point(0,1);
             }
         }
         
-        if((this.getTilePosition().x < player.getTilePosition().x)
-        && (this.getTilePosition().y > player.getTilePosition().y))
+        if((this.getTilePosition().x < playerPosition.x)
+        && (this.getTilePosition().y > playerPosition.y))
         {
-            var difX = player.getTilePosition().x - this.getTilePosition().x;
-            var difY = this.getTilePosition().y - player.getTilePosition().y;
+            var difX = playerPosition.x - this.getTilePosition().x;
+            var difY = this.getTilePosition().y - playerPosition.y;
             
             if(difX >= difY)
             {
-                this.x += Global.TILE_SIZE * this.enemySpeed;
+                //this.x += Global.TILE_SIZE * this.enemySpeed;
+                enemyDirection = new Phaser.Point(1,0);
             }
             else
             {
-                this.y -= Global.TILE_SIZE * this.enemySpeed;
+                //this.y -= Global.TILE_SIZE * this.enemySpeed;
+                enemyDirection = new Phaser.Point(0,-1);
             }
         }
         
-        if((this.getTilePosition().x > player.getTilePosition().x)
-        && (this.getTilePosition().y < player.getTilePosition().y))
+        if((this.getTilePosition().x >= playerPosition.x)
+        && (this.getTilePosition().y <= playerPosition.y))
         {
-            var difX = this.getTilePosition().x - player.getTilePosition().x;
-            var difY = player.getTilePosition().y - this.getTilePosition().y;
+            var difX = this.getTilePosition().x - playerPosition.x;
+            var difY = playerPosition.y - this.getTilePosition().y;
             
             if(difX >= difY)
             {
-                this.x -= Global.TILE_SIZE * this.enemySpeed;
+                //this.x -= Global.TILE_SIZE * this.enemySpeed;
+                enemyDirection = new Phaser.Point(-1,0);
             }
             else
             {
-                this.y += Global.TILE_SIZE * this.enemySpeed;
+                //this.y += Global.TILE_SIZE * this.enemySpeed;
+                enemyDirection = new Phaser.Point(0,1);
             }
         }
         
-        if((this.getTilePosition().x > player.getTilePosition().x)
-        && (this.getTilePosition().y > player.getTilePosition().y))
+        if((this.getTilePosition().x >= playerPosition.x)
+        && (this.getTilePosition().y > playerPosition.y))
         {
-            var difX = player.getTilePosition().x - this.getTilePosition().x;
-            var difY = player.getTilePosition().y - this.getTilePosition().y;
+            var difX = playerPosition.x - this.getTilePosition().x;
+            var difY = playerPosition.y - this.getTilePosition().y;
             
             if(difX >= difY)
             {
-                this.x -= Global.TILE_SIZE * this.enemySpeed;
+                //this.x -= Global.TILE_SIZE * this.enemySpeed;
+                enemyDirection = new Phaser.Point(-1,0);
             }
             else
             {
-                this.y -= Global.TILE_SIZE * this.enemySpeed;
+                //this.y -= Global.TILE_SIZE * this.enemySpeed;
+                enemyDirection = new Phaser.Point(0,-1);
             }
         }
+        return enemyDirection;
     }
     
     setDirections()
@@ -284,6 +291,16 @@ class EnemyObject extends BaseGameObject{
         }
     }
     
+    moveChaser(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
+    {
+        var enemyDirection = this.chaser(playerPosition)
+        if(!this.updateEnemy(enemyDirection, tileMatrix))
+        {
+            var newDir = this.pickDirectionWithThisConstraint(this.findDirectionIndex(enemyDirection));
+            this.updateEnemy(newDir, tileMatrix);
+        }
+    }
+    
     enemyShot(player:PlayerObject)
     {
         if (typeof this.cannons == 'undefined')
@@ -361,35 +378,22 @@ class EnemyObject extends BaseGameObject{
         return canMove;
     }
     
-    movement(player:PlayerObject, tileMap:TileTypeEnum[][])
+    movement(playerPosition:Phaser.Point, tileMap:TileTypeEnum[][])
     {
        console.log("movType : " + this.enemyType);
        if(this.enemyType == EnemyTypeEnum.BackAndForth)
        {
-           this.moveBackAndForth(player.position, tileMap);
+           this.moveBackAndForth(playerPosition, tileMap);
        }
        
        if(this.enemyType == EnemyTypeEnum.Chaser)
        {
-           this.chaser(player);
+           this.moveChaser(playerPosition, tileMap)
        }
        
        if(this.enemyType == EnemyTypeEnum.Random)
        {
-           this.moveAndKeepDirection(player.position, tileMap);
-       }
-       
-       if(this.enemyType == EnemyTypeEnum.ClockMovement)
-       {
-           var choice = Math.floor(Math.random() * 2) + 1;
-           if(choice % 2 == 0)
-           {
-               this.moveCircleClockWise(player.position, tileMap);
-           }
-           else
-           {
-               this.moveCircleCounterClockWise(player.position, tileMap);
-           }
+           this.moveAndKeepDirection(playerPosition, tileMap);
        }
     }
     
@@ -414,76 +418,162 @@ class EnemyObject extends BaseGameObject{
         return this.isAlive;
     }
     
-    selectHealthValue(selector:number)
+    selectParameters(selector:number)
     {
-        if(selector == -4 || selector == -3)
+        var value:number;
+        if(selector == -4)
         {
-            return 1;
+            var prob = Math.random();
+            if(prob >= 0.2)
+            {
+               value = 1;
+            }
+            else if(prob > 0.1 && prob < 0.2)
+            {
+                value = 2;
+            }
+            else
+            {
+                value = 3;
+            }
         }
-        if(selector == -2 || selector == -1)
+        
+        if(selector == -3)
         {
-            return Math.floor(Math.random() * 2) + 1;
+            var prob = Math.random();
+            if(prob >= 0.3)
+            {
+                value = 1;
+            }
+            else if(prob > 0.1 && prob < 0.3)
+            {
+                value = 2;
+            }
+            else
+            {
+                value = 3;
+            }
         }
+        
+        if(selector == -2)
+        {
+            var prob = Math.random();
+            if(prob >= 0.5)
+            {
+                value = 1;
+            }
+            else if(prob > 0.2 && prob < 0.3)
+            {
+                value = 2;
+            }
+            else
+            {
+                value = 3;
+            }
+        }
+        
+        if(selector == -1)
+        {
+            var prob = Math.random();
+            if(prob >= 0.6)
+            {
+                value = 1;
+            }
+            else if(prob > 0.2 && prob < 0.6)
+            {
+                value = 2;
+            }
+            else
+            {
+                value = 3;
+            }
+        }
+        
         if(selector == 0)
         {
-            return Math.floor(Math.random() * 3) + 1;
+            var prob = Math.random();
+            if(prob >= 0.7)
+            {
+                value = 1;
+            }
+            else if(prob > 0.4 && prob < 0.7)
+            {
+                value = 2;
+            }
+            else
+            {
+                value = 3;
+            }
         }
-        if(selector == 1 || selector == 2)
+        
+        if(selector == 1)
         {
-            return Math.floor(Math.random() * 3) + 2;
-        }
-        if(selector == 3 || selector == 4)
+            var prob = Math.random();
+            if(prob >= 0.8)
+            {
+                value = 1;
+            }
+            else if(prob > 0.3 && prob < 0.5)
+            {
+                value = 2;
+            }
+            else
+            {
+                value = 3;
+            }
+        } 
+        
+        if(selector == 2)
         {
-            return 3;
+            var prob = Math.random();
+            if(prob >= 0.9)
+            {
+                value = 1;
+            }
+            else if(prob > 0.3 && prob < 0.9)
+            {
+                value = 2;
+            }
+            else
+            {
+                value = 3;
+            }
         }
-    }
-    
-    selectSpeedOrCannonValues(selector:number)
-    {
-        if(selector == -4 || selector == -3)
+        
+        if(selector == 3)
         {
-            return 0;
-        }
-        if(selector == -2 || selector == -1)
+            var prob = Math.random();
+            if(prob >= 0.9)
+            {
+                value = 1;
+            }
+            else if(prob > 0.3 && prob < 0.6)
+            {
+                value = 2;
+            }
+            else
+            {
+                value = 3;
+            }
+        }     
+        
+        if(selector == 4)
         {
-            return (Math.floor(Math.random() * 2) + 1) - 1;
+            var prob = Math.random();
+            if(prob >= 0.8)
+            {
+                value = 1;
+            }
+            else if(prob > 0.7 && prob < 0.8)
+            {
+                value = 2;
+            }
+            else
+            {
+                value = 3;
+            }
         }
-        if(selector == 0)
-        {
-            return (Math.floor(Math.random() * 3) + 1) - 1;
-        }
-        if(selector == 1 || selector == 2)
-        {
-            return (Math.floor(Math.random() * 3) + 2) - 1;
-        }
-        if(selector == 3 || selector == 4)
-        {
-            return 2;
-        }
-    }
-    
-    selectTypeOfEnemey(selector:number)
-    {
-         if(selector == -4 || selector == -3)
-        {
-            return EnemyTypeEnum.BackAndForth;
-        }
-        if(selector == -2 || selector == -1)
-        {
-            return this.defineEnemyType(Math.floor(Math.random() * 3) + 1);
-        }
-        if(selector == 0)
-        {
-            return this.defineEnemyType(Math.floor(Math.random() * 4) + 1);
-        }
-        if(selector == 1 || selector == 2)
-        {
-            return this.defineEnemyType(Math.floor(Math.random() * 4) + 2);
-        }
-        if(selector == 3 || selector == 4)
-        {
-            return EnemyTypeEnum.Chaser;
-        }
+        return value;
     }
     
     static getEnemey(game:Phaser.Game, x:number, y:number, params:number[])
