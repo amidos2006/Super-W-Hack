@@ -115,12 +115,20 @@ class GameplayState extends BaseGameState{
             numOfEnemies = 0;
         }
         var tiles:TileTypeEnum[][] = room.getMatrix(this.enemyObjects);
-        for (var dx = -1; dx <= 1; dx++) {
-            for (var dy = -1; dy <= 1; dy++) {
-                tiles[Math.floor(Global.ROOM_WIDTH / 2) + dx][1 + dy] = TileTypeEnum.Wall;
-                tiles[Math.floor(Global.ROOM_WIDTH / 2) + dx][Global.ROOM_HEIGHT - 2 + dy] = TileTypeEnum.Wall;
-                tiles[1 + dx][Math.floor(Global.ROOM_HEIGHT / 2) + dy] = TileTypeEnum.Wall;
-                tiles[Global.ROOM_WIDTH - 2 + dx][Math.floor(Global.ROOM_HEIGHT / 2) + dy] = TileTypeEnum.Wall;
+        for (var dx = -2; dx <= 2; dx++) {
+            for (var dy = -2; dy <= 2; dy++) {
+                if(dy > -2){
+                    tiles[Math.floor(Global.ROOM_WIDTH / 2) + dx][1 + dy] = TileTypeEnum.Wall;
+                }
+                if(dy < 2){
+                    tiles[Math.floor(Global.ROOM_WIDTH / 2) + dx][Global.ROOM_HEIGHT - 2 + dy] = TileTypeEnum.Wall;
+                }
+                if(dx > -2){
+                    tiles[1 + dx][Math.floor(Global.ROOM_HEIGHT / 2) + dy] = TileTypeEnum.Wall;
+                }
+                if(dx < 2){
+                    tiles[Global.ROOM_WIDTH - 2 + dx][Math.floor(Global.ROOM_HEIGHT / 2) + dy] = TileTypeEnum.Wall;
+                }
             }
         }
         
