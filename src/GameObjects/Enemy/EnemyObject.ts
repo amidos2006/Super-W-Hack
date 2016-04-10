@@ -16,6 +16,17 @@ class EnemyObject extends BaseGameObject{
     constructor(game:Phaser.Game, x:number, y:number, params:number[]){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
         
+        if(params != null)
+        {
+             this.enemyHealth = this.selectParameters(params[0]);
+             this.cannons = this.initializeCannons(this.selectParameters(params[2])-1, this.x, this.y);
+             this.enemyType = this.defineEnemyType(this.selectParameters(params[3]));
+        }else{
+             this.enemyHealth = 1;
+             this.cannons = this.initializeCannons(0, this.x, this.y);
+             this.enemyType = EnemyTypeEnum.Random;
+        }
+        
         this.enemyHealth = this.selectParameters(params[0]);
         this.enemySpeed = 1;//this.selectParameters(params[1]);
         this.isAlive = true;        
@@ -24,8 +35,6 @@ class EnemyObject extends BaseGameObject{
         this.factorDirectionChange = 2;
         this.hitWall = false;
         this.enemyDirection = this.pickDirection();
-        this.cannons = this.initializeCannons(this.selectParameters(params[2])-1, this.x, this.y);
-        this.enemyType = this.defineEnemyType(this.selectParameters(params[3]));
         
         this.enemySprite = this.game.add.sprite(0, 0, 'graphics');
         this.enemySprite.animations.add("normal", [EnemyObject.enemySpriteNumbers[this.enemyType]]);
