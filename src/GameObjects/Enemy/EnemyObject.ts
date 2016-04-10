@@ -27,7 +27,6 @@ class EnemyObject extends BaseGameObject{
              this.enemyType = EnemyTypeEnum.Random;
         }
         
-        this.enemyHealth = this.selectParameters(params[0]);
         this.enemySpeed = 1;//this.selectParameters(params[1]);
         this.isAlive = true;        
         this.setDirections();

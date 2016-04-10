@@ -3,7 +3,7 @@
 /// <reference path="../GameObjects/FloorTiles/HighlightTile.ts"/>
 /// <reference path="../GameObjects/FloorTiles/DirHighlightTile.ts"/>
 /// <reference path="../GameObjects/BoxObject.ts"/>
-/// <reference path="../GameObjects/EnemyObject.ts"/>
+/// <reference path="../GameObjects/Enemy/EnemyObject.ts"/>
 /// <reference path="../GameObjects/PlayerObject.ts"/>
 /// <reference path="../GameObjects/HUDElements/MiniMap.ts"/>
 
