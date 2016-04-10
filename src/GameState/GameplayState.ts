@@ -115,10 +115,15 @@ class GameplayState extends BaseGameState{
             numOfEnemies = 0;
         }
         var tiles:TileTypeEnum[][] = room.getMatrix(this.enemyObjects);
-        tiles[Math.floor(Global.ROOM_WIDTH / 2)][1] = TileTypeEnum.Wall;
-        tiles[Math.floor(Global.ROOM_WIDTH / 2)][Global.ROOM_HEIGHT - 2] = TileTypeEnum.Wall;
-        tiles[1][Math.floor(Global.ROOM_HEIGHT / 2)] = TileTypeEnum.Wall;
-        tiles[Global.ROOM_WIDTH - 2][Math.floor(Global.ROOM_HEIGHT / 2)] = TileTypeEnum.Wall;
+        for (var dx = -1; dx <= 1; dx++) {
+            for (var dy = -1; dy <= 1; dy++) {
+                tiles[Math.floor(Global.ROOM_WIDTH / 2) + dx][1 + dy] = TileTypeEnum.Wall;
+                tiles[Math.floor(Global.ROOM_WIDTH / 2) + dx][Global.ROOM_HEIGHT - 2 + dy] = TileTypeEnum.Wall;
+                tiles[1 + dx][Math.floor(Global.ROOM_HEIGHT / 2) + dy] = TileTypeEnum.Wall;
+                tiles[Global.ROOM_WIDTH - 2 + dx][Math.floor(Global.ROOM_HEIGHT / 2) + dy] = TileTypeEnum.Wall;
+            }
+        }
+        
         for(var i:number=0; i<numOfEnemies; i++){
             var list:Phaser.Point[] = this.getEmptyTiles(tiles);
             var point:Phaser.Point = list[this.game.rnd.integerInRange(0, list.length - 1)];
@@ -360,8 +365,8 @@ class GameplayState extends BaseGameState{
                 this.buttonText.aimMode();
             }
             
-            if(this.game.input.keyboard.isDown(Phaser.Keyboard.Z) && 
-                Global.crateNumber >= Global.getCurrentCost()){
+            if(this.game.input.keyboard.isDown(Phaser.Keyboard.Z)){// && 
+                //Global.crateNumber >= Global.getCurrentCost()){
                 Global.crateNumber -= Global.getCurrentCost();
                 Global.itemUsage += 1;
                 Global.currentPlayer.specialAbility.useSpecial(this);

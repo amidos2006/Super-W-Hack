@@ -8,4 +8,4 @@ decrease all enemies' health by 1
 
 tat
 a quite phd student able to teleport away from troubles
-teleport to a previous explore room
+teleport to a safe place

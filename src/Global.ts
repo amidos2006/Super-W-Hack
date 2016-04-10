@@ -69,7 +69,10 @@ class Global{
     }
     
     static getCurrentCost(){
-        return Math.pow(2, Global.itemUsage) * Global.currentPlayer.specialAbility.specialCost;
+        if(Global.itemUsage == 0){
+            return 1;
+        }
+        return Math.pow(2, Global.itemUsage - 1) * Global.currentPlayer.specialAbility.specialCost;
     }
     
     static matrixTranspose(matrix:TileTypeEnum[][]){
