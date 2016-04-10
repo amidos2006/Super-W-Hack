@@ -16,26 +16,23 @@ class EnemyObject extends BaseGameObject{
     constructor(game:Phaser.Game, x:number, y:number, params:number[]){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
         
-        if(params != null)
-        {
-             this.enemyHealth = this.selectParameters(params[0]);
-             this.cannons = this.initializeCannons(this.selectParameters(params[2])-1, this.x, this.y);
-             this.enemyType = this.defineEnemyType(this.selectParameters(params[3]));
-        }else{
-             this.enemyHealth = 1;
-             this.cannons = this.initializeCannons(0, this.x, this.y);
-             this.enemyType = EnemyTypeEnum.Random;
+        if(params == null){
+            params = [0, 0, 0, 0];
         }
+        this.setDirections();
+        
+        this.enemyHealth = this.selectParameters(params[0]);
+        this.cannons = this.initializeCannons(this.selectParameters(params[2])-1, this.x, this.y);
+        this.enemyType = this.defineEnemyType(this.selectParameters(params[3]));
         
         this.enemySpeed = 1;//this.selectParameters(params[1]);
         this.isAlive = true;        
-        this.setDirections();
         this.keepDirection = 0;
         this.factorDirectionChange = 2;
         this.hitWall = false;
         this.enemyDirection = this.pickDirection();
         
-        this.enemySprite = this.game.add.sprite(0, 0, 'graphics');
+        this.enemySprite = this.game.add.sprite(0, 0, "graphics");
         this.enemySprite.animations.add("normal", [EnemyObject.enemySpriteNumbers[this.enemyType]]);
         this.enemySprite.animations.play("normal");
         this.enemySprite.tint = 0xcc6668;
@@ -65,10 +62,6 @@ class EnemyObject extends BaseGameObject{
     
     defineEnemyType(choose:number)
     {
-        if (choose == 1)
-        {
-            return EnemyTypeEnum.Random;
-        }
         if (choose == 2)
         {
             return EnemyTypeEnum.BackAndForth;
@@ -77,6 +70,8 @@ class EnemyObject extends BaseGameObject{
         {
             return EnemyTypeEnum.Chaser;
         }
+        
+        return EnemyTypeEnum.Random;
     }
     
     chaser(playerPosition:Phaser.Point)
