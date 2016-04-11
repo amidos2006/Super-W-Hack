@@ -36,8 +36,11 @@ class RoomInfoObject{
         }
         
        var shapeSize:number = random.integerInRange(1, 4);
-       var numberOfShapes:number = random.integerInRange(0, 2);
-       if(numberOfShapes == 0 && Math.random() < 0.5){
+       var numberOfShapes:number = random.integerInRange(1, 4);
+       if(numberOfShapes > 1){
+           numberOfShapes -= 1;
+       }
+       if(numberOfShapes == 3 && Math.random() < 0.1){
            numberOfShapes = random.integerInRange(1, 2);
        }
        

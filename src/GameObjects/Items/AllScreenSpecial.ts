@@ -2,7 +2,7 @@
 
 class AllScreenSpecial extends BaseSpecial{
     constructor(){
-        super(3);
+        super(2);
     }
     
     useSpecial(level:GameplayState){

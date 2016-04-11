@@ -89,7 +89,7 @@ class Global{
     }
     
     static constructLevel(random:Phaser.RandomDataGenerator){
-        var probabilityOfEmptyPlace:number = 0.1;
+        var probabilityOfEmptyPlace:number = 0.08;
         var precentageCovered:number = 0.6;
         
         Global.mapWidth = random.integerInRange(4, 5);
