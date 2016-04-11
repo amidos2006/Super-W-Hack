@@ -79,10 +79,13 @@ class EnemyObject extends BaseGameObject{
         var enemyDirection:Phaser.Point = new Phaser.Point(0,0);
         
         if((this.getTilePosition().x < playerPosition.x)
-        && (this.getTilePosition().y <= playerPosition.y))
+        && (this.getTilePosition().y < playerPosition.y))
         {
             var difX = playerPosition.x - this.getTilePosition().x;
             var difY = playerPosition.y - this.getTilePosition().y;
+            
+            console.log("difX: " + difX);
+            console.log("difY: " + difX);
             
             if(difX >= difY)
             {
@@ -102,6 +105,9 @@ class EnemyObject extends BaseGameObject{
             var difX = playerPosition.x - this.getTilePosition().x;
             var difY = this.getTilePosition().y - playerPosition.y;
             
+            console.log("difX: " + difX);
+            console.log("difY: " + difX);
+            
             if(difX >= difY)
             {
                 //this.x += Global.TILE_SIZE * this.enemySpeed;
@@ -114,11 +120,14 @@ class EnemyObject extends BaseGameObject{
             }
         }
         
-        if((this.getTilePosition().x >= playerPosition.x)
-        && (this.getTilePosition().y <= playerPosition.y))
+        if((this.getTilePosition().x > playerPosition.x)
+        && (this.getTilePosition().y < playerPosition.y))
         {
             var difX = this.getTilePosition().x - playerPosition.x;
             var difY = playerPosition.y - this.getTilePosition().y;
+            
+            console.log("difX: " + difX);
+            console.log("difY: " + difX);
             
             if(difX >= difY)
             {
@@ -132,11 +141,14 @@ class EnemyObject extends BaseGameObject{
             }
         }
         
-        if((this.getTilePosition().x >= playerPosition.x)
+        if((this.getTilePosition().x > playerPosition.x)
         && (this.getTilePosition().y > playerPosition.y))
         {
             var difX = playerPosition.x - this.getTilePosition().x;
             var difY = playerPosition.y - this.getTilePosition().y;
+            
+            console.log("difX: " + difX);
+            console.log("difY: " + difX);
             
             if(difX >= difY)
             {
@@ -149,6 +161,31 @@ class EnemyObject extends BaseGameObject{
                 enemyDirection = new Phaser.Point(0,-1);
             }
         }
+        
+        if(this.getTilePosition().x == playerPosition.x
+        && this.getTilePosition().y > playerPosition.y)
+        {
+            enemyDirection = new Phaser.Point(0,-1);
+        }
+        
+        if(this.getTilePosition().x == playerPosition.x
+        && this.getTilePosition().y < playerPosition.y)
+        {
+            enemyDirection = new Phaser.Point(0,1);
+        }
+        
+        if(this.getTilePosition().x > playerPosition.x
+        && this.getTilePosition().y == playerPosition.y)
+        {
+            enemyDirection = new Phaser.Point(-1,0);
+        }
+        
+        if(this.getTilePosition().x < playerPosition.x
+        && this.getTilePosition().y == playerPosition.y)
+        {
+            enemyDirection = new Phaser.Point(1,0);
+        }
+        
         return enemyDirection;
     }
     
@@ -212,8 +249,11 @@ class EnemyObject extends BaseGameObject{
         
         if(!this.updateEnemy(this.enemyDirection, tileMatrix))
         {
-            var newDir = this.pickDirectionWithThisConstraint(this.findDirectionIndex(this.enemyDirection));
+            var newDir = this.getFirstFreeDirection(this.enemyDirection, tileMatrix);//this.pickDirectionWithThisConstraint(this.findDirectionIndex(this.enemyDirection));
             this.updateEnemy(newDir, tileMatrix);
+            this.goEnemy(newDir, tileMatrix);
+        }else{
+            this.goEnemy(this.enemyDirection, tileMatrix);
         }
     }
     
@@ -278,9 +318,11 @@ class EnemyObject extends BaseGameObject{
     
     moveBackAndForth(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
     {
-         if(!this.updateEnemy(this.enemyDirection, tileMatrix))
+        if(!this.updateEnemy(this.enemyDirection, tileMatrix))
         {
-            this.updateEnemy(this.reverseDirection(this.enemyDirection), tileMatrix);
+            this.goEnemy(this.reverseDirection(this.enemyDirection), tileMatrix);
+        }else{
+            this.goEnemy(this.enemyDirection, tileMatrix);
         }
     }
     
@@ -299,8 +341,10 @@ class EnemyObject extends BaseGameObject{
         var enemyDirection = this.chaser(playerPosition)
         if(!this.updateEnemy(enemyDirection, tileMatrix))
         {
-            var newDir = this.pickDirectionWithThisConstraint(this.findDirectionIndex(enemyDirection));
-            this.updateEnemy(newDir, tileMatrix);
+            var newDir = this.getNearDirectionToPlayer(enemyDirection, playerPosition, tileMatrix);//this.pickDirectionWithThisConstraint(this.findDirectionIndex(enemyDirection));
+            this.goEnemy(newDir, tileMatrix);
+        }else{
+            this.goEnemy(enemyDirection, tileMatrix);
         }
     }
     
@@ -330,25 +374,56 @@ class EnemyObject extends BaseGameObject{
         {
             if(tileMap[this.getTilePosition().x + 1][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
-                this.x += Global.TILE_SIZE * this.enemySpeed;
+                //this.x += Global.TILE_SIZE * this.enemySpeed;
                 canMove = true;
-            }
-            else
-            {
-                canMove = false;
-            }        
+            }   
         }
         
         if(enemyDirection.x < 0)
         {
             if(tileMap[this.getTilePosition().x - 1][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
-                this.x -= Global.TILE_SIZE * this.enemySpeed;
+               // this.x -= Global.TILE_SIZE * this.enemySpeed;
+                canMove = true;
+            }   
+        }
+        
+        if(enemyDirection.y > 0)
+        {
+            if(tileMap[this.getTilePosition().x][this.getTilePosition().y + 1] == TileTypeEnum.Passable)
+            {
+             //   this.y += Global.TILE_SIZE * this.enemySpeed;
                 canMove = true;
             }
-            else
+        }
+        
+        if(enemyDirection.y < 0)
+        {
+            if(tileMap[this.getTilePosition().x][this.getTilePosition().y - 1] == TileTypeEnum.Passable)
             {
-                canMove = false;
+                //this.y -= Global.TILE_SIZE * this.enemySpeed;
+                canMove = true;
+            }
+        }
+        
+        return canMove;
+    }
+    
+    goEnemy(enemyDirection:Phaser.Point, tileMap:TileTypeEnum[][])
+    {   
+        if (enemyDirection.x > 0)
+        {
+            if(tileMap[this.getTilePosition().x + 1][this.getTilePosition().y] == TileTypeEnum.Passable)
+            {
+                this.x += Global.TILE_SIZE * this.enemySpeed;
+            }   
+        }
+        
+        if(enemyDirection.x < 0)
+        {
+            if(tileMap[this.getTilePosition().x - 1][this.getTilePosition().y] == TileTypeEnum.Passable)
+            {
+               this.x -= Global.TILE_SIZE * this.enemySpeed;
             }   
         }
         
@@ -357,11 +432,6 @@ class EnemyObject extends BaseGameObject{
             if(tileMap[this.getTilePosition().x][this.getTilePosition().y + 1] == TileTypeEnum.Passable)
             {
                 this.y += Global.TILE_SIZE * this.enemySpeed;
-                canMove = true;
-            }
-            else
-            {
-                canMove = false;
             }
         }
         
@@ -370,17 +440,10 @@ class EnemyObject extends BaseGameObject{
             if(tileMap[this.getTilePosition().x][this.getTilePosition().y - 1] == TileTypeEnum.Passable)
             {
                 this.y -= Global.TILE_SIZE * this.enemySpeed;
-                canMove = true;
-            }
-            else
-            {
-                canMove = false;
             }
         }
-        
-        return canMove;
     }
-    
+   
     movement(playerPosition:Phaser.Point, tileMap:TileTypeEnum[][])
     {
        console.log("movType : " + this.enemyType);
@@ -577,6 +640,70 @@ class EnemyObject extends BaseGameObject{
             }
         }
         return value;
+    }
+    
+    getFirstFreeDirection(enemyDirection:Phaser.Point, tileMap:TileTypeEnum[][])
+    {
+        var dir:Phaser.Point = new Phaser.Point(0,0);
+        for(var i:number = 1; i < this.directions.length; i++)
+        {
+            if(this.updateEnemy(this.directions[i], tileMap) == true)
+            {
+                dir = this.directions[i];
+            }
+        }
+        return dir;
+    }
+    
+    getNearDirectionToPlayer(enemyDir:Phaser.Point, playerPosition, tileMap:TileTypeEnum[][])
+    {
+        var dir:Phaser.Point = new Phaser.Point(0,0);
+        var dist = 9999;
+        var directionsRedux:Phaser.Point[] = []
+        if(enemyDir.x == 1)
+        {
+            directionsRedux.push(new Phaser.Point(0,1));
+            directionsRedux.push(new Phaser.Point(0,-1));
+            directionsRedux.push(new Phaser.Point(-1,0));
+        }
+        if(enemyDir.x == -1)
+        {
+            directionsRedux.push(new Phaser.Point(0,1));
+            directionsRedux.push(new Phaser.Point(0,-1));
+            directionsRedux.push(new Phaser.Point(1,0));
+             directionsRedux.push(new Phaser.Point(0,0));
+        }
+        if(enemyDir.y == 1)
+        {
+            directionsRedux.push(new Phaser.Point(1,0));
+            directionsRedux.push(new Phaser.Point(-1,0));
+            directionsRedux.push(new Phaser.Point(0,-1));
+             directionsRedux.push(new Phaser.Point(0,0));
+        }
+        if(enemyDir.y == -1)
+        {
+            directionsRedux.push(new Phaser.Point(1,0));
+            directionsRedux.push(new Phaser.Point(-1,0));
+            directionsRedux.push(new Phaser.Point(0,1));
+             directionsRedux.push(new Phaser.Point(0,0));
+        }
+        
+        for(var i:number = 0; i < directionsRedux.length; i++)
+        {
+            if(this.updateEnemy(directionsRedux[i], tileMap) == true)
+            {
+                var distX = Math.abs(playerPosition.x - (this.getTilePosition().x + directionsRedux[i].x));
+                var distY = Math.abs(playerPosition.y - (this.getTilePosition().y + directionsRedux[i].y));
+                var newdist = Math.sqrt((distX * distX) + (distY * distY));
+                console.log("newdist : " + newdist);
+                if(newdist < dist)
+                {
+                    dist = newdist;
+                    dir = directionsRedux[i];
+                }
+            }
+        }
+        return dir;
     }
     
     static getEnemey(game:Phaser.Game, x:number, y:number, params:number[])
