@@ -37,6 +37,9 @@ class RoomInfoObject{
         
        var shapeSize:number = random.integerInRange(1, 4);
        var numberOfShapes:number = random.integerInRange(0, 2);
+       if(numberOfShapes == 0 && Math.random() < 0.5){
+           numberOfShapes = random.integerInRange(1, 2);
+       }
        
        for(var s:number=0; s<numberOfShapes; s++){
             var pattern:Phaser.Point[] = [];
