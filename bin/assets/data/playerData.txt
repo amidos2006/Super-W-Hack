@@ -4,7 +4,7 @@ change your current weapon
 
 gat
 a multicolored phd student able to hack enemy health
-decrease all enemies' health by 1
+decrease all enemies health by one
 
 tat
 a quite phd student able to teleport away from troubles

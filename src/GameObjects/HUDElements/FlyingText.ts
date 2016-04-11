@@ -3,10 +3,10 @@ class FlyingText extends BaseUIObject{
     text:Phaser.Text;
     speed:number;
     
-    constructor(game:Phaser.Game, x:number, y:number, initialString:string, speed:number){
+    constructor(game:Phaser.Game, x:number, y:number, initialString:string, speed:number, fontSize:number = 20){
         super(game);
         
-        var style = { font: "20px pixelFont", fill: "#ffffff", align: "center" };
+        var style = { font: fontSize + "px pixelFont", fill: "#ffffff", align: "center" };
         this.text = new Phaser.Text(game, x, y, initialString, style);
         this.text.anchor.set(0.5, 0);
         this.add(this.text);

@@ -2,7 +2,7 @@ class SimpleGame {
     game: Phaser.Game;
     
     constructor() {
-        this.game = new Phaser.Game(372, 480, Phaser.AUTO, 'content');
+        this.game = new Phaser.Game(372, 480, Phaser.AUTO, 'content', null, false, false);
         this.game.state.add("loading", LoadingState, false)
         this.game.state.add("gameplay", GameplayState, false);
         this.game.state.add("playerselect", PlayerSelectState, false);
