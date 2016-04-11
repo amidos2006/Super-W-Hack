@@ -2,6 +2,7 @@
 
 class HighlightTile extends BaseTile{
     sprite:Phaser.Sprite;
+    damage:Phaser.Text;
     constructor(game:Phaser.Game){
         super(game, 0, 0);
         
@@ -11,6 +12,12 @@ class HighlightTile extends BaseTile{
         this.sprite.tint = 0x86b7c0;
         this.add(this.sprite);
         
+        var style = { font: "10px pixelFont", fill: "#86b7c0", align: "left" };
+        this.damage = this.game.add.text(Global.TILE_SIZE / 2 + 1, Global.TILE_SIZE - 5, 
+            "0", style, this);
+        this.damage.anchor.set(0.5, 0);
+        this.add(this.damage);
+        
         this.alpha = 0;
     }
     
@@ -18,7 +25,9 @@ class HighlightTile extends BaseTile{
         this.alpha = 0;
     }
     
-    show(){
+    show(value:number){
         this.alpha = 1;
+        this.damage.text = value.toString();
+        this.damage.anchor.set(0.5, 0);
     }
 }

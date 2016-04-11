@@ -163,7 +163,7 @@ class GameplayState extends BaseGameState{
                 if(damageMatrix[y][x] > 0){
                     this.highlightTiles[index].x = x * Global.TILE_SIZE;
                     this.highlightTiles[index].y = y * Global.TILE_SIZE;
-                    this.highlightTiles[index].show();
+                    this.highlightTiles[index].show(damageMatrix[y][x]);
                     index++;
                 }
             }
