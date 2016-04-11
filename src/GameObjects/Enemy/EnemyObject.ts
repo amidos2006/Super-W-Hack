@@ -2,6 +2,7 @@ class EnemyObject extends BaseGameObject{
     
     static enemySpriteNumbers:number[] = [8, 6, 9];
     enemySprite:Phaser.Sprite;
+    healthText:Phaser.Text;
     enemyHealth:number;
     enemySpeed:number;
     isAlive:boolean;
@@ -37,6 +38,12 @@ class EnemyObject extends BaseGameObject{
         this.enemySprite.animations.play("normal");
         this.enemySprite.tint = 0xcc6668;
         this.add(this.enemySprite);
+        
+        var style = { font: "10px pixelFont", fill: "#cc6668", align: "left" };
+        this.healthText = this.game.add.text(Global.TILE_SIZE - 3, Global.TILE_SIZE - 10, 
+            this.enemyHealth.toString(), style, this);
+        this.healthText.anchor.set(0, 0);
+        this.add(this.healthText);
     }
     
     initializeCannons(numberOfCannons:number, x:number, y:number)
@@ -704,6 +711,13 @@ class EnemyObject extends BaseGameObject{
             }
         }
         return dir;
+    }
+    
+    update(){
+        super.update();
+        
+        this.healthText.text = this.enemyHealth.toString();
+        this.healthText.anchor.set(0, 0);
     }
     
     static getEnemey(game:Phaser.Game, x:number, y:number, params:number[])
