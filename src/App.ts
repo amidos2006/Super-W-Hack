@@ -6,6 +6,7 @@ class SimpleGame {
         this.game.state.add("loading", LoadingState, false)
         this.game.state.add("gameplay", GameplayState, false);
         this.game.state.add("playerselect", PlayerSelectState, false);
+        this.game.state.add("mainmenu", MainMenuState, false);
         
         this.game.state.start("loading", false, false);
     }

@@ -16,6 +16,6 @@ class LoadingState extends BaseGameState{
     create(){
         super.create();
         
-        this.game.state.start("playerselect", true);
+        this.game.state.start("mainmenu", true);
     }
 }
