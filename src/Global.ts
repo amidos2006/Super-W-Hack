@@ -46,6 +46,7 @@ class Global{
     static mapWidth:number = 0;
     static mapHeight:number = 0;
     static previousDirection:Phaser.Point;
+    static currentGameMode:GameplayModes;
     
     static initialize(text:string, random:Phaser.RandomDataGenerator){
         Global.levelNumber = 0;

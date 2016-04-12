@@ -718,6 +718,10 @@ class EnemyObject extends BaseGameObject{
         
         this.healthText.text = this.enemyHealth.toString();
         this.healthText.anchor.set(0, 0);
+        this.healthText.alpha = 1;
+        if(this.enemyHealth <= 1){
+            this.healthText.alpha = 0;
+        }
     }
     
     static getEnemey(game:Phaser.Game, x:number, y:number, params:number[])
