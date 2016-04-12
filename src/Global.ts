@@ -58,7 +58,18 @@ class Global{
         Global.currentPlayer = null;
         Global.itemUsage = 0;
         Global.previousDirection = new Phaser.Point(0, 0);
-        Global.constructLevelName(text1, text2, text3, random);
+        switch(Global.currentGameMode){
+            case GameplayModes.adventure:
+                Global.constructLevelName(text1, text2, text3, random);
+                Global.constructLevel(random);
+            break;
+            case GameplayModes.arcade:
+                Global.constructSingleLevel(random);
+            break;
+            case GameplayModes.endless:
+                Global.constructSingleLevel(random);
+            break;
+        }
     }
     
     static constructLevelName(inputText1:string, inputText2:string, inputText3:string, random:Phaser.RandomDataGenerator){
@@ -92,6 +103,14 @@ class Global{
         }
         
         return result;
+    }
+    
+    static constructSingleLevel(random:Phaser.RandomDataGenerator){
+        Global.mapWidth = 1;
+        Global.mapHeight = 1;
+        Global.levelRooms = [[new RoomInfoObject(DifficultyEnum.Easy, random)]];
+        Global.currentX = 0;
+        Global.currentY = 0;
     }
     
     static constructLevel(random:Phaser.RandomDataGenerator){
