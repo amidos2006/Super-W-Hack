@@ -152,7 +152,7 @@ class GameplayState extends BaseGameState{
                 Global.currentWeapon);
         this.game.add.existing(this.playerObject);
         
-        if(!room.cleared){
+        if(!room.cleared && room.difficulty == DifficultyEnum.None){
             this.showBoxObject(new Phaser.Point(Math.floor(Global.ROOM_WIDTH / 2), Math.floor(Global.ROOM_HEIGHT / 2)));
         }
     }
@@ -209,9 +209,9 @@ class GameplayState extends BaseGameState{
             this.enemyObjects.splice(listOfIndeces[i], 1);
         }
         
-        // if(lastEnemyDied != null && this.enemyObjects.length <= 0){
-        //     this.showBoxObject(lastEnemyDied);
-        // }
+        if(lastEnemyDied != null && this.enemyObjects.length <= 0){
+             this.showBoxObject(lastEnemyDied);
+        }
     }
     
     showBoxObject(position:Phaser.Point){
@@ -238,7 +238,7 @@ class GameplayState extends BaseGameState{
             }
         }
         
-        if(!Global.getCurrentRoom().cleared){
+        if(!Global.getCurrentRoom().cleared && this.enemyObjects.length <= 0){
             if(this.boxObject.checkCollision(playerPosition.x, playerPosition.y)){
                 Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd, this.playerObject.getWeapon(), Global.weaponNameGenerator);
                 this.playerObject.setWeapon(Global.currentWeapon);

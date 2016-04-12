@@ -21,6 +21,8 @@ class BoxObject extends BaseGameObject{
     }
     
     collectCrate(){
+        this.game.add.existing(new WeaponName(this.game, this.getTilePosition().x, 
+            this.getTilePosition().y, Global.currentWeapon.getWeaponName()));
         Global.audioManager.playPickUpCrate();
         this.killObject();
     }
