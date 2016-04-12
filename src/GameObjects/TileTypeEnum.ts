@@ -3,5 +3,6 @@ enum TileTypeEnum{
     Hole,
     Wall,
     Door,
-    Enemy
+    Enemy,
+    Box
 }
