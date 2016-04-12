@@ -12,7 +12,9 @@ class PlayerSelectState extends BaseGameState{
         
         this.selectedIndex = 0;
         
-        Global.initialize(this.game.cache.getText("dungeonNames"), this.game.rnd);
+        Global.initialize(this.game.cache.getText("dungeonNames_1"), 
+            this.game.cache.getText("dungeonNames_2"), 
+            this.game.cache.getText("dungeonNames_3"), this.game.rnd);
         Global.constructLevel(this.game.rnd);
         
         var text:string = this.game.cache.getText("playerdata");

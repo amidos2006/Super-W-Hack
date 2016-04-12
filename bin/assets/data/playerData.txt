@@ -7,5 +7,5 @@ a multicolored phd student able to hack enemy health
 decrease all enemies health by one
 
 tat
-a quite phd student able to teleport away from troubles
+a quiet phd student able to teleport away from troubles
 teleport to a safe place

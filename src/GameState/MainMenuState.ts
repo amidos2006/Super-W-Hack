@@ -7,19 +7,19 @@ class MainMenuState extends BaseGameState{
     constructor(){
         super();
         
-        this.unselectedValues = ["the binding of isaac", "super crate box", "undertale", "igf awards"];
-        this.selectedValues = ["adventure mode", "arcade mode", "options", "credits"];
+        this.unselectedValues = ["the binding of isaac", "super crate box", "      spelunky      ", "steamspy", "igf awards"];
+        this.selectedValues = ["adventure mode", "arcade mode", "endless daily mode", "stats", "credits"];
     }
     
     create(){
         super.create();
         
-        this.game.add.existing(new GameNameText(this.game, this.game.width/2 + 10, this.game.height/2 - 40));
+        this.game.add.existing(new GameNameText(this.game, this.game.width/2 + 10, this.game.height/2 - 60));
         
         this.index = 0;
         this.choices = [];
         for (var i = 0; i < this.unselectedValues.length; i++) {
-            var temp:FlyingText = new FlyingText(this.game, this.game.width/2, this.game.height/2 + 20 * i + 40, 
+            var temp:FlyingText = new FlyingText(this.game, this.game.width/2, this.game.height/2 + 20 * i + 30, 
                 this.unselectedValues[i], 2);
                 this.choices.push(temp);
             this.game.add.existing(temp);
@@ -60,14 +60,23 @@ class MainMenuState extends BaseGameState{
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
             switch(this.index){
                 case 0:
-                this.game.state.start("playerselect", true);
+                Global.currentGameMode = GameplayModes.adventure;
                 break;
                 case 1:
+                Global.currentGameMode = GameplayModes.arcade;
                 break;
                 case 2:
+                Global.currentGameMode = GameplayModes.endless;
                 break;
                 case 3:
                 break;
+                case 4:
+                break;
+                case 5:
+                break;
+            }
+            if(this.index >= 0 && this.index<=2){
+                this.game.state.start("playerselect", true);
             }
             this.game.input.keyboard.reset();
         }
