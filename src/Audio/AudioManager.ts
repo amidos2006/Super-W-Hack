@@ -179,4 +179,19 @@
         this.enemies[random.between(0, this.enemies.length - 1)].play();
     }
 
+    playFinishLevel() {
+        this.completeLevelMusic.play();
+    }
+
+    stopFinishLevel() {
+        this.completeLevelMusic.stop();
+    }
+
+    playSpecial(person: number) {
+        this.specials[person].play();
+    }
+
+    playPickNPC() {
+        this.pickNPC.play();
+    }
 }
