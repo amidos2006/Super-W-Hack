@@ -8,7 +8,8 @@ class ChangeWeaponSpecial extends BaseSpecial{
     useSpecial(level:GameplayState){
         super.useSpecial(level);
         
-        Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, level.rnd, level.playerObject.getWeapon(), Global.weaponNameGenerator);
+        Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, level.rnd, 
+            level.playerObject.getWeapon(), Global.weaponNameGenerator);
         level.playerObject.setWeapon(Global.currentWeapon);
     }
 }

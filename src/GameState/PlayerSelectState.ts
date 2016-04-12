@@ -46,7 +46,15 @@ class PlayerSelectState extends BaseGameState{
         
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
             Global.currentPlayer = this.characters[this.selectedIndex];
-            this.game.state.start("gameplay", true);
+            switch(Global.currentGameMode){
+                case GameplayModes.adventure:
+                this.game.state.start("gameplay", true);
+                break;
+                case GameplayModes.arcade:
+                break;
+                case GameplayModes.endless:
+                break;
+            }
             this.game.input.keyboard.reset();
         }
     }
