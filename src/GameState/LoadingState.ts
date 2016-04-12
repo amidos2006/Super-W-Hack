@@ -24,6 +24,8 @@ class LoadingState extends BaseGameState{
         
         Global.weaponNameGenerator = new WeaponNameGenerator(this.game.cache.getText("weaponAdjectives"), 
             this.game.cache.getText("weaponNouns"));
+        Global.audioManager.addSounds(this.game);
+        
         this.game.state.start("mainmenu", true);
     }
 }

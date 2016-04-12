@@ -10,9 +10,10 @@
     specials: Phaser.Sound[] = null;
     pickNPC: Phaser.Sound = null;
 
-    musics: Phaser.Sound[] = null;
-    musicTitle: Phaser.Sound = null;
     completeLevelMusic: Phaser.Sound = null;
+    
+    static musics: Phaser.Sound[] = null;
+    static musicTitle: Phaser.Sound = null;
 
     static AMOUNT_OF_MUSIC: number = 5;
     static AMOUNT_OF_ATTACKS: number = 19;
@@ -85,7 +86,7 @@
         game.load.audio("music4", "assets/music/Super Crate Box/LEV2.mp3");
         game.load.audio("music5", "assets/music/Super Crate Box/LEV3.mp3");
 
-        this.musics = new Array(AudioManager.AMOUNT_OF_MUSIC);
+        AudioManager.musics = new Array(AudioManager.AMOUNT_OF_MUSIC);
 
         game.load.audio("musiccompletelvl", "assets/music/Spelunky/mVictory.mp3");
     }
@@ -136,11 +137,11 @@
 
 
         //music
-        this.musicTitle = game.add.audio("powerup");
-        this.musicTitle.loop = true;
+        AudioManager.musicTitle = game.add.audio("powerup");
+        AudioManager.musicTitle.loop = true;
         for (var i: number = 0; i < AudioManager.AMOUNT_OF_MUSIC; i++) {
-            this.musics[i] = game.add.audio("music" + (i + 1));
-            this.musics[i].loop = true;
+            AudioManager.musics[i] = game.add.audio("music" + (i + 1));
+            AudioManager.musics[i].loop = true;
         }
 
         this.pickNPC = game.add.audio("musiccompletelvl");
@@ -155,11 +156,11 @@
      * Play the game's title music.
      */
     playTitleMusic() {
-        this.musicTitle.play();
+        AudioManager.musicTitle.play();
     }
 
     stopTitleMusic() {
-        this.musicTitle.stop();
+        AudioManager.musicTitle.stop();
     }
 
     /**
@@ -167,12 +168,12 @@
      * @param id: id of the music in this.musics. 0 <= id < AudioManager.AMOUNT_OF_MUSIC
      */
     playMusic(id: number) {
-        this.musics[id].play();
+        AudioManager.musics[id].play();
     }
 
     stopMusic(id: number) {
-        if (this.musics[id].isPlaying)
-            this.musics[id].stop();
+        if (AudioManager.musics[id].isPlaying)
+            AudioManager.musics[id].stop();
     }
 
     playMenuSelection() {

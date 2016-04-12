@@ -7,12 +7,13 @@ class MainMenuState extends BaseGameState{
     constructor(){
         super();
         
-        this.unselectedValues = ["the binding of isaac", "super crate box", "      spelunky      ", "steamspy", "igf awards"];
-        this.selectedValues = ["adventure mode", "arcade mode", "endless daily mode", "stats", "credits"];
+        this.unselectedValues = ["the binding of isaac", "super crate box", " Tiny Rogue ", "steamspy", "igf awards"];
+        this.selectedValues = ["adventure mode", "arcade mode", "endless mode", "stats", "credits"];
     }
     
     create(){
         super.create();
+        Global.audioManager.playTitleMusic();
         
         this.game.add.existing(new GameNameText(this.game, this.game.width/2 + 10, this.game.height/2 - 60));
         
@@ -45,6 +46,7 @@ class MainMenuState extends BaseGameState{
             
             this.choices[this.index].changeText(this.selectedValues[this.index]);
             this.choices[this.index].selectText(true);
+            Global.audioManager.playMenuSelection();
             this.game.input.keyboard.reset();
         }
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)){
@@ -55,6 +57,7 @@ class MainMenuState extends BaseGameState{
             
             this.choices[this.index].changeText(this.selectedValues[this.index]);
             this.choices[this.index].selectText(true);
+            Global.audioManager.playMenuSelection();
             this.game.input.keyboard.reset();
         }
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
@@ -78,6 +81,7 @@ class MainMenuState extends BaseGameState{
             if(this.index >= 0 && this.index<=2){
                 this.game.state.start("playerselect", true);
             }
+            Global.audioManager.playMenuSelected();
             this.game.input.keyboard.reset();
         }
     }

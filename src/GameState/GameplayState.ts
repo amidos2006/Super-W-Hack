@@ -23,7 +23,9 @@ class GameplayState extends BaseGameState{
     }
     
     create(){
-        super.create();        
+        super.create();
+        Global.audioManager.stopTitleMusic();
+        Global.audioManager.playMusic(0);      
         
         this.createCurrentRoom(Global.getCurrentRoom());
         this.lastDirection = new Phaser.Point(-Global.previousDirection.x, -Global.previousDirection.y);

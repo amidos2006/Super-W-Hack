@@ -90,6 +90,11 @@ class PlayerObject extends BaseGameObject{
                 canMove = false;
             }
         }
+        
+        if(canMove){
+            Global.audioManager.playWalk();
+        }
+        
         return canMove;
     }
     
