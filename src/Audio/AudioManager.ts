@@ -13,6 +13,7 @@
     completeLevelMusic: Phaser.Sound = null;
     
     static musics: Phaser.Sound[] = null;
+    static isMusicPlaying: boolean[] = null;
     static musicTitle: Phaser.Sound = null;
 
     static AMOUNT_OF_MUSIC: number = 5;
@@ -87,7 +88,9 @@
         game.load.audio("music5", "assets/music/Super Crate Box/LEV3.mp3");
 
         AudioManager.musics = new Array(AudioManager.AMOUNT_OF_MUSIC);
-
+        AudioManager.isMusicPlaying = new Array(AudioManager.AMOUNT_OF_MUSIC);
+        for (var i: number = 0; i < AudioManager.AMOUNT_OF_MUSIC; i++) 
+            AudioManager.isMusicPlaying[i] = false;
         game.load.audio("musiccompletelvl", "assets/music/Spelunky/mVictory.mp3");
     }
 
@@ -137,7 +140,7 @@
 
 
         //music
-        AudioManager.musicTitle = game.add.audio("powerup");
+        AudioManager.musicTitle = game.add.audio("musicTitle");
         AudioManager.musicTitle.loop = true;
         for (var i: number = 0; i < AudioManager.AMOUNT_OF_MUSIC; i++) {
             AudioManager.musics[i] = game.add.audio("music" + (i + 1));
@@ -168,7 +171,8 @@
      * @param id: id of the music in this.musics. 0 <= id < AudioManager.AMOUNT_OF_MUSIC
      */
     playMusic(id: number) {
-        AudioManager.musics[id].play();
+        if (!AudioManager.musics[id].isPlaying)
+            AudioManager.musics[id].play();
     }
 
     stopMusic(id: number) {
