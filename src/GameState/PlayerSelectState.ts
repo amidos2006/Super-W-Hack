@@ -12,11 +12,6 @@ class PlayerSelectState extends BaseGameState{
         
         this.selectedIndex = 0;
         
-        Global.initialize(this.game.cache.getText("dungeonNames_1"), 
-            this.game.cache.getText("dungeonNames_2"), 
-            this.game.cache.getText("dungeonNames_3"), this.game.rnd);
-        Global.constructLevel(this.game.rnd);
-        
         var text:string = this.game.cache.getText("playerdata");
         this.characters = [new AatPlayerData(text), new GatPlayerData(text), new TatPlayerData(text)];
         
@@ -47,16 +42,11 @@ class PlayerSelectState extends BaseGameState{
         }
         
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
+            Global.initialize(this.game.cache.getText("dungeonNames_1"), 
+                        this.game.cache.getText("dungeonNames_2"), 
+                        this.game.cache.getText("dungeonNames_3"), this.game.rnd);
             Global.currentPlayer = this.characters[this.selectedIndex];
-            switch(Global.currentGameMode){
-                case GameplayModes.adventure:
-                this.game.state.start("gameplay", true);
-                break;
-                case GameplayModes.arcade:
-                break;
-                case GameplayModes.endless:
-                break;
-            }
+            this.game.state.start("gameplay", true);
             Global.audioManager.playMenuSelected();
             this.game.input.keyboard.reset();
         }
