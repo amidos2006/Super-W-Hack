@@ -83,7 +83,7 @@ class Weapon {
     repeat: boolean = false;
     direction: Phaser.Point;
     pattern: number[][];
-
+    idSound: number;
     constructor() {
         this.shape = WeaponShape.LINE_1;
 

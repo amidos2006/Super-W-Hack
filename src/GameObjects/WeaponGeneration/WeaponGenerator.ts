@@ -116,6 +116,8 @@ class WeaponGenerator {
 
        } while (oldWeapon != null && WeaponGenerator.isSame(weapon, oldWeapon)); 
 
+       weapon.idSound = random.between(0, AudioManager.AMOUNT_OF_ATTACKS - 1);
+
        //Generate name.
        var seed: number[] = new Array(7);
        seed[0] = weapon.damage;
@@ -144,7 +146,9 @@ class WeaponGenerator {
        if (quantAdj < 3 && (weapon.pattern.length > 3 && weapon.pattern[0].length > 3))
            quantAdj++;
        weapon.name = nameGenerator.generateAName(quantAdj,random);
-        /*
+
+       
+         /*
        
        i = Math.floor(Weapon.MAX_SHIFT - Weapon.MIN_SHIFT / Weapon.SHIFT_INTERVAL) + 1;
        weapon.startPointShif = random.integerInRange(0, i) * Weapon.SHIFT_INTERVAL + Weapon.MIN_SHIFT;
