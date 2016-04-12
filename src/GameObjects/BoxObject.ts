@@ -19,4 +19,9 @@ class BoxObject extends BaseGameObject{
         this.x = tilePosition.x * Global.TILE_SIZE;
         this.y = tilePosition.y * Global.TILE_SIZE;
     }
+    
+    collectCrate(){
+        Global.audioManager.playPickUpCrate();
+        this.killObject();
+    }
 }

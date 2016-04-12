@@ -17,5 +17,6 @@ class AllScreenSpecial extends BaseSpecial{
         }
         
         level.handleAttack(damage);
+        Global.audioManager.playSpecial(AudioManager.SPECIAL_GAT);
     }
 }

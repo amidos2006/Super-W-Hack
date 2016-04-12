@@ -108,15 +108,18 @@ class PlayerObject extends BaseGameObject{
         return this.playerWeapon;
     }
     
-    takeDamage(damage:number)
-    {
-        if(this.playerHealth > 0)
-        {
-            this.playerHealth = this.playerHealth - damage;
-        }
-        else
-        {
-            this.isAlive = false;
+    fireWeapon(){
+        Global.audioManager.playAttack(this.getWeapon().idSound);
+        
+        this.getWeapon().fireWeapon();
+    }
+    
+    takeDamage(){
+        this.playerHealth = this.playerHealth - 1;
+        if(this.playerHealth <= 0){
+            Global.audioManager.playTakeDamage(this.game.rnd);
+            this.killObject();
+            Global.audioManager.stopMusic();
         }    
     }
     

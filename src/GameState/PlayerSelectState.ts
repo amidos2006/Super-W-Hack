@@ -35,12 +35,14 @@ class PlayerSelectState extends BaseGameState{
             }
             
             this.playerText.updateText(this.characters[this.selectedIndex]);
+            Global.audioManager.playMenuSelection();
             this.game.input.keyboard.reset();
         }
         
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
             this.selectedIndex = (this.selectedIndex + 1) % this.characters.length;
             this.playerText.updateText(this.characters[this.selectedIndex]);
+            Global.audioManager.playMenuSelection();
             this.game.input.keyboard.reset();
         }
         
@@ -55,6 +57,7 @@ class PlayerSelectState extends BaseGameState{
                 case GameplayModes.endless:
                 break;
             }
+            Global.audioManager.playMenuSelected();
             this.game.input.keyboard.reset();
         }
     }

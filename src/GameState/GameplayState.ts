@@ -232,7 +232,7 @@ class GameplayState extends BaseGameState{
         
         for(var i:number=0; i<this.enemyObjects.length; i++){
             if(this.enemyObjects[i].checkCollision(playerPosition.x, playerPosition.y)){
-                this.playerObject.killObject();
+                this.playerObject.takeDamage();
                 this.playerObject = null;
                 return true;
             }
@@ -242,7 +242,7 @@ class GameplayState extends BaseGameState{
             if(this.boxObject.checkCollision(playerPosition.x, playerPosition.y)){
                 Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd, this.playerObject.getWeapon(), Global.weaponNameGenerator);
                 this.playerObject.setWeapon(Global.currentWeapon);
-                this.boxObject.destroy();
+                this.boxObject.collectCrate();
                 for(var i:number=0; i<this.currentDoors.length; i++){
                     this.currentDoors[i].unlock();
                 }
@@ -353,7 +353,7 @@ class GameplayState extends BaseGameState{
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
                 this.arrowHighlight.hide();
                 this.unhighlight();
-                this.playerObject.getWeapon().fireWeapon();
+                this.playerObject.fireWeapon();
                 this.handleAttack(this.playerObject.getWeapon().getWeaponPositions(
                     this.playerObject.getTilePosition(), this.lastDirection, 
                     Global.matrixTranspose(Global.getCurrentRoom().getMatrix(this.enemyObjects))));

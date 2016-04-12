@@ -11,5 +11,6 @@ class ChangeWeaponSpecial extends BaseSpecial{
         Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, level.rnd, 
             level.playerObject.getWeapon(), Global.weaponNameGenerator);
         level.playerObject.setWeapon(Global.currentWeapon);
+        Global.audioManager.playSpecial(AudioManager.SPECIAL_AAT);
     }
 }
