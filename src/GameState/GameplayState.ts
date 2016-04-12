@@ -298,6 +298,7 @@ class GameplayState extends BaseGameState{
         
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.R)){
             this.game.state.start("loading", true);
+            Global.audioManager.stopMusic();
             this.game.input.keyboard.reset();
         }
         
