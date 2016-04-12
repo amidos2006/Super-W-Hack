@@ -56,8 +56,6 @@ class Global{
         Global.currentPlayer = null;
         Global.itemUsage = 0;
         Global.previousDirection = new Phaser.Point(0, 0);
-        EnemyObject.enemySpriteNumbers = Phaser.ArrayUtils.shuffle(EnemyObject.enemySpriteNumbers);
-        EnemyObject.enemySpriteNumbers.push(EnemyObject.enemySpriteNumbers[EnemyObject.enemySpriteNumbers.length - 1]);
         Global.constructLevelName(text1, text2, text3, random);
     }
     
