@@ -48,7 +48,7 @@ class Global{
     static previousDirection:Phaser.Point;
     static currentGameMode:GameplayModes;
     
-    static initialize(text:string, random:Phaser.RandomDataGenerator){
+    static initialize(text1:string, text2:string, text3:string, random:Phaser.RandomDataGenerator){
         Global.levelNumber = 0;
         Global.crateNumber = 0;
         Global.currentWeapon = null;
@@ -57,14 +57,13 @@ class Global{
         Global.previousDirection = new Phaser.Point(0, 0);
         EnemyObject.enemySpriteNumbers = Phaser.ArrayUtils.shuffle(EnemyObject.enemySpriteNumbers);
         EnemyObject.enemySpriteNumbers.push(EnemyObject.enemySpriteNumbers[EnemyObject.enemySpriteNumbers.length - 1]);
-        Global.constructLevelName(text, random);
+        Global.constructLevelName(text1, text2, text3, random);
     }
     
-    static constructLevelName(inputText:string, random:Phaser.RandomDataGenerator){
-        var text:string[] = inputText.split("\n");
-        var f1:string = text[random.integerInRange(0, text.length-1)].split(",")[0].trim();
-        var f2:string = text[random.integerInRange(0, text.length-1)].split(",")[1].trim();
-        var f3:string = text[random.integerInRange(0, text.length-1)].split(",")[2].trim();
+    static constructLevelName(inputText1:string, inputText2:string, inputText3:string, random:Phaser.RandomDataGenerator){
+        var f1:string = inputText1.split(",")[random.integerInRange(0, inputText1.split(",").length-1)].trim();
+        var f2:string = inputText2.split(",")[random.integerInRange(0, inputText2.split(",").length-1)].trim();
+        var f3:string = inputText3.split(",")[random.integerInRange(0, inputText3.split(",").length-1)].trim();
         
         Global.levelName = "The " + f1 + " of the " + f2 + " " + f3;
     }
