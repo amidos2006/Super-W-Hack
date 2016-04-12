@@ -182,11 +182,11 @@ class Weapon {
         }
 
         if (faceDirection.x == -1) {
-            pathRightDir = this.invertColumn(this.transpose(pathRightDir, w, h));
+            pathRightDir = Weapon.invertColumn(Weapon.transpose(pathRightDir, w, h,this.pattern));
         } else if (faceDirection.x == 1) {
-            pathRightDir = this.invertRow(this.transpose(pathRightDir, w, h));
+            pathRightDir = Weapon.invertRow(Weapon.transpose(pathRightDir, w, h, this.pattern));
         } else if (faceDirection.y == 1) {
-            pathRightDir = this.invertRow(this.invertColumn(this.pattern));
+            pathRightDir = Weapon.invertRow(Weapon.invertColumn(this.pattern));
         } else {
             pathRightDir = this.pattern;
         }
@@ -253,12 +253,18 @@ class Weapon {
                     }
                 }
             } else if (faceDirection.y == 1) {
+                var auxi: number = 0;
                 for (var i: number = topLeft.y; i < result.length; i++) {
+
                     for (var j: number = (topLeft.x < 0 ? 0 : topLeft.x); j - topLeft.x < pathRightDir[0].length && j < result[0].length; j++) {
-                        if (pathRightDir[(i + topLeft.y) % pathRightDir.length][j - topLeft.x] == 1) {
+                        if (pathRightDir[auxi][j - topLeft.x] == 1) {
+                            //if (pathRightDir[(i + topLeft.y) % pathRightDir.length][j - topLeft.x] == 1) {
                             result[i][j] = this.damage;
                         }
                     }
+                    auxi++;
+                    if (auxi >= pathRightDir.length)
+                        auxi = 0;
                 }
             } else {
                 for (var i: number = playerPos.y - 1; i >= 0; i--) {
@@ -282,7 +288,7 @@ class Weapon {
         return result;
     }
 
-    invertRow(matrix: number[][]) {
+    static invertRow(matrix: number[][]) {
         var aux = new Array(matrix.length);
         for (var i: number = 0; i < matrix.length; i++) {
             aux[i] = new Array(matrix[0].length);
@@ -299,7 +305,7 @@ class Weapon {
         return aux;
     }
 
-    invertColumn(matrix: number[][]) {
+    static invertColumn(matrix: number[][]) {
         var aux = new Array(matrix.length);
         for (var i: number = 0; i < matrix.length; i++) {
             aux[i] = new Array(matrix[0].length);
@@ -313,10 +319,10 @@ class Weapon {
         return aux;
     }
 
-    transpose(pathRightDir: number[][], w: number, h: number): number[][] {
+    static transpose(pathRightDir: number[][], w: number, h: number, pattern: number[][]): number[][] {
         for (var i: number = 0; i < h; i++) {
             for (var j: number = 0; j < w; j++) {
-                pathRightDir[i][j] = this.pattern[j][i];
+                pathRightDir[i][j] = pattern[j][i];
             }
         }
         return pathRightDir;
@@ -361,7 +367,7 @@ class Weapon {
     
     toString():string{
         var text: string = "";
-        text += "Damage: " + this.damage + ", Cooldown: " + this.cooldown + " , Shift: " + this.startPointShif + ", "
+        text += this.name+": Damage: " + this.damage + ", Cooldown: " + this.cooldown + " , Shift: " + this.startPointShif + ", "
             + this.endingType + ", Size pattern: " + this.pattern.length + "x" + this.pattern[0].length + ", centered: " +
         this.centered+", repeat?"+this. repeat+"\n";
         for (var i: number = 0; i < this.pattern.length; i++) {

@@ -76,97 +76,11 @@ class WeaponGenerator {
 
 
            if (width == 1) {
-               hasAnyFilled = false;
-               for (var i: number = 0; i < height; i++) {
-                   //randomize half
-                   if (random.frac() < 0.5) {
-                       pattern[i][0] = 1;
-                       hasAnyFilled = true;
-                   }
-               }
-
-               if (!hasAnyFilled) {
-                   if (height > 1)
-                       pattern[random.integerInRange(0, height - 1)][0] = 1;
-                   else
-                       pattern[0][0] = 1;
-               }
+               pattern = WeaponGenerator.createPatternWithOneWidth(pattern, height, random);
            } else if (height == 1) {
-               hasAnyFilled = false;
-
-               //randomize half
-               for (var j: number = 0; j < Math.floor(width / 2); j++) {
-                   if (random.frac() < 0.5)
-                       pattern[0][j] = 0;
-                   else {
-                       pattern[0][j] = 1;
-                       hasAnyFilled = true;
-                   }
-               }
-
-               if (!hasAnyFilled) {
-                   if (width > 2)
-                       pattern[random.integerInRange(0, Math.floor(width / 2) - 1)][0] = 1;
-                   else
-                       pattern[0][0] = 1;
-               }
-
-               for (var i: number = 0; i < height; i++) {
-                   //if odd number, add one row with random
-                   if (random.frac() < 0.5)
-                       pattern[i][Math.floor(width / 2)] = 0;
-                   else
-                       pattern[i][Math.floor(width / 2)] = 1;
-               }
-
-
-               for (var i: number = 0; i < height; i++) {
-                   //copy other half
-                   for (var j: number = width - 1; j > Math.floor(width / 2); j--) {
-                       pattern[i][j] = pattern[i][width - j - 1];
-                   }
-               }
+               pattern = WeaponGenerator.createPatternWithOneHeight(pattern, width, random);
            } else {
-               hasAnyFilled = false;
-               for (var i: number = 0; i < height; i++) {
-                   //randomize half
-                   for (var j: number = 0; j < Math.floor(width / 2); j++) {
-                       if (random.frac() < 0.5)
-                           pattern[i][j] = 0;
-                       else {
-                           pattern[i][j] = 1;
-                           hasAnyFilled = true;
-                       }
-                   }
-               }
-
-               if (!hasAnyFilled) {
-                   if (width > 2 && height > 1)
-                       pattern[random.integerInRange(0, Math.floor(width / 2) - 1)]
-                       [random.integerInRange(0, height - 1)] = 1;
-                   else
-                       pattern[0][0] = 1;
-               }
-
-               for (var i: number = 0; i < height; i++) {
-                   //if odd number, add one row with random
-                   if (random.frac() < 0.5)
-                       pattern[i][Math.floor(width / 2)] = 0;
-                   else
-                       pattern[i][Math.floor(width / 2)] = 1;
-               }
-
-
-               //copy horizontally
-               for (var i: number = 0; i < height; i++) {
-                   //copy other half
-                   var half: number = 2;
-                   for (var j: number = width - 1; j > Math.floor(width / 2); j--) {
-                       pattern[i][j] = pattern[i][width - j - 1];
-                   }
-               }
-               //copy vertically
-               //copy diagonally
+               pattern = WeaponGenerator.createPattern(pattern, width, height, random);
            }
 
            //clear player position
@@ -246,5 +160,170 @@ class WeaponGenerator {
 
         return true;
     }
-    
+
+    static createPatternWithOneWidth(pattern: number[][], height: number, random: Phaser.RandomDataGenerator): number[][] {
+        var hasAnyFilled:boolean = false;
+        for (var i: number = 0; i < height; i++) {
+            //randomize half
+            if (random.frac() < 0.5) {
+                pattern[i][0] = 1;
+                hasAnyFilled = true;
+            }
+        }
+
+        if (!hasAnyFilled) {
+            if (height > 1)
+                pattern[random.integerInRange(0, height - 1)][0] = 1;
+            else
+                pattern[0][0] = 1;
+        }
+        return pattern;
+    }
+
+    static createPatternWithOneHeight(pattern: number[][], width: number, random: Phaser.RandomDataGenerator): number[][] {
+        var hasAnyFilled: boolean = false;
+
+        //randomize half
+        for (var j: number = 0; j < Math.floor(width / 2); j++) {
+            if (random.frac() < 0.5)
+                pattern[0][j] = 0;
+            else {
+                pattern[0][j] = 1;
+                hasAnyFilled = true;
+            }
+        }
+
+        if (!hasAnyFilled) {
+            if (width > 2)
+                pattern[random.integerInRange(0, Math.floor(width / 2) - 1)][0] = 1;
+            else
+                pattern[0][0] = 1;
+        }
+
+        //if odd number, add one row with random
+        if (random.frac() < 0.5)
+            pattern[0][Math.floor(width / 2)] = 0;
+        else
+            pattern[0][Math.floor(width / 2)] = 1;
+
+        //copy other half
+        for (var j: number = width - 1; j > Math.floor(width / 2); j--) {
+            pattern[0][j] = pattern[0][width - j - 1];
+        }
+        return pattern;
+    }
+
+    static createPattern(pattern: number[][], width: number, height: number, random: Phaser.RandomDataGenerator): number[][] {
+        var hasAnyFilled:boolean = false;
+
+        
+        var orientation: number = random.frac();
+        console.log("Orientation: " + orientation);
+        if (orientation < 0.66) {
+            //copy horizontally and diagonally
+
+            for (var i: number = 0; i < height; i++) {
+                //randomize half
+                for (var j: number = 0; j < Math.floor(width / 2); j++) {
+                    if (random.frac() < 0.5)
+                        pattern[i][j] = 0;
+                    else {
+                        pattern[i][j] = 1;
+                        hasAnyFilled = true;
+                    }
+                }
+            }
+
+            if (!hasAnyFilled) {
+                if (width > 2 && height > 1)
+                    pattern[random.integerInRange(0, height - 1)]
+                    [random.integerInRange(0, Math.floor(width / 2) - 1)] = 1;
+                else
+                    pattern[0][0] = 1;
+            }
+
+            for (var i: number = 0; i < height; i++) {
+                //if odd number, add one row with random
+                if (random.frac() < 0.5)
+                    pattern[i][Math.floor(width / 2)] = 0;
+                else
+                    pattern[i][Math.floor(width / 2)] = 1;
+            }
+
+            
+            if (orientation < 0.33) {
+                //copy horizontally
+                for (var i: number = 0; i < height; i++) {
+                    //copy other half
+                    var half: number = 2;
+                    for (var j: number = width - 1; j > Math.floor(width / 2); j--) {
+                        pattern[i][j] = pattern[i][width - j - 1];
+                    }
+                }
+            } else {
+                //copy diagonally
+                var auxPattern: number[][] = new Array(height);
+                for (var i: number = 0; i < height; i++) {
+                    auxPattern[i] = new Array(width);
+                    for (var j: number = 0; j < width; j++) {
+                        auxPattern[i][j] = pattern[i][j];
+                    }
+                }
+
+                auxPattern = Weapon.invertColumn(Weapon.invertRow(auxPattern));
+
+                for (var i: number = 0; i < height; i++) {
+                    //copy other half
+                    var half: number = 2;
+                    for (var j: number = width - 1; j > Math.floor(width / 2); j--) {
+                        pattern[i][j] = auxPattern[i][j];
+                    }
+                }
+
+                if (width % 2 != 0) {
+                    for (var i: number = 0; i < Math.floor(height / 2); i++) {
+                        pattern[i][Math.floor(width / 2)] = pattern[height - i - 1][Math.floor(width / 2)];
+                    }
+                }
+            }
+        } else {
+            //copy vertically
+            for (var i: number = 0; i < width; i++) {
+                //randomize half
+                for (var j: number = 0; j < Math.floor(height / 2); j++) {
+                    if (random.frac() < 0.5)
+                        pattern[j][i] = 0;
+                    else {
+                        pattern[j][i] = 1;
+                        hasAnyFilled = true;
+                    }
+                }
+            }
+
+            if (!hasAnyFilled) {
+                if (height > 2 && width > 1)
+                    pattern[random.integerInRange(0, Math.floor(height / 2) - 1)]
+                    [random.integerInRange(0, width - 1)] = 1;
+                else
+                    pattern[0][0] = 1;
+            }
+
+            for (var i: number = 0; i < width; i++) {
+                //if odd number, add one line with random
+                if (random.frac() < 0.5)
+                    pattern[Math.floor(height / 2)][i] = 0;
+                else
+                    pattern[Math.floor(height / 2)][i] = 1;
+            }
+
+            for (var i: number = 0; i < width; i++) {
+                //copy other half
+                var half: number = 2;
+                for (var j: number = height - 1; j > Math.floor(height / 2); j--) {
+                    pattern[j][i] = pattern[height - j - 1][i];
+                }
+            }
+        } 
+        return pattern;
+    }
 }
