@@ -1,20 +1,29 @@
 ﻿class AudioManager {
     power_up: Phaser.Sound = null;
-    //enemies: Phaser.Sound[] = null;
-    musics: Phaser.Sound[] = null;
-    musicTitle: Phaser.Sound = null;
+    enemies: Phaser.Sound[] = null;
     attacks: Phaser.Sound[] = null;
     hurt: Phaser.Sound[] = null;
     menuSelection: Phaser.Sound = null;
     menuSelected: Phaser.Sound = null;
     pickupCrate: Phaser.Sound = null;
     walk: Phaser.Sound[] = null;
+    specials: Phaser.Sound[] = null;
+    pickNPC: Phaser.Sound = null;
+
+    musics: Phaser.Sound[] = null;
+    musicTitle: Phaser.Sound = null;
+    completeLevelMusic: Phaser.Sound = null;
 
     static AMOUNT_OF_MUSIC: number = 5;
     static AMOUNT_OF_ATTACKS: number = 19;
     static AMOUNT_OF_HURT: number = 3;
     static AMOUNT_OF_WALK: number = 5;
-    //static AMOUNT_OF_ENEMIES: number = 8;
+    static AMOUNT_OF_ENEMIES: number = 8;
+    static AMOUNT_OF_SPECIALS: number = 3;
+
+    static SPECIAL_AAT: number = 0;
+    static SPECIAL_GAT: number = 1;
+    static SPECIAL_TAT: number = 2;
 
     lastWalk: number = 0;
 
@@ -69,17 +78,29 @@
         game.load.audio("menuselected", "assets/audio/Original/selected.wav");
         this.menuSelected = game.add.audio("menuselected");
 
-        /*this.enemies = new Array(AudioManager.AMOUNT_OF_ENEMIES);
+        this.enemies = new Array(AudioManager.AMOUNT_OF_ENEMIES);
         for (var i: number = 0; i < AudioManager.AMOUNT_OF_ENEMIES; i++) {
             game.load.audio("enemy" + (i + 1), "assets/audio/Original/enemy" + (i + 1) + ".wav");
             this.enemies[i] = game.add.audio("enemy" + (i + 1));
-        }*/
+        }
 
         this.walk = new Array(AudioManager.AMOUNT_OF_WALK);
         for (var i: number = 0; i < AudioManager.AMOUNT_OF_WALK; i++) {
             game.load.audio("walk" + (i + 1), "assets/audio/Original/walk" + (i + 1) + ".wav");
             this.walk[i] = game.add.audio("walk" + (i + 1));
         }
+
+        this.specials = new Array(3);
+        game.load.audio("special0", "assets/audio/Original/changeweapon.wav");
+        this.walk[0] = game.add.audio("special0");
+        game.load.audio("special1", "assets/audio/Original/attackeveryone.wav");
+        this.walk[1] = game.add.audio("special1");
+        game.load.audio("special2", "assets/audio/Original/teleport.wav");
+        this.walk[2] = game.add.audio("special2");
+
+        game.load.audio("pickNPC", "assets/audio/Original/pickperson.wav");
+        this.pickNPC = game.add.audio("pickNPC");
+        
 
         //music
         game.load.audio("musicTitle", "assets/music/gameMusicTitle.mp3");
@@ -93,7 +114,10 @@
 
         this.musics = new Array(AudioManager.AMOUNT_OF_MUSIC);
         for (var i: number = 0; i < AudioManager.AMOUNT_OF_MUSIC; i++) 
-            this.musics[i] = game.add.audio("music"+(i+1));
+            this.musics[i] = game.add.audio("music" + (i + 1));
+
+        game.load.audio("musiccompletelvl", "assets/music/Spelunky/mVictory.mp3");
+        this.pickNPC = game.add.audio("musiccompletelvl");
     }
 
     playPowerUp() {
@@ -141,7 +165,8 @@
     }
 
     playWalk() {
-        this.walk[this.lastWalk++].play();
+        this.walk[this.lastWalk].play();
+        this.lastWalk++;
         if (this.lastWalk >= AudioManager.AMOUNT_OF_WALK)
             this.lastWalk = 0;
     }
@@ -150,4 +175,23 @@
         this.pickupCrate.play();
     }
 
+    playEnemyDead(random: Phaser.RandomDataGenerator) {
+        this.enemies[random.between(0, this.enemies.length - 1)].play();
+    }
+
+    playFinishLevel() {
+        this.completeLevelMusic.play();
+    }
+
+    stopFinishLevel() {
+        this.completeLevelMusic.stop();
+    }
+
+    playSpecial(person: number) {
+        this.specials[person].play();
+    }
+
+    playPickNPC() {
+        this.pickNPC.play();
+    }
 }
