@@ -132,9 +132,9 @@
             this.walk[i] = game.add.audio("walk" + (i + 1));
         }
 
-        this.walk[0] = game.add.audio("special0");
-        this.walk[1] = game.add.audio("special1");
-        this.walk[2] = game.add.audio("special2");
+        this.specials[0] = game.add.audio("special0");
+        this.specials[1] = game.add.audio("special1");
+        this.specials[2] = game.add.audio("special2");
 
         this.pickNPC = game.add.audio("pickNPC");
 
@@ -175,9 +175,10 @@
             AudioManager.musics[id].play();
     }
 
-    stopMusic(id: number) {
-        if (AudioManager.musics[id].isPlaying)
-            AudioManager.musics[id].stop();
+    stopMusic() {
+        for (var i: number = 0; i < AudioManager.musics.length; i++)
+            if (AudioManager.musics[i].isPlaying)
+                AudioManager.musics[i].stop();
     }
 
     playMenuSelection() {
