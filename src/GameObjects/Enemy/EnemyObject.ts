@@ -323,8 +323,27 @@ class EnemyObject extends BaseGameObject{
         return dir;
     }
     
+    revertAxis(direction:Phaser.Point)
+    {
+        if(direction.x != 0)
+        {
+            return new Phaser.Point(0,1);
+        }
+        
+        if(direction.y != 0)
+        {
+            return new Phaser.Point(1,0);
+        }
+    }
+    
     moveBackAndForth(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
     {
+        if(!this.updateEnemy(this.enemyDirection, tileMatrix) && 
+            !this.updateEnemy(this.reverseDirection(this.enemyDirection), tileMatrix))
+        {
+                this.enemyDirection = this.revertAxis(this.enemyDirection);
+        }
+        
         if(!this.updateEnemy(this.enemyDirection, tileMatrix))
         {
             this.goEnemy(this.reverseDirection(this.enemyDirection), tileMatrix);
