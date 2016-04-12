@@ -330,7 +330,7 @@ class Weapon {
 
     getWeaponName():String	{
 
-        return null;
+        return name;
     }
 
     getCurrentCoolDown():number	{
