@@ -39,6 +39,7 @@ class Global{
     static levelRooms:RoomInfoObject[][];
     static levelNumber:number = 0;
     static levelName:string = "";
+    static levelMusic:number = 0;
     static crateNumber:number = 0;
     static itemUsage:number = 0;
     static currentWeapon:Weapon = null;
@@ -61,9 +62,14 @@ class Global{
     }
     
     static constructLevelName(inputText1:string, inputText2:string, inputText3:string, random:Phaser.RandomDataGenerator){
-        var f1:string = inputText1.split(",")[random.integerInRange(0, inputText1.split(",").length-1)].trim();
-        var f2:string = inputText2.split(",")[random.integerInRange(0, inputText2.split(",").length-1)].trim();
-        var f3:string = inputText3.split(",")[random.integerInRange(0, inputText3.split(",").length-1)].trim();
+        var i1:number = random.integerInRange(0, inputText1.split(",").length-1);
+        var i2:number = random.integerInRange(0, inputText2.split(",").length-1);
+        var i3:number = random.integerInRange(0, inputText3.split(",").length-1);
+        Global.levelMusic = i1 * 4 + i2 * 2 + i3;
+        
+        var f1:string = inputText1.split(",")[i1].trim();
+        var f2:string = inputText2.split(",")[i2].trim();
+        var f3:string = inputText3.split(",")[i3].trim();
         
         Global.levelName = "The " + f1 + " of the " + f2 + " " + f3;
     }
