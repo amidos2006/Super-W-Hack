@@ -117,16 +117,21 @@ class PlayerObject extends BaseGameObject{
     
     updateCoolDown(){
         this.getWeapon().updateCoolDown();
+    }
+    
+    isPlayerAlive()
+    {
+        return this.isAlive;
+    }
+    
+    update(){
+        super.update();
+        
         this.coolDownText.alpha = 0;
         if(this.getWeapon().getCurrentCoolDown() > 0){
             this.coolDownText.alpha = 1;
             this.coolDownText.text = this.getWeapon().getCurrentCoolDown().toString();
             this.coolDownText.anchor.set(0, 0);
         }
-    }
-    
-    isPlayerAlive()
-    {
-        return this.isAlive;
     }
 }

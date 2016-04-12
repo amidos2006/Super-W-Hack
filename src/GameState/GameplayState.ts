@@ -110,7 +110,7 @@ class GameplayState extends BaseGameState{
         this.game.add.existing(this.boxObject);
         
         this.enemyObjects = [];
-        var numOfEnemies:number = room.difficulty * 2;
+        var numOfEnemies:number = 6;
         if(room.cleared){
             numOfEnemies = 0;
         }
