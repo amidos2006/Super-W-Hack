@@ -6,7 +6,8 @@ class WeaponGenerator {
     static SPECIAL: number = 3;
 
 
-    static GenerateWeapon(paramSet: number[], random: Phaser.RandomDataGenerator, oldWeapon: Weapon): Weapon {
+    static GenerateWeapon(paramSet: number[], random: Phaser.RandomDataGenerator,
+        oldWeapon: Weapon, nameGenerator: WeaponNameGenerator): Weapon {
        
         if (paramSet == null) {
             paramSet = new Array(4);
@@ -28,7 +29,6 @@ class WeaponGenerator {
                case 3: weapon.direction = new Phaser.Point(-1, 0); break;
                case 4: weapon.direction = new Phaser.Point(0, -1); break;
            }
-
 
 
            if (random.realInRange(0, 1) < Weapon.CHANCE_CENTERED) {
@@ -122,7 +122,6 @@ class WeaponGenerator {
 
                for (var i: number = 0; i < height; i++) {
                    //copy other half
-                   var half: number = 2;
                    for (var j: number = width - 1; j > Math.floor(width / 2); j--) {
                        pattern[i][j] = pattern[i][width - j - 1];
                    }
@@ -158,6 +157,7 @@ class WeaponGenerator {
                }
 
 
+               //copy horizontally
                for (var i: number = 0; i < height; i++) {
                    //copy other half
                    var half: number = 2;
@@ -165,6 +165,8 @@ class WeaponGenerator {
                        pattern[i][j] = pattern[i][width - j - 1];
                    }
                }
+               //copy vertically
+               //copy diagonally
            }
 
            //clear player position
@@ -173,7 +175,9 @@ class WeaponGenerator {
                pattern[center.y][center.x] = 0;
            }
 
-           var t: String = "";
+           
+           //printWeapon
+            var t: String = "";
            for (var i: number = 0; i < height; i++) {
                //copy other half
                for (var j: number = 0; j < width; j++) {
@@ -183,9 +187,12 @@ class WeaponGenerator {
            }
            console.log("before " + t);
 
+
+ 
+           
            weapon.pattern = pattern;
 
-           weapon.damage = random.integerInRange(0, Weapon.MAX_DAMAGE - Weapon.MIN_DAMAGE) + Weapon.MIN_DAMAGE;
+           weapon.damage = random.integerInRange(Weapon.MIN_DAMAGE, Weapon.MAX_DAMAGE);
            var i: number = Math.floor(Weapon.MAX_COOLDOWN - Weapon.MIN_COOLDOWN / Weapon.COOLDOWN_INTERVAL) + 1;
            weapon.cooldown = random.integerInRange(0, Weapon.MAX_COOLDOWN);
            weapon.curCooldown = 0;
@@ -194,7 +201,19 @@ class WeaponGenerator {
            weapon.lingering = random.frac() < 0.3 ? true : false;
 
        } while (oldWeapon != null && WeaponGenerator.isSame(weapon, oldWeapon)); 
-       /*
+
+       //Generate name.
+       var quantAdj: number = 1;
+       if (weapon.damage > Weapon.MAX_DAMAGE / 2)
+           quantAdj++;
+       if (weapon.isWeaponPoisoned() || weapon.isWeaponLingering())
+           quantAdj++;
+       if (weapon.cooldown < Weapon.MAX_COOLDOWN / 2)
+           quantAdj++;
+       if (quantAdj < 3 && (weapon.pattern.length > 3 && weapon.pattern[0].length > 3))
+           quantAdj++;
+       weapon.name = nameGenerator.generateAName(quantAdj,random);
+        /*
        
        i = Math.floor(Weapon.MAX_SHIFT - Weapon.MIN_SHIFT / Weapon.SHIFT_INTERVAL) + 1;
        weapon.startPointShif = random.integerInRange(0, i) * Weapon.SHIFT_INTERVAL + Weapon.MIN_SHIFT;

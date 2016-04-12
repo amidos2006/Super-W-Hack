@@ -11,6 +11,8 @@ class LoadingState extends BaseGameState{
         this.game.load.spritesheet("graphics", "assets/graphics/gameGraphics.png", 32, 32);
         this.game.load.text("dungeonNames", "assets/data/dungeonNames.txt");
         this.game.load.text("playerdata", "assets/data/playerData.txt");
+        this.game.load.text("weaponAdjectives", "assets/data/weaponNamesAdj.txt");
+        this.game.load.text("weaponNouns", "assets/data/weaponNamesNoun.txt");
     }
     
     create(){
