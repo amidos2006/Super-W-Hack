@@ -56,7 +56,7 @@
         this.attacks[9] = game.add.audio("sbrevolver");
         game.load.audio("sbrocket", "assets/audio/Super Box/sndRocket.wav");
         this.attacks[10] = game.add.audio("sbrocket");
-        game.load.audio("sbsar", "assets/audio/Super Box/sndSar.wav");
+        game.load.audio("sbsar", "assets/audio/Super Box/sndSaw.wav");
         this.attacks[11] = game.add.audio("sbsar");
         game.load.audio("sbshotgun", "assets/audio/Super Box/sndShotgun.wav");
         this.attacks[12] = game.add.audio("sbshotgun");

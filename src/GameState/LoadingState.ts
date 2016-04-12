@@ -15,6 +15,8 @@ class LoadingState extends BaseGameState{
         this.game.load.text("weaponAdjectives", "assets/data/weaponNamesAdj.txt");
         this.game.load.text("weaponNouns", "assets/data/weaponNamesNoun.txt");
         this.game.load.text("playerdata", "assets/data/playerData.txt");
+        Global.audioManager = new AudioManager();
+        Global.audioManager.preload(this.game);
     }
     
     create(){

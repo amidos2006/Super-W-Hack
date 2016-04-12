@@ -35,6 +35,7 @@ class Global{
     static ROOM_HEIGHT:number = 11;
     
     static weaponNameGenerator:WeaponNameGenerator;
+    static audioManager:AudioManager;
     static levelRooms:RoomInfoObject[][];
     static levelNumber:number = 0;
     static levelName:string = "";
