@@ -117,6 +117,23 @@ class WeaponGenerator {
        } while (oldWeapon != null && WeaponGenerator.isSame(weapon, oldWeapon)); 
 
        //Generate name.
+       var seed: number[] = new Array(7);
+       seed[0] = weapon.damage;
+       seed[1] = weapon.cooldown;
+       seed[2] = weapon.centered ? 1 : 0;
+       seed[3] = weapon.poison ? 1 : 0;
+       seed[4] = weapon.repeat ? 1 : 0;
+       seed[5] = weapon.lingering ? 1 : 0;
+       var patternValue: number = 0, last: number = 0;
+       for (var i: number = 0; i < pattern.length; i++) {
+           for (var j: number = 0; j < pattern[0].length; j++) {
+               patternValue += pattern[i][j] * (Math.pow(10, last));
+               last++;
+           }
+       }
+       seed[6] = patternValue;
+       random = new Phaser.RandomDataGenerator(seed);
+
        var quantAdj: number = 1;
        if (weapon.damage > Weapon.MAX_DAMAGE / 2)
            quantAdj++;
