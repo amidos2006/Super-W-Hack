@@ -8,7 +8,7 @@ class MainMenuState extends BaseGameState{
         super();
         
         this.unselectedValues = ["the binding of isaac", "super crate box", " Tiny Rogue ", "steamspy", "igf awards"];
-        this.selectedValues = ["adventure mode", "arcade mode", "endless mode", "stats", "credits"];
+        this.selectedValues = ["adventure mode", "arcade mode", "challenge mode", "stats", "credits"];
     }
     
     create(){
@@ -29,8 +29,6 @@ class MainMenuState extends BaseGameState{
         this.choices[this.index].changeText(this.selectedValues[this.index]);
         this.choices[this.index].selectText(true);
     }
-    
-    
     
     update(){
         super.update();

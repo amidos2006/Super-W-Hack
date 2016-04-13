@@ -117,7 +117,6 @@ class GameplayState extends BaseGameState{
             numOfEnemies = 0;
         }
         var tiles:TileTypeEnum[][] = room.getMatrix(this.enemyObjects);
-        tiles[Math.floor(Global.ROOM_WIDTH / 2)][Math.floor(Global.ROOM_HEIGHT / 2)] = TileTypeEnum.Wall;
         for (var dx = -2; dx <= 2; dx++) {
             for (var dy = -2; dy <= 2; dy++) {
                 if(dy > -2){
