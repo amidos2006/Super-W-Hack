@@ -302,6 +302,7 @@ class GameplayState extends BaseGameState{
         }
         
         if(this.playerObject == null){
+            Global.audioManager.stopMusic();
             return;
         }
         

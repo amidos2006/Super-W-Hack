@@ -119,7 +119,6 @@ class PlayerObject extends BaseGameObject{
         if(this.playerHealth <= 0){
             Global.audioManager.playTakeDamage(this.game.rnd);
             this.killObject();
-            Global.audioManager.stopMusic();
         }    
     }
     

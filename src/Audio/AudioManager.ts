@@ -184,8 +184,7 @@
 
     stopMusic() {
         for (var i: number = 0; i < AudioManager.musics.length; i++)
-            if (AudioManager.musics[i].isPlaying)
-                AudioManager.musics[i].stop();
+            AudioManager.musics[i].stop();
     }
 
     playMenuSelection() {
