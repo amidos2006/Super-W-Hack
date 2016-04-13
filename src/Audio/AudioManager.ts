@@ -167,6 +167,7 @@
      */
     playTitleMusic() {
         AudioManager.musicTitle.play();
+        AudioManager.musicTitle.volume = 0.6;
     }
 
     stopTitleMusic() {
@@ -180,6 +181,7 @@
     playMusic(id: number) {
         if (!AudioManager.musics[id].isPlaying)
             AudioManager.musics[id].play();
+        AudioManager.musics[id].volume = 0.5;
     }
 
     stopMusic() {
