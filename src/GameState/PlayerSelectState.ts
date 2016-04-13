@@ -42,11 +42,17 @@ class PlayerSelectState extends BaseGameState{
         }
         
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
+            Global.audioManager.stopTitleMusic();
             Global.initialize(this.game.cache.getText("dungeonNames_1"), 
                         this.game.cache.getText("dungeonNames_2"), 
                         this.game.cache.getText("dungeonNames_3"), this.game.rnd);
             Global.currentPlayer = this.characters[this.selectedIndex];
-            this.game.state.start("gameplay", true);
+            if(Global.currentGameMode == GameplayModes.adventure){
+                this.game.state.start("adventurename", true);
+            }
+            else{
+                this.game.state.start("gameplay", true);
+            }
             Global.audioManager.playMenuSelected();
             this.game.input.keyboard.reset();
         }

@@ -1,1 +1,1 @@
-dungeon, stairs, hell, valley, home, palace, citadel, castle, lair, cave, shelf, town, desk, drawer, closet
+dungeon, stairs, hell, valley, home, palace, citadel, castle, lair, cave, shelf, town, desk, drawer, closet, room, lab, tower
