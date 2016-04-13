@@ -1,6 +1,6 @@
 class EnemyObject extends BaseGameObject{
     
-    static enemySpriteNumbers:number[] = [8, 6, 9];
+    static enemySpriteNumbers:number[] = [9, 8, 6];
     enemySprite:Phaser.Sprite;
     healthText:Phaser.Text;
     enemyHealth:number;
@@ -26,7 +26,7 @@ class EnemyObject extends BaseGameObject{
         this.cannons = this.initializeCannons(this.selectParameters(params[2])-1, this.x, this.y);
         this.enemyType = this.defineEnemyType(this.selectParameters(params[3]));
         
-        this.enemySpeed = this.selectParameters(params[1]);
+        this.enemySpeed = 1;//this.selectParameters(params[1]);
         this.isAlive = true;        
         this.keepDirection = 0;
         this.factorDirectionChange = 2;
@@ -39,10 +39,10 @@ class EnemyObject extends BaseGameObject{
         this.enemySprite.tint = 0xcc6668;
         this.add(this.enemySprite);
         
-        var style = { font: "10px pixelFont", fill: "#cc6668", align: "left" };
-        this.healthText = this.game.add.text(Global.TILE_SIZE - 3, Global.TILE_SIZE - 10, 
+        var style = { font: "10px pixelFont", fill: "#cc6668", align: "right" };
+        this.healthText = this.game.add.text(Global.TILE_SIZE - 3, Global.TILE_SIZE + 4, 
             this.enemyHealth.toString(), style, this);
-        this.healthText.anchor.set(0, 0);
+        this.healthText.anchor.set(1, 1);
         this.add(this.healthText);
     }
     
@@ -398,9 +398,7 @@ class EnemyObject extends BaseGameObject{
         
         if (enemyDirection.x > 0)
         {
-            
-            if((this.getTilePosition().x + this.enemySpeed) < 10  &&
-                tileMap[this.getTilePosition().x + this.enemySpeed][this.getTilePosition().y] == TileTypeEnum.Passable)
+            if(tileMap[this.getTilePosition().x + 1][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
                 //this.x += Global.TILE_SIZE * this.enemySpeed;
                 canMove = true;
@@ -409,8 +407,7 @@ class EnemyObject extends BaseGameObject{
         
         if(enemyDirection.x < 0)
         {
-            if((this.getTilePosition().x - this.enemySpeed) > 0 &&
-                tileMap[this.getTilePosition().x - this.enemySpeed][this.getTilePosition().y] == TileTypeEnum.Passable)
+            if(tileMap[this.getTilePosition().x - 1][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
                // this.x -= Global.TILE_SIZE * this.enemySpeed;
                 canMove = true;
@@ -419,8 +416,7 @@ class EnemyObject extends BaseGameObject{
         
         if(enemyDirection.y > 0)
         {
-            if((this.getTilePosition().y + this.enemySpeed) < 10 &&
-                tileMap[this.getTilePosition().x][this.getTilePosition().y + this.enemySpeed] == TileTypeEnum.Passable)
+            if(tileMap[this.getTilePosition().x][this.getTilePosition().y + 1] == TileTypeEnum.Passable)
             {
              //   this.y += Global.TILE_SIZE * this.enemySpeed;
                 canMove = true;
@@ -429,8 +425,7 @@ class EnemyObject extends BaseGameObject{
         
         if(enemyDirection.y < 0)
         {
-            if((this.getTilePosition().y - this.enemySpeed) > 0 &&
-                tileMap[this.getTilePosition().x][this.getTilePosition().y - this.enemySpeed] == TileTypeEnum.Passable)
+            if(tileMap[this.getTilePosition().x][this.getTilePosition().y - 1] == TileTypeEnum.Passable)
             {
                 //this.y -= Global.TILE_SIZE * this.enemySpeed;
                 canMove = true;
@@ -444,7 +439,7 @@ class EnemyObject extends BaseGameObject{
     {   
         if (enemyDirection.x > 0)
         {
-            if(tileMap[this.getTilePosition().x + this.enemySpeed][this.getTilePosition().y] == TileTypeEnum.Passable)
+            if(tileMap[this.getTilePosition().x + 1][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
                 this.x += Global.TILE_SIZE * this.enemySpeed;
             }   
@@ -452,7 +447,7 @@ class EnemyObject extends BaseGameObject{
         
         if(enemyDirection.x < 0)
         {
-            if(tileMap[this.getTilePosition().x - this.enemySpeed][this.getTilePosition().y] == TileTypeEnum.Passable)
+            if(tileMap[this.getTilePosition().x - 1][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
                this.x -= Global.TILE_SIZE * this.enemySpeed;
             }   
@@ -460,7 +455,7 @@ class EnemyObject extends BaseGameObject{
         
         if(enemyDirection.y > 0)
         {
-            if(tileMap[this.getTilePosition().x][this.getTilePosition().y + this.enemySpeed] == TileTypeEnum.Passable)
+            if(tileMap[this.getTilePosition().x][this.getTilePosition().y + 1] == TileTypeEnum.Passable)
             {
                 this.y += Global.TILE_SIZE * this.enemySpeed;
             }
@@ -468,7 +463,7 @@ class EnemyObject extends BaseGameObject{
         
         if(enemyDirection.y < 0)
         {
-            if(tileMap[this.getTilePosition().x][this.getTilePosition().y - this.enemySpeed] == TileTypeEnum.Passable)
+            if(tileMap[this.getTilePosition().x][this.getTilePosition().y - 1] == TileTypeEnum.Passable)
             {
                 this.y -= Global.TILE_SIZE * this.enemySpeed;
             }
@@ -741,11 +736,7 @@ class EnemyObject extends BaseGameObject{
         super.update();
         
         this.healthText.text = this.enemyHealth.toString();
-        this.healthText.anchor.set(0, 0);
-        this.healthText.alpha = 1;
-        if(this.enemyHealth <= 1){
-            this.healthText.alpha = 0;
-        }
+        this.healthText.anchor.set(1, 1);
     }
     
     static getEnemey(game:Phaser.Game, x:number, y:number, params:number[])
