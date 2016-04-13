@@ -16,7 +16,7 @@
     static isMusicPlaying: boolean[] = null;
     static musicTitle: Phaser.Sound = null;
 
-    static AMOUNT_OF_MUSIC: number = 5;
+    static AMOUNT_OF_MUSIC: number = 12;
     static AMOUNT_OF_ATTACKS: number = 19;
     static AMOUNT_OF_HURT: number = 3;
     static AMOUNT_OF_WALK: number = 5;
@@ -86,6 +86,13 @@
         game.load.audio("music3", "assets/music/Super Crate Box/LEV1.mp3");
         game.load.audio("music4", "assets/music/Super Crate Box/LEV2.mp3");
         game.load.audio("music5", "assets/music/Super Crate Box/LEV3.mp3");
+        game.load.audio("music6", "assets/music/gameMusic.mp3");
+        game.load.audio("music7", "assets/music/gameMusic2.mp3");
+        game.load.audio("music8", "assets/music/gameMusic3.mp3");
+        game.load.audio("music9", "assets/music/Spelunky/mCave.mp3");
+        game.load.audio("music10", "assets/music/Spelunky/mIce.mp3");
+        game.load.audio("music11", "assets/music/Spelunky/mTemple.mp3");
+        game.load.audio("music12", "assets/music/Spelunky/mLush.mp3");
 
         AudioManager.musics = new Array(AudioManager.AMOUNT_OF_MUSIC);
         AudioManager.isMusicPlaying = new Array(AudioManager.AMOUNT_OF_MUSIC);
