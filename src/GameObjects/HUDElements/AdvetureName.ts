@@ -12,7 +12,7 @@ class AdventureName extends BaseUIObject{
         text.wordWrapWidth = game.width - 4 * Global.TILE_SIZE;
         this.add(text);
         
-        var mainPoint:Phaser.Point = new Phaser.Point(x - text.wordWrapWidth / 2 - 10, y - text.height + 10);
+        var mainPoint:Phaser.Point = new Phaser.Point(x - text.width / 2 - Global.TILE_SIZE - 5, y - text.height / 2 - Global.TILE_SIZE / 2);
         var sprite:Phaser.Sprite = this.game.add.sprite(mainPoint.x, mainPoint.y, "graphics");
         sprite.animations.add("normal", [0]);
         sprite.animations.play("normal");
@@ -37,7 +37,7 @@ class AdventureName extends BaseUIObject{
         sprite.tint = 0x664729;
         this.add(sprite);
         
-        mainPoint = new Phaser.Point(x + text.wordWrapWidth / 2 + 10, y + text.height - 10);
+        mainPoint = new Phaser.Point(x + text.width / 2 + Global.TILE_SIZE, y + text.height / 2 + Global.TILE_SIZE / 2 - 5);
         var sprite:Phaser.Sprite = this.game.add.sprite(mainPoint.x, mainPoint.y, "graphics");
         sprite.animations.add("normal", [0]);
         sprite.animations.play("normal");
