@@ -7,7 +7,7 @@ class MainMenuState extends BaseGameState{
     constructor(){
         super();
         
-        this.unselectedValues = ["the binding of isaac", "super crate box", " Tiny Rogue ", "steamspy", "igf awards"];
+        this.unselectedValues = ["the binding of isaac", "super crate box", "   tiny rogue   ", "steamspy", "igf awards"];
         this.selectedValues = ["adventure mode", "arcade mode", "challenge mode", "stats", "credits"];
     }
     
@@ -76,7 +76,7 @@ class MainMenuState extends BaseGameState{
                 case 5:
                 break;
             }
-            if(this.index >= 0 && this.index<=2){
+            if(this.index >= 0 && this.index<=0){
                 this.game.state.start("playerselect", true);
             }
             Global.audioManager.playMenuSelected();
