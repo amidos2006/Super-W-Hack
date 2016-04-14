@@ -363,6 +363,7 @@ class GameplayState extends BaseGameState{
                 this.game.input.keyboard.reset();
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
+                this.lastPosition = this.playerObject.getTilePosition();
                 this.arrowHighlight.hide();
                 this.unhighlight();
                 this.playerObject.fireWeapon();
