@@ -11,6 +11,8 @@ class AdventureNameState extends BaseGameState{
         
         this.adventureName = new AdventureName(this.game, this.game.width/2, this.game.height/2, Global.levelName);
         this.add.existing(this.adventureName);
+        
+        this.add.existing(new HintText(this.game, this.game.width/2, this.game.height, "(x) to continue"));
     }
     
     update(){

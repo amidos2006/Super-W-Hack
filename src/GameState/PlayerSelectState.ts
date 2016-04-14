@@ -18,6 +18,8 @@ class PlayerSelectState extends BaseGameState{
         this.playerText = new PlayerInfoText(this.game, this.game.width/2, this.game.height/2);
         this.game.add.existing(this.playerText);
         this.playerText.updateText(this.characters[this.selectedIndex]);
+        
+        this.game.add.existing(new HintText(this.game, this.game.width/2, this.game.height, "(left/right) to choose\n(x) to select"));
     }
     
     update(){
