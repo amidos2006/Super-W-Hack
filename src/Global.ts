@@ -159,7 +159,6 @@ class Global{
         }
         
         Global.levelRooms[Global.currentX][Global.currentY].difficulty = DifficultyEnum.None;
-        Global.levelRooms[Global.currentX][Global.currentY].cleared = true;
         
         while(sets.length > 1){
             var firstIndex:number = random.integerInRange(0, sets.length - 1);

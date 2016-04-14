@@ -17,13 +17,18 @@ class PlayerObject extends BaseGameObject{
         this.playerHealth = 1;
         this.isAlive = true;
         
+        var cd:number = 0;
+        if(this.getWeapon() != null){
+            cd = this.getWeapon().getCurrentCoolDown();
+        }
+        
         var style = { font: "10px pixelFont", fill: "#86b7c0", align: "left" };
         this.coolDownText = this.game.add.text(Global.TILE_SIZE - 3, Global.TILE_SIZE - 10, 
-            this.getWeapon().getCurrentCoolDown().toString(), style, this);
+            cd.toString(), style, this);
         this.coolDownText.anchor.set(0, 0);
         this.add(this.coolDownText);
         
-        if(this.getWeapon().getCurrentCoolDown() > 0){
+        if(cd > 0){
             this.coolDownText.alpha = 1;
         }
         else{
@@ -123,7 +128,9 @@ class PlayerObject extends BaseGameObject{
     }
     
     updateCoolDown(){
-        this.getWeapon().updateCoolDown();
+        if(this.getWeapon() != null){
+            this.getWeapon().updateCoolDown();
+        }
     }
     
     isPlayerAlive()
@@ -135,9 +142,13 @@ class PlayerObject extends BaseGameObject{
         super.update();
         
         this.coolDownText.alpha = 0;
-        if(this.getWeapon().getCurrentCoolDown() > 0){
+        var cd:number = 0;
+        if(this.getWeapon() != null){
+            cd = this.getWeapon().getCurrentCoolDown();
+        }
+        if(cd > 0){
             this.coolDownText.alpha = 1;
-            this.coolDownText.text = this.getWeapon().getCurrentCoolDown().toString();
+            this.coolDownText.text = cd.toString();
             this.coolDownText.anchor.set(0, 0);
         }
     }

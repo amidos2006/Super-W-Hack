@@ -14,6 +14,7 @@ class GameplayState extends BaseGameState{
     playerObject:PlayerObject;
     enemyObjects:EnemyObject[];
     boxObject:BoxObject;
+    lastPosition:Phaser.Point;
     lastDirection:Phaser.Point;
     miniMap:MiniMap;
     buttonText:ButtonTutorial;
@@ -100,10 +101,6 @@ class GameplayState extends BaseGameState{
         this.arrowHighlight = new DirHighlightTile(this.game);
         this.game.add.existing(this.arrowHighlight);
         
-        if(Global.currentWeapon == null){
-            Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd, null, Global.weaponNameGenerator);
-        }
-        
         if(Global.currentPlayer == null){
             Global.currentPlayer = new TatPlayerData(this.game.cache.getText("playerdata"));
         }
@@ -154,6 +151,15 @@ class GameplayState extends BaseGameState{
         if(!room.cleared && room.difficulty == DifficultyEnum.None){
             this.showBoxObject(new Phaser.Point(Math.floor(Global.ROOM_WIDTH / 2), Math.floor(Global.ROOM_HEIGHT / 2)));
         }
+        
+        if(Global.previousDirection.getMagnitude() == 0){
+            this.playerObject.y += Global.TILE_SIZE;
+            this.boxObject.y -= Global.TILE_SIZE;
+            for (var i = 0; i < this.currentDoors.length; i++) {
+                this.currentDoors[i].lock();
+            }
+        }
+        this.lastPosition = this.playerObject.getTilePosition();
     }
 
     highlight(damageMatrix:number[][]){
@@ -283,7 +289,7 @@ class GameplayState extends BaseGameState{
         for (var i = 0; i < this.enemyObjects.length; i++) {
             var tileMatrix:number[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
             tileMatrix[this.boxObject.getTilePosition().x][this.boxObject.getTilePosition().y] = TileTypeEnum.Box;
-            this.enemyObjects[i].movement(this.playerObject.getTilePosition(), tileMatrix);
+            this.enemyObjects[i].movement(this.lastPosition, tileMatrix);
         }
         
         if(this.handleEnemyCollision()){
@@ -371,29 +377,32 @@ class GameplayState extends BaseGameState{
         }
         else{
             if(direction.x != 0 || direction.y != 0){
+                this.lastPosition = this.playerObject.getTilePosition();
                 this.lastDirection = direction;
                 if(this.playerObject.move(direction, Global.getCurrentRoom().getMatrix(this.enemyObjects))){
                     this.stepUpdate();
                 }
                 this.game.input.keyboard.reset();
             }
-            if(this.game.input.keyboard.isDown(Phaser.Keyboard.X) && 
-                this.playerObject.getWeapon().getCurrentCoolDown() <= 0){
-                this.arrowHighlight.show(this.playerObject.getTilePosition(), this.lastDirection);
-                this.highlight(this.playerObject.getWeapon().getWeaponPositions(
-                    this.playerObject.getTilePosition(), this.lastDirection, 
-                    Global.matrixTranspose(Global.getCurrentRoom().getMatrix(this.enemyObjects))));
-                this.game.input.keyboard.reset();
-                this.buttonText.aimMode();
-            }
-            
-            if(this.game.input.keyboard.isDown(Phaser.Keyboard.Z) && 
-                Global.crateNumber >= Global.getCurrentCost()){
-                Global.crateNumber -= Global.getCurrentCost();
-                Global.itemUsage += 1;
-                Global.currentPlayer.specialAbility.useSpecial(this);
-                this.buttonText.normalMode();
-                this.game.input.keyboard.reset();
+            if(Global.currentWeapon != null){
+                if(this.game.input.keyboard.isDown(Phaser.Keyboard.X) && 
+                    this.playerObject.getWeapon().getCurrentCoolDown() <= 0){
+                    this.arrowHighlight.show(this.playerObject.getTilePosition(), this.lastDirection);
+                    this.highlight(this.playerObject.getWeapon().getWeaponPositions(
+                        this.playerObject.getTilePosition(), this.lastDirection, 
+                        Global.matrixTranspose(Global.getCurrentRoom().getMatrix(this.enemyObjects))));
+                    this.game.input.keyboard.reset();
+                    this.buttonText.aimMode();
+                }
+                
+                if(this.game.input.keyboard.isDown(Phaser.Keyboard.Z) && 
+                    Global.crateNumber >= Global.getCurrentCost()){
+                    Global.crateNumber -= Global.getCurrentCost();
+                    Global.itemUsage += 1;
+                    Global.currentPlayer.specialAbility.useSpecial(this);
+                    this.buttonText.normalMode();
+                    this.game.input.keyboard.reset();
+                }
             }
         }
         
