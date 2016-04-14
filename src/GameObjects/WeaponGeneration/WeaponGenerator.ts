@@ -5,9 +5,10 @@ class WeaponGenerator {
     static COOLDOWN: number = 2;
     static SPECIAL: number = 3;
 
+    static PROB_POWEFUL_WEAPON = 0.3;
 
     static GenerateWeapon(paramSet: number[], random: Phaser.RandomDataGenerator,
-        oldWeapon: Weapon, nameGenerator: WeaponNameGenerator): Weapon {
+        oldWeapon: Weapon, nameGenerator: WeaponNameGenerator, minDamage: number): Weapon {
        
         if (paramSet == null) {
             paramSet = new Array(4);
@@ -76,11 +77,12 @@ class WeaponGenerator {
 
 
            if (width == 1) {
-               pattern = WeaponGenerator.createPatternWithOneWidth(pattern, height, random);
+               pattern = WeaponGenerator.createPatternWithOneWidth(pattern, height, random, (minDamage > -1 ? true : false));
            } else if (height == 1) {
-               pattern = WeaponGenerator.createPatternWithOneHeight(pattern, width, random);
+               pattern = WeaponGenerator.createPatternWithOneHeight(pattern, width, random, (minDamage > -1 ? true : false));
            } else {
-               pattern = WeaponGenerator.createPattern(pattern, width, height, random);
+               pattern = WeaponGenerator.createPattern(pattern, width, height, random, weapon.centered,
+                   (minDamage > -1 ? true : false));
            }
 
            //clear player position
@@ -106,7 +108,10 @@ class WeaponGenerator {
            
            weapon.pattern = pattern;
 
-           weapon.damage = random.integerInRange(Weapon.MIN_DAMAGE, Weapon.MAX_DAMAGE);
+           if (minDamage > -1)
+               weapon.damage = minDamage;
+           else
+               weapon.damage = random.integerInRange(Weapon.MIN_DAMAGE, Weapon.MAX_DAMAGE);
            var i: number = Math.floor(Weapon.MAX_COOLDOWN - Weapon.MIN_COOLDOWN / Weapon.COOLDOWN_INTERVAL) + 1;
            weapon.cooldown = random.integerInRange(0, Weapon.MAX_COOLDOWN);
            weapon.curCooldown = 0;
@@ -182,7 +187,7 @@ class WeaponGenerator {
         return true;
     }
 
-    static createPatternWithOneWidth(pattern: number[][], height: number, random: Phaser.RandomDataGenerator): number[][] {
+    static createPatternWithOneWidth(pattern: number[][], height: number, random: Phaser.RandomDataGenerator, needToHaveAdj: boolean): number[][] {
         var hasAnyFilled:boolean = false;
         for (var i: number = 0; i < height; i++) {
             //randomize half
@@ -201,7 +206,7 @@ class WeaponGenerator {
         return pattern;
     }
 
-    static createPatternWithOneHeight(pattern: number[][], width: number, random: Phaser.RandomDataGenerator): number[][] {
+    static createPatternWithOneHeight(pattern: number[][], width: number, random: Phaser.RandomDataGenerator, needToHaveAdj: boolean): number[][] {
         var hasAnyFilled: boolean = false;
 
         //randomize half
@@ -234,11 +239,12 @@ class WeaponGenerator {
         return pattern;
     }
 
-    static createPattern(pattern: number[][], width: number, height: number, random: Phaser.RandomDataGenerator): number[][] {
+    static createPattern(pattern: number[][], width: number, height: number, random: Phaser.RandomDataGenerator,
+        centered: boolean, needToHaveAdj: boolean): number[][] {
         var hasAnyFilled:boolean = false;
 
         
-        var orientation: number = random.frac();
+        var orientation: number = (centered ? random.frac() : random.between(0, 0.65));
         console.log("Orientation: " + orientation);
         if (orientation < 0.66) {
             //copy horizontally and diagonally
@@ -261,6 +267,17 @@ class WeaponGenerator {
                     [random.integerInRange(0, Math.floor(width / 2) - 1)] = 1;
                 else
                     pattern[0][0] = 1;
+            }
+
+            if (needToHaveAdj) {
+                if (pattern[Math.floor(pattern.length / 2) - 1][Math.floor(pattern[0].length / 2)] == 0 &&
+                    pattern[Math.floor(pattern.length / 2)][Math.floor(pattern[0].length / 2) - 1] == 0) {
+                    if (random.frac() < 0.5) {
+                        pattern[Math.floor(pattern.length / 2) - 1][Math.floor(pattern[0].length / 2)];
+                    } else {
+                        pattern[Math.floor(pattern.length / 2)][Math.floor(pattern[0].length / 2) - 1];
+                    }
+                }
             }
 
             for (var i: number = 0; i < height; i++) {
@@ -292,6 +309,17 @@ class WeaponGenerator {
                 }
 
                 auxPattern = Weapon.invertColumn(Weapon.invertRow(auxPattern));
+
+                if (needToHaveAdj) {
+                    if (pattern[Math.floor(pattern.length / 2) - 1][Math.floor(pattern[0].length / 2)] == 0 &&
+                        pattern[Math.floor(pattern.length / 2)][Math.floor(pattern[0].length / 2) - 1] == 0){
+                        if (random.frac() < 0.5) {
+                            pattern[Math.floor(pattern.length / 2) - 1][Math.floor(pattern[0].length / 2)];
+                        } else {
+                            pattern[Math.floor(pattern.length / 2)][Math.floor(pattern[0].length / 2) - 1];
+                        }
+                    }
+                }
 
                 for (var i: number = 0; i < height; i++) {
                     //copy other half
