@@ -302,6 +302,11 @@ class GameplayState extends BaseGameState{
     update(){
         super.update();
         
+        this.buttonText.alpha = 1;
+        if(Global.currentWeapon == null){
+            this.buttonText.alpha = 0;
+        }
+        
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.R)){
             this.game.state.start("loading", true);
             Global.audioManager.stopMusic();
