@@ -325,8 +325,17 @@ class GameplayState extends BaseGameState{
         
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.E)){
             console.log("New Weapon is Assigned Press W to view details");
-            this.playerObject.setWeapon(WeaponGenerator.GenerateWeapon(null, this.game.rnd, 
-                this.playerObject.getWeapon(), Global.weaponNameGenerator, -1));
+            Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd, 
+                this.playerObject.getWeapon(), Global.weaponNameGenerator, -1);
+            this.playerObject.setWeapon(Global.currentWeapon);
+            this.game.input.keyboard.reset();
+        }
+        
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.Q)){
+            console.log("New Weapon is Assigned Press W to view details");
+            Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd, 
+                this.playerObject.getWeapon(), Global.weaponNameGenerator, 3)
+            this.playerObject.setWeapon(Global.currentWeapon);
             this.game.input.keyboard.reset();
         }
         
