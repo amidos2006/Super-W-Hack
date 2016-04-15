@@ -107,7 +107,8 @@ class RoomInfoObject{
             returnMatrix[enemyPosition.x][enemyPosition.y] = TileTypeEnum.Enemy;
         }
         
-        if(this.cleared || this.difficulty == DifficultyEnum.None){
+        if(this.cleared || (this.difficulty == DifficultyEnum.None && 
+            !(Global.previousDirection.getMagnitude() == 0 && Global.levelNumber == 0))){
             if(this.checkDoor(new Phaser.Point(-1, 0))){
                 returnMatrix[0][Math.floor(Global.ROOM_HEIGHT / 2)] = TileTypeEnum.Passable;
             }

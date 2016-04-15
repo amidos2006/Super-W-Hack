@@ -138,7 +138,7 @@ class Global{
         while(queue.length != 0 && roomNumbers / (Global.mapWidth * Global.mapHeight) < precentageCovered){
             var p:Phaser.Point = queue.splice(random.integerInRange(0, queue.length - 1), 1)[0];
             if(Global.levelRooms[p.x][p.y] == null){
-                var diff:number = random.integerInRange(1, 3);
+                var diff:number = random.integerInRange(1, 2);
                 if(Math.random() < probabilityOfEmptyPlace){
                     diff = 0;
                 }

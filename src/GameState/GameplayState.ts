@@ -152,7 +152,7 @@ class GameplayState extends BaseGameState{
             this.showBoxObject(new Phaser.Point(Math.floor(Global.ROOM_WIDTH / 2), Math.floor(Global.ROOM_HEIGHT / 2)));
         }
         
-        if(Global.previousDirection.getMagnitude() == 0){
+        if(Global.levelNumber == 0 && Global.previousDirection.getMagnitude() == 0){
             this.playerObject.y += Global.TILE_SIZE;
             this.boxObject.y -= Global.TILE_SIZE;
             for (var i = 0; i < this.currentDoors.length; i++) {
