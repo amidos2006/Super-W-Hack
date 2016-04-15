@@ -1,1 +1,6 @@
-dungeon, stairs, hell, valley, home, palace, citadel, castle, lair, cave, shelf, town, desk, drawer, closet, room, lab, tower
+dungeon, stairs, lair, cave, mud
+castle, tower, citadel, palace, home, room, lab
+desk, drawer, closet, shelf, pants
+desert, storm, beach, sand castle
+lake, sea, river, ocean, ice cave
+valley, forest, swamp, garden, backyard
