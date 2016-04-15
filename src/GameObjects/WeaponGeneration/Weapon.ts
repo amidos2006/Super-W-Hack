@@ -41,8 +41,8 @@ class Weapon {
     damage: number = 1;
     
     /** Time of shot cooldown: 1, 3, 5 */
-    static MIN_COOLDOWN:number = 1;
-    static MAX_COOLDOWN:number = 5;
+    static MIN_COOLDOWN:number = 0;
+    static MAX_COOLDOWN:number = 4;
     static COOLDOWN_INTERVAL:number = 2;
     cooldown :number = 1;
     curCooldown: number = 0;
@@ -84,9 +84,11 @@ class Weapon {
     direction: Phaser.Point;
     pattern: number[][];
     idSound: number;
+    weaponPower: number = 0;
+    areaLevel: number = 0;
     constructor() {
         this.shape = WeaponShape.LINE_1;
-
+        this.weaponPower = -1;
     }
 
     attackInLine(result: number[][], intAttPosX: number, intAttPosY: number,
@@ -338,6 +340,13 @@ class Weapon {
         return this.curCooldown;
     }
 
+    getDamage(): number {
+        return this.damage;
+    }
+
+    getAreaLevel(): number {
+        return this.areaLevel;
+    }
     //LeftOnFloor():List of FloorObject{}	
 
     updateCoolDown() {
@@ -378,6 +387,119 @@ class Weapon {
         }
         text += "---\n";
         return text;
+    }
+
+    calculateAreaLevel() {
+        this.areaLevel = 0;
+        var black: number = 0;
+        for (var i: number = 0; i < this.pattern.length; i++) {
+            for (var j: number = 0; j < this.pattern[0].length; j++) {
+                if (this.pattern[i][j] == 1) {
+                    black++;
+                }
+            }
+        }
+
+        if (this.centered) {
+            var maxW: number = Math.ceil(Global.ROOM_WIDTH / 2) > 3 ? Math.ceil(Global.ROOM_WIDTH / 2) : 3;
+            var maxH: number = Math.ceil(Global.ROOM_HEIGHT / 2) > 3 ? Math.ceil(Global.ROOM_HEIGHT / 2) : 3;
+            var MAX_BLACK: number = (maxH * maxW);
+            this.areaLevel += black / MAX_BLACK;
+
+        } else {
+            var MAX_BLACK: number = Math.ceil(Global.ROOM_HEIGHT / 3) * Math.ceil(Global.ROOM_WIDTH / 3);
+            var maxRepetitions: number = Global.ROOM_HEIGHT / Math.ceil(Global.ROOM_HEIGHT / 2);
+
+            var repetitions: number = 0;
+
+            if (this.pattern.length > this.pattern[0].length)
+                repetitions = Global.ROOM_HEIGHT / this.pattern.length;
+            else
+                repetitions = Global.ROOM_WIDTH / this.pattern[0].length;
+
+            this.areaLevel += (repetitions * black) / (MAX_BLACK * maxRepetitions);
+        }
+    }
+
+    howPowerful(): number {
+        var amount: number = 0;
+        var aux: number = 0;
+        var MAX: number = 0;
+
+        if (this.centered) {
+            if (this.pattern[Math.floor(this.pattern.length / 2) - 1][Math.floor(this.pattern[0].length / 2)] == 1)
+                aux++;
+            if (this.pattern[Math.floor(this.pattern.length / 2) + 1][Math.floor(this.pattern[0].length / 2)] == 1)
+                aux++;
+            if (this.pattern[Math.floor(this.pattern.length / 2)][Math.floor(this.pattern[0].length / 2) - 1] == 1)
+                aux++;
+            if (this.pattern[Math.floor(this.pattern.length / 2)][Math.floor(this.pattern[0].length / 2) + 1] == 1)
+                aux++;
+            amount = aux / 4;
+        } else {
+            if (this.pattern[this.pattern.length - 1][Math.floor(this.pattern[0].length / 2)] == 1)
+                amount++;
+        }
+        MAX++;
+
+        
+
+        if (this.cooldown < Math.ceil(Weapon.MAX_COOLDOWN / 3))
+            amount += (2/2);
+        else if (this.cooldown < (Math.ceil(Weapon.MAX_COOLDOWN / 3)* 2 )){
+            amount+= (1/2);
+        }
+        MAX++;
+
+        if (this.damage == Weapon.MAX_DAMAGE)
+            amount += (2 / 2);
+        else if (this.damage > Math.floor(Weapon.MAX_DAMAGE / 2)) {
+            amount += (1 / 2);
+        }
+        MAX++;
+
+
+        var black: number = 0;
+        for (var i: number = 0; i < this.pattern.length; i++) {
+            for (var j: number = 0; j < this.pattern[0].length; j++) {
+                if (this.pattern[i][j] == 1) {
+                    black++;
+                }
+            }
+        }
+
+        if (this.centered) {
+            var maxW: number = Math.ceil(Global.ROOM_WIDTH / 2) > 3 ? Math.ceil(Global.ROOM_WIDTH / 2) : 3;
+            var maxH: number = Math.ceil(Global.ROOM_HEIGHT / 2) > 3 ? Math.ceil(Global.ROOM_HEIGHT / 2) : 3;
+            var MAX_BLACK: number = (maxH * maxW);
+            amount += black / MAX_BLACK;
+
+        } else {
+            var MAX_BLACK: number = Math.ceil(Global.ROOM_HEIGHT / 3) * Math.ceil(Global.ROOM_WIDTH / 3);
+            var maxRepetitions: number = Global.ROOM_HEIGHT / Math.ceil(Global.ROOM_HEIGHT / 2);
+            
+            var repetitions: number = 0;
+
+            if (this.pattern.length > this.pattern[0].length)
+                repetitions = Global.ROOM_HEIGHT / this.pattern.length;
+            else
+                repetitions = Global.ROOM_WIDTH / this.pattern[0].length;
+
+            amount += (repetitions * black) / (MAX_BLACK * maxRepetitions);
+        }
+        MAX++;
+        /*if (this.centered) {
+            aux = (this.pattern.length * this.pattern[0].length)
+                / (Math.ceil(Global.ROOM_HEIGHT / 2) * Math.ceil(Global.ROOM_WIDTH / 2));
+            amount += aux;
+        }
+        MAX++;
+        if (this.repeat)
+            amount++;
+        MAX++;*/
+
+        this.weaponPower = amount / MAX;
+        return this.weaponPower;
     }
 }
 

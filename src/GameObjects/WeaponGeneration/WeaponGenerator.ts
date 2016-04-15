@@ -6,10 +6,53 @@ class WeaponGenerator {
     static SPECIAL: number = 3;
 
     static PROB_POWEFUL_WEAPON = 0.3;
+    static MAX_POWERFUL_WEAPON = 2 * 3;
+
+    static AMOUNT_OF_WEAPONS: number = 100;
+    static weapons: Weapon[] = null;
 
     static GenerateWeapon(paramSet: number[], random: Phaser.RandomDataGenerator,
         oldWeapon: Weapon, nameGenerator: WeaponNameGenerator, minDamage: number): Weapon {
-       
+        if (minDamage > 0) {
+            return WeaponGenerator.GenerateAWeapon(paramSet, random, oldWeapon, nameGenerator, minDamage);
+        }
+
+        if (WeaponGenerator.weapons == null) {
+            WeaponGenerator.weapons = new Array(WeaponGenerator.AMOUNT_OF_WEAPONS);
+            for (var i: number = 0; i < WeaponGenerator.AMOUNT_OF_WEAPONS; i++) {
+                WeaponGenerator.weapons[i] = WeaponGenerator.GenerateAWeapon(paramSet, random, oldWeapon, nameGenerator, minDamage);
+            }
+            WeaponGenerator.weapons.sort(function (a: Weapon, b: Weapon) { return a.weaponPower - b.weaponPower; });
+        }
+
+        var prob: number = random.frac();
+        var s: string = "";
+        console.log("Preparing" + prob);
+        for (var i: number = 0; i < WeaponGenerator.AMOUNT_OF_WEAPONS; i++) {
+            s += WeaponGenerator.weapons[i].weaponPower + "\t";   
+        }
+
+        console.log("Printing ");
+        console.log(s);
+
+        var selectedWeapon: number = WeaponGenerator.AMOUNT_OF_WEAPONS-1;
+        var w: Weapon = null;
+        for (var i: number = 0; i < WeaponGenerator.AMOUNT_OF_WEAPONS; i++)
+            if (prob < WeaponGenerator.weapons[i].weaponPower) {
+                console.log("chose one :" + WeaponGenerator.weapons[i].weaponPower + " " + prob);
+                selectedWeapon = i;
+                break;
+            }
+
+        w = WeaponGenerator.weapons[selectedWeapon];
+        WeaponGenerator.weapons[selectedWeapon] =
+            WeaponGenerator.GenerateAWeapon(paramSet, random, oldWeapon, nameGenerator, minDamage);
+        WeaponGenerator.weapons.sort(function (a: Weapon, b: Weapon) { return a.weaponPower - b.weaponPower; });
+        return w;
+    }
+
+    static GenerateAWeapon(paramSet: number[], random: Phaser.RandomDataGenerator,
+        oldWeapon: Weapon, nameGenerator: WeaponNameGenerator, minDamage: number): Weapon {
         if (paramSet == null) {
             paramSet = new Array(4);
             for (var i: number = 0; i < paramSet.length; i++) {
@@ -73,7 +116,7 @@ class WeaponGenerator {
                }
            }
 
-           console.log("checking " + height + "x" + width + " " + pattern.length + "x" + pattern[0].length);
+           //console.log("checking " + height + "x" + width + " " + pattern.length + "x" + pattern[0].length);
 
 
            if (width == 1) {
@@ -103,11 +146,8 @@ class WeaponGenerator {
                }
                t += "\n";
            }
-           console.log("before " + t);
+           //console.log("before " + t);
 
-
- 
-           
            weapon.pattern = pattern;
 
            if (minDamage > -1)
@@ -120,52 +160,15 @@ class WeaponGenerator {
            weapon.poison = random.frac() < 0.2 ? true : false;
            console.log("LOGGING " + weapon.toString());
            weapon.lingering = random.frac() < 0.3 ? true : false;
-
+           
        } while (oldWeapon != null && WeaponGenerator.isSame(weapon, oldWeapon)); 
 
        weapon.idSound = random.between(0, AudioManager.AMOUNT_OF_ATTACKS - 1);
 
        //Generate name.
-       var seed: number[] = new Array(7);
-       seed[0] = weapon.damage;
-       seed[1] = weapon.cooldown;
-       seed[2] = weapon.centered ? 1 : 0;
-       seed[3] = weapon.poison ? 1 : 0;
-       seed[4] = weapon.repeat ? 1 : 0;
-       seed[5] = weapon.lingering ? 1 : 0;
-       var patternValue: number = 0, last: number = 0;
-       for (var i: number = 0; i < pattern.length; i++) {
-           for (var j: number = 0; j < pattern[0].length; j++) {
-               patternValue += pattern[i][j] * (Math.pow(10, last));
-               last++;
-           }
-       }
-       seed[6] = patternValue;
-       random = new Phaser.RandomDataGenerator(seed);
-
-       var quantAdj: number = 1;
-       if (weapon.damage > Weapon.MAX_DAMAGE / 2)
-           quantAdj++;
-       if (weapon.isWeaponPoisoned() || weapon.isWeaponLingering())
-           quantAdj++;
-       if (weapon.cooldown < Weapon.MAX_COOLDOWN / 2)
-           quantAdj++;
-       if (quantAdj < 3 && (weapon.pattern.length > 3 && weapon.pattern[0].length > 3))
-           quantAdj++;
-       weapon.name = nameGenerator.generateAName(quantAdj,random);
-
-       
-         /*
-       
-       i = Math.floor(Weapon.MAX_SHIFT - Weapon.MIN_SHIFT / Weapon.SHIFT_INTERVAL) + 1;
-       weapon.startPointShif = random.integerInRange(0, i) * Weapon.SHIFT_INTERVAL + Weapon.MIN_SHIFT;
-       
-       weapon.endingType = Weapon.ENDING_TYPES[random.integerInRange(0, Weapon.ENDING_TYPES.length)];
-       weapon.shape = Weapon.WEAPON_SHAPE[random.integerInRange(0, Weapon.WEAPON_SHAPE.length-1)];
-       weapon.shotType = Weapon.SHOT_TYPE[random.integerInRange(0, Weapon.SHOT_TYPE.length-1)];
-       weapon.typeColidedObj = Weapon.TYPE_COLIDED_OBJECT[random.integerInRange(0, Weapon.TYPE_COLIDED_OBJECT.length - 1)];
-       weapon.wOnColision = Weapon.WEAPON_ON_COLISION[random.integerInRange(0, Weapon.WEAPON_ON_COLISION.length - 1)];
-       */
+       weapon.name = WeaponGenerator.generateName(weapon, pattern, random, nameGenerator);
+       weapon.calculateAreaLevel();
+       weapon.howPowerful();
        random = previousRandom;
        return weapon;
     }	
@@ -263,7 +266,7 @@ class WeaponGenerator {
         var hasAnyFilled:boolean = false;
         
         var orientation: number = (centered ? random.frac() : random.between(0, 0.65));
-                console.log("Orientation: " + orientation);
+        //console.log("Orientation: " + orientation);
 
         if (orientation < 0.66) {
             //copy horizontally and diagonally
@@ -307,8 +310,6 @@ class WeaponGenerator {
                         }
                     }
                 } else {
-                    console.log("??" + pattern[pattern.length - 1][Math.floor(pattern[0].length / 2)] + " " +
-                        (pattern.length - 1) + " " + (Math.floor(pattern[0].length / 2)));
                     if (pattern[pattern.length - 1][Math.floor(pattern[0].length / 2)] == 0)
                         pattern[pattern.length - 1][Math.floor(pattern[0].length / 2)] = 1;
                 }
@@ -402,7 +403,7 @@ class WeaponGenerator {
             }
             t += ""+(pattern[Math.floor(pattern.length / 2) - 1][Math.floor(pattern[0].length / 2)] == 0) + " " +
                 (pattern[Math.floor(pattern.length / 2)][Math.floor(pattern[0].length / 2) - 1] == 0) + " " + centered;
-            console.log(t);
+            //console.log(t);
 
             for (var i: number = 0; i < width; i++) {
                 //if odd number, add one line with random
@@ -444,4 +445,36 @@ class WeaponGenerator {
         } 
         return pattern;
     }
+
+    static generateName(weapon: Weapon, pattern: number[][], random: Phaser.RandomDataGenerator,
+        nameGenerator: WeaponNameGenerator): string {
+        var seed: number[] = new Array(7);
+        seed[0] = weapon.damage;
+        seed[1] = weapon.cooldown;
+        seed[2] = weapon.centered ? 1 : 0;
+        seed[3] = weapon.poison ? 1 : 0;
+        seed[4] = weapon.repeat ? 1 : 0;
+        seed[5] = weapon.lingering ? 1 : 0;
+        var patternValue: number = 0, last: number = 0;
+        for (var i: number = 0; i < pattern.length; i++) {
+            for (var j: number = 0; j < pattern[0].length; j++) {
+                patternValue += pattern[i][j] * (Math.pow(10, last));
+                last++;
+            }
+        }
+        seed[6] = patternValue;
+        random = new Phaser.RandomDataGenerator(seed);
+
+        var quantAdj: number = 1;
+        if (weapon.damage > Weapon.MAX_DAMAGE / 2)
+            quantAdj++;
+        if (weapon.isWeaponPoisoned() || weapon.isWeaponLingering())
+            quantAdj++;
+        if (weapon.cooldown < Weapon.MAX_COOLDOWN / 2)
+            quantAdj++;
+        if (quantAdj < 3 && (weapon.pattern.length > 3 && weapon.pattern[0].length > 3))
+            quantAdj++;
+       return nameGenerator.generateAName(quantAdj, random);
+    }
+
 }
