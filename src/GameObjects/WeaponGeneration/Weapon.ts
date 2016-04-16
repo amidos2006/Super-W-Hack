@@ -31,6 +31,15 @@ enum TypeColidedObject {
     DIE_ON_COLISION
 }
 
+enum WeaponCrazyEffects {
+    NOTHING,
+    TELEPORT,
+    KNOCKBACK_ENEMY_1,
+    KNOCKBACK_ENEMY_2,
+    KNOCKBACK_PLAYER_1,
+    KNOCKBACK_PLAYER2
+}
+
 class Weapon {
     name: String = "";
     
@@ -78,6 +87,7 @@ class Weapon {
     static CHANCE_REPEAT: number = 0.3;
 
     lingering: boolean = false;
+    amountOfLingeringLive: number = 0;
     poison: boolean = false;
     centered: boolean = false;
     repeat: boolean = false;
@@ -86,6 +96,12 @@ class Weapon {
     idSound: number;
     weaponPower: number = 0;
     areaLevel: number = 0;
+    objectExplode: boolean = false;
+    objectFade: boolean = false;
+    static EFFECTS: WeaponCrazyEffects[] = [WeaponCrazyEffects.NOTHING, WeaponCrazyEffects.TELEPORT, WeaponCrazyEffects.KNOCKBACK_ENEMY_1,
+        WeaponCrazyEffects.KNOCKBACK_ENEMY_2, WeaponCrazyEffects.KNOCKBACK_PLAYER2, WeaponCrazyEffects.KNOCKBACK_PLAYER_1];
+    crazyEffect: WeaponCrazyEffects = WeaponCrazyEffects.NOTHING;
+
     constructor() {
         this.shape = WeaponShape.LINE_1;
         this.weaponPower = -1;
@@ -145,6 +161,27 @@ class Weapon {
 
         return result;
     }
+
+    getLingeringObjectPositions(objectPos: Phaser.Point, valueMatrix: TileTypeEnum[][]): number[][] {
+
+        var result = new Array(valueMatrix.length);
+        for (var i: number = 0; i < valueMatrix.length; i++) {
+            result[i] = new Array(valueMatrix[0].length);
+            for (var j: number = 0; j < valueMatrix[0].length; j++) {
+                result[i][j] = 0;
+            }
+        }
+
+        for (var i: number = (objectPos.y - 1 < 0 ? 0 : objectPos.y - 1);
+            i < (objectPos.y + 1 > result.length - 1 ? result.length - 1 : objectPos.y + 1); i++) {
+            for (var j: number = (objectPos.x - 1 < 0 ? 0 : objectPos.x - 1);
+                j < (objectPos.x + 1 > result[0].length - 1 ?result[0].length - 1 : objectPos.x + 1); j++) {
+                result[i][j] = this.damage;
+            }
+        }
+        return result;
+    }
+
 
     getWeaponPositions(playerPos:Phaser.Point, faceDirection:Phaser.Point, valueMatrix:TileTypeEnum[][]): number[][]	 {
         
@@ -369,10 +406,27 @@ class Weapon {
     isWeaponLingering(): boolean {
         return this.poison;
     }
+
+    getLingeringLife(): number {
+        return this.amountOfLingeringLive;
+    }
     
     fireWeapon() {
         this.curCooldown = this.cooldown;
     }
+
+    getSpecialEffect(): WeaponCrazyEffects {
+        return this.crazyEffect;
+    }
+
+    isObjectFadeWithTimeType(): boolean {
+        return this.objectFade;
+    }
+
+    isObjectExplodeType(): boolean {
+        return this.objectExplode;
+    }
+
     
     toString():string{
         var text: string = "";
@@ -426,6 +480,7 @@ class Weapon {
         var aux: number = 0;
         var MAX: number = 0;
 
+        var surrouding: number = 0;
         if (this.centered) {
             if (this.pattern[Math.floor(this.pattern.length / 2) - 1][Math.floor(this.pattern[0].length / 2)] == 1)
                 aux++;
@@ -435,30 +490,31 @@ class Weapon {
                 aux++;
             if (this.pattern[Math.floor(this.pattern.length / 2)][Math.floor(this.pattern[0].length / 2) + 1] == 1)
                 aux++;
-            amount = aux / 4;
+            surrouding = aux / 4;
         } else {
             if (this.pattern[this.pattern.length - 1][Math.floor(this.pattern[0].length / 2)] == 1)
-                amount++;
+                surrouding++;
         }
         MAX++;
 
         
-
+        var cooldown: number = 0;
         if (this.cooldown < Math.ceil(Weapon.MAX_COOLDOWN / 3))
-            amount += (2/2);
+            cooldown = (2/2);
         else if (this.cooldown < (Math.ceil(Weapon.MAX_COOLDOWN / 3)* 2 )){
-            amount+= (1/2);
+            cooldown = (1/2);
         }
         MAX++;
 
+        var damage: number = 0;
         if (this.damage == Weapon.MAX_DAMAGE)
-            amount += (2 / 2);
+            damage = (2 / 2);
         else if (this.damage > Math.floor(Weapon.MAX_DAMAGE / 2)) {
-            amount += (1 / 2);
+            damage = (1 / 2);
         }
         MAX++;
 
-
+        var area: number = 0;
         var black: number = 0;
         for (var i: number = 0; i < this.pattern.length; i++) {
             for (var j: number = 0; j < this.pattern[0].length; j++) {
@@ -472,7 +528,7 @@ class Weapon {
             var maxW: number = Math.ceil(Global.ROOM_WIDTH / 2) > 3 ? Math.ceil(Global.ROOM_WIDTH / 2) : 3;
             var maxH: number = Math.ceil(Global.ROOM_HEIGHT / 2) > 3 ? Math.ceil(Global.ROOM_HEIGHT / 2) : 3;
             var MAX_BLACK: number = (maxH * maxW);
-            amount += black / MAX_BLACK;
+            area= black / MAX_BLACK;
 
         } else {
             var MAX_BLACK: number = Math.ceil(Global.ROOM_HEIGHT / 3) * Math.ceil(Global.ROOM_WIDTH / 3);
@@ -485,9 +541,12 @@ class Weapon {
             else
                 repetitions = Global.ROOM_WIDTH / this.pattern[0].length;
 
-            amount += (repetitions * black) / (MAX_BLACK * maxRepetitions);
+            area = (repetitions * black) / (MAX_BLACK * maxRepetitions);
         }
         MAX++;
+
+        var ling: number = this.lingering ? (this.amountOfLingeringLive > 0 ? this.amountOfLingeringLive / 3 : 4) : 0;
+
         /*if (this.centered) {
             aux = (this.pattern.length * this.pattern[0].length)
                 / (Math.ceil(Global.ROOM_HEIGHT / 2) * Math.ceil(Global.ROOM_WIDTH / 2));
@@ -498,7 +557,7 @@ class Weapon {
             amount++;
         MAX++;*/
 
-        this.weaponPower = amount / MAX;
+        this.weaponPower = ((surrouding * 2) + (area * 1) + (cooldown * 2) + (damage * 2) + (ling * 1)) / 8;
         return this.weaponPower;
     }
 }

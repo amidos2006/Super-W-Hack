@@ -80,6 +80,7 @@ class WeaponGenerator {
                width = random.integerInRange(3, Math.ceil(Global.ROOM_WIDTH / 2) > 3 ? Math.ceil(Global.ROOM_WIDTH / 2) : 3);
                height = random.integerInRange(3, Math.ceil(Global.ROOM_HEIGHT / 2) > 3 ? Math.ceil(Global.ROOM_HEIGHT / 2) : 3);
                weapon.repeat = false;
+               weapon.lingering = false;
            } else {
                weapon.centered = false;
 
@@ -88,8 +89,32 @@ class WeaponGenerator {
                else
                    weapon.repeat = false;
 
-               width = random.integerInRange(1, Math.ceil(Global.ROOM_WIDTH / 3));
-               height = random.integerInRange(1, Math.ceil(Global.ROOM_HEIGHT / 3));
+               if (random.frac() < 0.3) {
+                   weapon.lingering = true;
+                   if (random.frac() < 0.5) {
+                       width = 1;
+                       height = random.integerInRange(1, 3);
+                   }
+                   if (random.frac() < 0.15)
+                       weapon.amountOfLingeringLive = -1;
+                   else
+                       weapon.amountOfLingeringLive = random.integerInRange(1, 3);
+                   if (random.frac() < 0.35) {
+                       weapon.objectExplode = true;
+                   } else {
+                       weapon.objectExplode = false;
+                   }
+                   if (random.frac() < 0.40) {
+                       weapon.objectFade = true;
+                   } else {
+                       weapon.objectFade = false;
+                   }
+               } else {
+                   width = random.integerInRange(1, 3);
+                   height = 1
+                   weapon.lingering = false;
+                   
+               }
            }
 
            if (width % 2 == 0) {
@@ -157,9 +182,7 @@ class WeaponGenerator {
            var i: number = Math.floor(Weapon.MAX_COOLDOWN - Weapon.MIN_COOLDOWN / Weapon.COOLDOWN_INTERVAL) + 1;
            weapon.cooldown = random.integerInRange(0, Weapon.MAX_COOLDOWN);
            weapon.curCooldown = 0;
-           weapon.poison = random.frac() < 0.2 ? true : false;
            console.log("LOGGING " + weapon.toString());
-           weapon.lingering = random.frac() < 0.3 ? true : false;
            
        } while (oldWeapon != null && WeaponGenerator.isSame(weapon, oldWeapon)); 
 
