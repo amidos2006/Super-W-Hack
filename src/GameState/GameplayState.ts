@@ -17,6 +17,7 @@ class GameplayState extends BaseGameState{
     lastPosition:Phaser.Point;
     lastDirection:Phaser.Point;
     miniMap:MiniMap;
+    handUI:HandUI;
     buttonText:ButtonTutorial;
     
     constructor(){
@@ -42,7 +43,14 @@ class GameplayState extends BaseGameState{
             this.game.height - (this.game.height - this.game.width) / 2 - Global.mapHeight * Global.MAP_SIZE / 2 + 5);
         this.game.add.existing(this.miniMap);
         
-        this.buttonText = new ButtonTutorial(this.game, 5, this.game.height);
+        this.handUI = new HandUI(this.game, 1.5 * Global.MAP_SIZE, 
+            this.game.height - (this.game.height - this.game.width) / 2 - 3 * Global.MAP_SIZE / 2 + 5);
+        this.game.add.existing(this.handUI);
+        if(Global.currentWeapon != null){
+            this.updateHandUI();
+        }
+        
+        this.buttonText = new ButtonTutorial(this.game, 7, this.game.height);
         this.game.add.existing(this.buttonText);
         
         this.game.add.existing(new CrateText(this.game, this.game.width/2, this.game.height - 
@@ -223,6 +231,20 @@ class GameplayState extends BaseGameState{
         this.boxObject.show(position);
     }
     
+    changeHandWeapon(minDamage:number){
+        Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd, 
+            this.playerObject.getWeapon(), Global.weaponNameGenerator, minDamage);
+        this.playerObject.setWeapon(Global.currentWeapon);
+        this.updateHandUI();
+    }
+    
+    updateHandUI(){
+        this.handUI.updateDamage(Global.currentWeapon.getDamage(), 0);
+        this.handUI.updatePatternValue(Math.ceil(Global.currentWeapon.getAreaLevel() * 10));
+        this.handUI.updateCooldown(Global.currentWeapon.cooldown, 0);
+        this.handUI.showHide(HandObjects.Weapon);
+    }
+    
     handleCollision(){
         var playerPosition:Phaser.Point = this.playerObject.getTilePosition();
         for(var i:number=0; i<this.currentDoors.length; i++){
@@ -245,9 +267,7 @@ class GameplayState extends BaseGameState{
         
         if(!Global.getCurrentRoom().cleared && this.enemyObjects.length <= 0){
             if(this.boxObject.checkCollision(playerPosition.x, playerPosition.y)){
-                Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd, 
-                    this.playerObject.getWeapon(), Global.weaponNameGenerator, -1);
-                this.playerObject.setWeapon(Global.currentWeapon);
+                this.changeHandWeapon(-1);
                 this.boxObject.collectCrate();
                 for(var i:number=0; i<this.currentDoors.length; i++){
                     this.currentDoors[i].unlock();
@@ -325,17 +345,13 @@ class GameplayState extends BaseGameState{
         
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.E)){
             console.log("New Weapon is Assigned Press W to view details");
-            Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd, 
-                this.playerObject.getWeapon(), Global.weaponNameGenerator, -1);
-            this.playerObject.setWeapon(Global.currentWeapon);
+            this.changeHandWeapon(-1);
             this.game.input.keyboard.reset();
         }
         
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.Q)){
             console.log("New Weapon is Assigned Press W to view details");
-            Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd, 
-                this.playerObject.getWeapon(), Global.weaponNameGenerator, 3)
-            this.playerObject.setWeapon(Global.currentWeapon);
+            this.changeHandWeapon(3);
             this.game.input.keyboard.reset();
         }
         
