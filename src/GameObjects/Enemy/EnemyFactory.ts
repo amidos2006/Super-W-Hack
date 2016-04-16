@@ -1,26 +1,26 @@
 class EnemyFactory
 {
-    static getEnemey(game:Phaser.Game, x:number, y:number, params:number[])
-    {
-        var enemy;
+    static getEnemey(game:Phaser.Game, x:number, y:number, random:Phaser.RandomDataGenerator){
+        var enemyObject:EnemyObject;
+        var randomType:number = random.integerInRange(0, 2);
         
-        if(params == null)
-        {
-             enemy = new RandomEnemyObject(game, x, y, params);
+        if(randomType == 0){
+             enemyObject = new RandomEnemyObject(game, x, y, random.integerInRange(1, 3), 0, null);
         }
-        else if(EnemyFactory.defineEnemyType(params[3]) == EnemyTypeEnum.Random)
-        {
-            enemy = new RandomEnemyObject(game, x, y, params);
+        else if(randomType == 1){
+            enemyObject = new ChaserEnemyObject(game, x, y, random.integerInRange(1, 3), 0, null);
         }
-        else if(EnemyFactory.defineEnemyType(params[3]) == EnemyTypeEnum.BackAndForth)
-        {
-            enemy = new BackAndForthEnemyObject(game, x, y, params);
+        else if(randomType == 2){
+            var direction:Phaser.Point = new Phaser.Point();
+            if(Math.random() < 0.5){
+                direction.x = 2 * random.integerInRange(0, 1) - 1;
+            }
+            else{
+                direction.y = 2 * random.integerInRange(0, 1) - 1;
+            }
+            enemyObject = new BackAndForthEnemyObject(game, x, y, random.integerInRange(1, 3), 1, direction.rperp(), direction);
         }
-        else
-        {
-            enemy = new ChaserEnemyObject(game, x, y, params); 
-        }
-        return enemy;
+        return enemyObject;
     }
     
     static defineEnemyType(choose:number)

@@ -136,7 +136,7 @@ class GameplayState extends BaseGameState{
             var point:Phaser.Point = list[this.game.rnd.integerInRange(0, list.length - 1)];
             tiles[point.x][point.y] = TileTypeEnum.Enemy;
             
-            var tempEnemy:EnemyObject = EnemyFactory.getEnemey(this.game, point.x, point.y, null);
+            var tempEnemy:EnemyObject = EnemyFactory.getEnemey(this.game, point.x, point.y, this.game.rnd);
             this.enemyObjects.push(tempEnemy);
             this.game.add.existing(tempEnemy);
         }
