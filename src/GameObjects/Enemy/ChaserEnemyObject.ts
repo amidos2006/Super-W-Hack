@@ -8,16 +8,10 @@ class ChaserEnemyObject extends EnemyObject implements Movement
         super(game, x, y, health, numberOfcannons, cannonDirection1);
         this.enemyDirection = this.pickDirection();
         this.enemySprite = this.game.add.sprite(0, 0, "graphics");
-        this.enemySprite.animations.add("normal", [EnemyObject.enemySpriteNumbers[EnemyTypeEnum.Chaser]]);
+        this.enemySprite.animations.add("normal", [9]);
         this.enemySprite.animations.play("normal");
         this.enemySprite.tint = 0xcc6668;
         this.add(this.enemySprite);
-        
-        var style = { font: "10px pixelFont", fill: "#cc6668", align: "left" };
-        this.healthText = this.game.add.text(Global.TILE_SIZE - 3, Global.TILE_SIZE - 10, 
-            this.enemyHealth.toString(), style, this);
-        this.healthText.anchor.set(0, 0);
-        this.add(this.healthText);
     }
     
     chaser(playerPosition:Phaser.Point)

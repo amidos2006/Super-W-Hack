@@ -1,6 +1,5 @@
 class EnemyObject extends BaseGameObject implements Movement{
     
-    static enemySpriteNumbers:number[] = [8, 6, 9];
     enemySprite:Phaser.Sprite;
     healthText:Phaser.Text;
     enemyHealth:number;
@@ -21,7 +20,7 @@ class EnemyObject extends BaseGameObject implements Movement{
         
         if(health < 0 || health > 3)
         {
-            this.enemyHealth = 0;
+            this.enemyHealth = 1;
         }
         else
         {
@@ -35,6 +34,12 @@ class EnemyObject extends BaseGameObject implements Movement{
         this.keepDirection = 0;
         this.factorDirectionChange = 2;
         this.hitWall = false;
+        
+       var style = { font: "10px pixelFont", fill: "#cc6668", align: "right" };
+        this.healthText = this.game.add.text(Global.TILE_SIZE - 3, Global.TILE_SIZE + 4, 
+            this.enemyHealth.toString(), style, this);
+        this.healthText.anchor.set(1, 1);
+        this.add(this.healthText);
     }
     
     initializeCannons(numberOfCannons:number, cannonPos1:Phaser.Point, cannonDir1:Phaser.Point)
@@ -644,9 +649,9 @@ class EnemyObject extends BaseGameObject implements Movement{
         super.update();
         
         this.healthText.text = this.enemyHealth.toString();
-        this.healthText.anchor.set(0, 0);
+        this.healthText.anchor.set(1, 1);
         this.healthText.alpha = 1;
-        if(this.enemyHealth <= 1){
+        if(this.enemyHealth < 1){
             this.healthText.alpha = 0;
         }
     }
