@@ -5,10 +5,10 @@ class EnemyFactory
         var randomType:number = random.integerInRange(0, 2);
         
         if(randomType == 0){
-             enemyObject = new RandomEnemyObject(game, x, y, random.integerInRange(1, 3), 0, null);
+             enemyObject = new RandomEnemyObject(game, x, y, random.integerInRange(1, 3), 0, new Phaser.Point());
         }
         else if(randomType == 1){
-            enemyObject = new ChaserEnemyObject(game, x, y, random.integerInRange(1, 3), 0, null);
+            enemyObject = new ChaserEnemyObject(game, x, y, random.integerInRange(1, 3), 0, new Phaser.Point());
         }
         else if(randomType == 2){
             var direction:Phaser.Point = new Phaser.Point();

@@ -241,7 +241,7 @@ class EnemyObject extends BaseGameObject implements Movement{
             if(tileMap[this.getTilePosition().x + 1][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
                 this.x += Global.TILE_SIZE * this.enemySpeed;
-                if(this.cannons != [])
+                if(this.cannons.length > 0)
                 {
                     this.cannons[0].x = this.x/32;
                 }
@@ -253,7 +253,7 @@ class EnemyObject extends BaseGameObject implements Movement{
             if(tileMap[this.getTilePosition().x - 1][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
                this.x -= Global.TILE_SIZE * this.enemySpeed;
-                if(this.cannons != [])
+                if(this.cannons.length > 0)
                 {
                     this.cannons[0].x = this.x/32;
                 }
@@ -265,7 +265,7 @@ class EnemyObject extends BaseGameObject implements Movement{
             if(tileMap[this.getTilePosition().x][this.getTilePosition().y + 1] == TileTypeEnum.Passable)
             {
                 this.y += Global.TILE_SIZE * this.enemySpeed;
-                 if(this.cannons != [])
+                 if(this.cannons.length > 0)
                 {
                     this.cannons[0].x = this.x/32;
                 }
@@ -277,7 +277,7 @@ class EnemyObject extends BaseGameObject implements Movement{
             if(tileMap[this.getTilePosition().x][this.getTilePosition().y - 1] == TileTypeEnum.Passable)
             {
                 this.y -= Global.TILE_SIZE * this.enemySpeed;
-                 if(this.cannons != [])
+                 if(this.cannons.length > 0)
                 {
                     this.cannons[0].x = this.x/32;
                 }

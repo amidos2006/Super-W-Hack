@@ -289,7 +289,7 @@ class GameplayState extends BaseGameState{
         for (var i = 0; i < this.enemyObjects.length; i++) {
             var tileMatrix:number[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
             tileMatrix[this.boxObject.getTilePosition().x][this.boxObject.getTilePosition().y] = TileTypeEnum.Box;
-            this.enemyObjects[i].updateEnemy(this.lastPosition, tileMatrix);
+            this.enemyObjects[i].enemyMove(this.lastPosition, tileMatrix);
         }
         
         if(this.handleEnemyCollision()){
