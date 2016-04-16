@@ -241,7 +241,7 @@ class GameplayState extends BaseGameState{
     updateHandUI(){
         this.handUI.updateDamage(Global.currentWeapon.getDamage(), 0);
         this.handUI.updatePatternValue(Math.ceil(Global.currentWeapon.getAreaLevel() * 10));
-        this.handUI.updateCooldown(Global.currentWeapon.cooldown, 0);
+        this.handUI.updateCooldown(Global.currentWeapon.cooldown - 1, 0);
         this.handUI.showHide(HandObjects.Weapon);
     }
     

@@ -8,8 +8,11 @@ class HandUI extends BaseUIObject{
     outline:Phaser.Graphics;
     text:Phaser.Text;
     emptyText:Phaser.Text;
+    patternSprite:Phaser.Sprite;
     patternText:Phaser.Text;
+    damageSprite:Phaser.Sprite;
     damageText:Phaser.Text;
+    cooldownSprite:Phaser.Sprite;
     cooldownText:Phaser.Text;
     
     constructor(game:Phaser.Game, x:number, y:number){
@@ -32,19 +35,36 @@ class HandUI extends BaseUIObject{
         this.emptyText.anchor.set(0.5, 0.5);
         this.add(this.emptyText);
         
-        style = { font: "10px pixelFont", fill: "#ffffff", align: "left" };
-        this.damageText = this.game.add.text(centerPoint.x, centerPoint.y, "", style, this);
-        this.damageText.anchor.set(0, 0.5);
+        style = { font: "10px pixelFont", fill: "#ffffff", align: "right" };
+        this.damageText = this.game.add.text(centerPoint.x + 12, centerPoint.y, "", style, this);
+        this.damageText.anchor.set(1, 0.5);
         this.add(this.damageText);
         
-        style = { font: "10px pixelFont", fill: "#ffffff", align: "right" };
-        this.cooldownText = this.game.add.text(centerPoint.x, centerPoint.y + 12, "", style, this);
-        this.cooldownText.anchor.set(0, 0.5);
+        this.damageSprite = this.game.add.sprite(centerPoint.x + 1, centerPoint.y - 2, "graphics");
+        this.damageSprite.animations.add("normal", [14]);
+        this.damageSprite.animations.play("normal");
+        this.damageSprite.anchor.set(1, 0.5);
+        this.add(this.damageSprite);
+        
+        this.cooldownText = this.game.add.text(centerPoint.x + 12, centerPoint.y + 12, "", style, this);
+        this.cooldownText.anchor.set(1, 0.5);
         this.add(this.cooldownText);
         
-        this.patternText = this.game.add.text(centerPoint.x, centerPoint.y - 12, "", style, this);
-        this.patternText.anchor.set(0, 0.5);
+        this.cooldownSprite = this.game.add.sprite(centerPoint.x + 1, centerPoint.y + 10, "graphics");
+        this.cooldownSprite.animations.add("normal", [15]);
+        this.cooldownSprite.animations.play("normal");
+        this.cooldownSprite.anchor.set(1, 0.5);
+        this.add(this.cooldownSprite);
+        
+        this.patternText = this.game.add.text(centerPoint.x + 12, centerPoint.y - 12, "", style, this);
+        this.patternText.anchor.set(1, 0.5);
         this.add(this.patternText);
+        
+        this.patternSprite = this.game.add.sprite(centerPoint.x + 1, centerPoint.y - 14, "graphics");
+        this.patternSprite.animations.add("normal", [13]);
+        this.patternSprite.animations.play("normal");
+        this.patternSprite.anchor.set(1, 0.5);
+        this.add(this.patternSprite);
         
         this.showHide(HandObjects.Empty);
     }
@@ -81,6 +101,9 @@ class HandUI extends BaseUIObject{
         this.cooldownText.alpha = 0;
         this.patternText.alpha = 0;
         this.emptyText.alpha = 0;
+        this.damageSprite.alpha = 0;
+        this.cooldownSprite.alpha = 0;
+        this.patternSprite.alpha = 0;
         switch(hand){
             case HandObjects.Empty:
                 this.emptyText.alpha = 1;
@@ -89,6 +112,9 @@ class HandUI extends BaseUIObject{
                 this.patternText.alpha = 1;
                 this.damageText.alpha = 1;
                 this.cooldownText.alpha = 1;
+                this.damageSprite.alpha = 1;
+                this.cooldownSprite.alpha = 1;
+                this.patternSprite.alpha = 1;
             break;
             case HandObjects.Person:
             break;
