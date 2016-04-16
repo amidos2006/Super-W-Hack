@@ -17,6 +17,7 @@ class HighlightTile extends BaseTile{
             "0", style, this);
         this.damage.anchor.set(0.5, 0);
         this.add(this.damage);
+        this.damage.alpha = 0;
         
         this.alpha = 0;
     }

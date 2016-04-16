@@ -7,8 +7,8 @@ class MainMenuState extends BaseGameState{
     constructor(){
         super();
         
-        this.unselectedValues = ["the binding of isaac", "super crate box", "   tiny rogue   ", "steamspy", "igf awards"];
-        this.selectedValues = ["adventure mode", "arcade mode", "challenge mode", "stats", "credits"];
+        this.unselectedValues = ["the binding of isaac", "super crate box", "steamspy", "igf awards"];
+        this.selectedValues = ["adventure mode", "arcade mode", "stats", "credits"];
     }
     
     create(){
