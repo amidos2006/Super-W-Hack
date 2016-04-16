@@ -1,6 +1,6 @@
-class EnemyObject extends BaseGameObject{
+class EnemyObject extends BaseGameObject implements Movement{
     
-    static enemySpriteNumbers:number[] = [9, 8, 6];
+    static enemySpriteNumbers:number[] = [8, 6, 9];
     enemySprite:Phaser.Sprite;
     healthText:Phaser.Text;
     enemyHealth:number;
@@ -12,189 +12,160 @@ class EnemyObject extends BaseGameObject{
     enemyDirection:Phaser.Point;
     hitWall:boolean;
     cannons:CannonObject[];
-    enemyType:EnemyTypeEnum;
     
-    constructor(game:Phaser.Game, x:number, y:number, params:number[]){
+    constructor(game:Phaser.Game, x:number, y:number, health:number, numberOfCannons:number,
+        cannonDirection1:Phaser.Point){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
         
-        if(params == null){
-            params = [0, 0, 0, 0];
-        }
         this.setDirections();
         
-        this.enemyHealth = this.selectParameters(params[0]);
-        this.cannons = this.initializeCannons(this.selectParameters(params[2])-1, this.x, this.y);
-        this.enemyType = this.defineEnemyType(this.selectParameters(params[3]));
+        if(health < 0 || health > 3)
+        {
+            this.enemyHealth = 0;
+        }
+        else
+        {
+            this.enemyHealth = health;    
+        }
         
-        this.enemySpeed = 1;//this.selectParameters(params[1]);
+        this.cannons = this.initializeCannons(numberOfCannons, new Phaser.Point(x,y), cannonDirection1);
+        
+        this.enemySpeed = 1;
         this.isAlive = true;        
         this.keepDirection = 0;
         this.factorDirectionChange = 2;
         this.hitWall = false;
-        this.enemyDirection = this.pickDirection();
-        
-        this.enemySprite = this.game.add.sprite(0, 0, "graphics");
-        this.enemySprite.animations.add("normal", [EnemyObject.enemySpriteNumbers[this.enemyType]]);
-        this.enemySprite.animations.play("normal");
-        this.enemySprite.tint = 0xcc6668;
-        this.add(this.enemySprite);
-        
-        var style = { font: "10px pixelFont", fill: "#cc6668", align: "right" };
-        this.healthText = this.game.add.text(Global.TILE_SIZE - 3, Global.TILE_SIZE + 4, 
-            this.enemyHealth.toString(), style, this);
-        this.healthText.anchor.set(1, 1);
-        this.add(this.healthText);
     }
     
-    initializeCannons(numberOfCannons:number, x:number, y:number)
+    initializeCannons(numberOfCannons:number, cannonPos1:Phaser.Point, cannonDir1:Phaser.Point)
     {
         var cannons:CannonObject[];
         if(numberOfCannons == 0)
         {
             cannons = [];
         }
-        else if(numberOfCannons == 1)
+        else
         {
-           cannons = [new CannonObject(this.game, x, y, this.pickDirection())]; 
+           cannons = [new CannonObject(this.game, cannonPos1.x, cannonPos1.y, cannonDir1)]; 
         }
-        else if(numberOfCannons == 2)
-        {
-            var direction = this.pickDirection();
-            cannons = [new CannonObject(this.game, x, y, this.pickDirection()),
-                      new CannonObject(this.game, x, y,
-                      this.pickDirectionWithThisConstraint(this.findDirectionIndex(direction)))]; 
-        }
+       
         return cannons;
     }
     
-    defineEnemyType(choose:number)
-    {
-        if (choose == 2)
-        {
-            return EnemyTypeEnum.BackAndForth;
-        }
-        if (choose == 3)
-        {
-            return EnemyTypeEnum.Chaser;
-        }
+    // chaser(playerPosition:Phaser.Point)
+    // {
+    //     var enemyDirection:Phaser.Point = new Phaser.Point(0,0);
         
-        return EnemyTypeEnum.Random;
-    }
-    
-    chaser(playerPosition:Phaser.Point)
-    {
-        var enemyDirection:Phaser.Point = new Phaser.Point(0,0);
-        
-        if((this.getTilePosition().x < playerPosition.x)
-        && (this.getTilePosition().y < playerPosition.y))
-        {
-            var difX = playerPosition.x - this.getTilePosition().x;
-            var difY = playerPosition.y - this.getTilePosition().y;
+    //     if((this.getTilePosition().x < playerPosition.x)
+    //     && (this.getTilePosition().y < playerPosition.y))
+    //     {
+    //         var difX = playerPosition.x - this.getTilePosition().x;
+    //         var difY = playerPosition.y - this.getTilePosition().y;
             
-            console.log("difX: " + difX);
-            console.log("difY: " + difX);
+    //         console.log("difX: " + difX);
+    //         console.log("difY: " + difX);
             
-            if(difX >= difY)
-            {
-                //this.x += Global.TILE_SIZE * this.enemySpeed;
-                enemyDirection = new Phaser.Point(1,0);
-            }
-            else
-            {
-                //this.y += Global.TILE_SIZE * this.enemySpeed;
-                enemyDirection = new Phaser.Point(0,1);
-            }
-        }
+    //         if(difX >= difY)
+    //         {
+    //             //this.x += Global.TILE_SIZE * this.enemySpeed;
+    //             enemyDirection = new Phaser.Point(1,0);
+    //         }
+    //         else
+    //         {
+    //             //this.y += Global.TILE_SIZE * this.enemySpeed;
+    //             enemyDirection = new Phaser.Point(0,1);
+    //         }
+    //     }
         
-        if((this.getTilePosition().x < playerPosition.x)
-        && (this.getTilePosition().y > playerPosition.y))
-        {
-            var difX = playerPosition.x - this.getTilePosition().x;
-            var difY = this.getTilePosition().y - playerPosition.y;
+    //     if((this.getTilePosition().x < playerPosition.x)
+    //     && (this.getTilePosition().y > playerPosition.y))
+    //     {
+    //         var difX = playerPosition.x - this.getTilePosition().x;
+    //         var difY = this.getTilePosition().y - playerPosition.y;
             
-            console.log("difX: " + difX);
-            console.log("difY: " + difX);
+    //         console.log("difX: " + difX);
+    //         console.log("difY: " + difX);
             
-            if(difX >= difY)
-            {
-                //this.x += Global.TILE_SIZE * this.enemySpeed;
-                enemyDirection = new Phaser.Point(1,0);
-            }
-            else
-            {
-                //this.y -= Global.TILE_SIZE * this.enemySpeed;
-                enemyDirection = new Phaser.Point(0,-1);
-            }
-        }
+    //         if(difX >= difY)
+    //         {
+    //             //this.x += Global.TILE_SIZE * this.enemySpeed;
+    //             enemyDirection = new Phaser.Point(1,0);
+    //         }
+    //         else
+    //         {
+    //             //this.y -= Global.TILE_SIZE * this.enemySpeed;
+    //             enemyDirection = new Phaser.Point(0,-1);
+    //         }
+    //     }
         
-        if((this.getTilePosition().x > playerPosition.x)
-        && (this.getTilePosition().y < playerPosition.y))
-        {
-            var difX = this.getTilePosition().x - playerPosition.x;
-            var difY = playerPosition.y - this.getTilePosition().y;
+    //     if((this.getTilePosition().x > playerPosition.x)
+    //     && (this.getTilePosition().y < playerPosition.y))
+    //     {
+    //         var difX = this.getTilePosition().x - playerPosition.x;
+    //         var difY = playerPosition.y - this.getTilePosition().y;
             
-            console.log("difX: " + difX);
-            console.log("difY: " + difX);
+    //         console.log("difX: " + difX);
+    //         console.log("difY: " + difX);
             
-            if(difX >= difY)
-            {
-                //this.x -= Global.TILE_SIZE * this.enemySpeed;
-                enemyDirection = new Phaser.Point(-1,0);
-            }
-            else
-            {
-                //this.y += Global.TILE_SIZE * this.enemySpeed;
-                enemyDirection = new Phaser.Point(0,1);
-            }
-        }
+    //         if(difX >= difY)
+    //         {
+    //             //this.x -= Global.TILE_SIZE * this.enemySpeed;
+    //             enemyDirection = new Phaser.Point(-1,0);
+    //         }
+    //         else
+    //         {
+    //             //this.y += Global.TILE_SIZE * this.enemySpeed;
+    //             enemyDirection = new Phaser.Point(0,1);
+    //         }
+    //     }
         
-        if((this.getTilePosition().x > playerPosition.x)
-        && (this.getTilePosition().y > playerPosition.y))
-        {
-            var difX = playerPosition.x - this.getTilePosition().x;
-            var difY = playerPosition.y - this.getTilePosition().y;
+    //     if((this.getTilePosition().x > playerPosition.x)
+    //     && (this.getTilePosition().y > playerPosition.y))
+    //     {
+    //         var difX = playerPosition.x - this.getTilePosition().x;
+    //         var difY = playerPosition.y - this.getTilePosition().y;
             
-            console.log("difX: " + difX);
-            console.log("difY: " + difX);
+    //         console.log("difX: " + difX);
+    //         console.log("difY: " + difX);
             
-            if(difX >= difY)
-            {
-                //this.x -= Global.TILE_SIZE * this.enemySpeed;
-                enemyDirection = new Phaser.Point(-1,0);
-            }
-            else
-            {
-                //this.y -= Global.TILE_SIZE * this.enemySpeed;
-                enemyDirection = new Phaser.Point(0,-1);
-            }
-        }
+    //         if(difX >= difY)
+    //         {
+    //             //this.x -= Global.TILE_SIZE * this.enemySpeed;
+    //             enemyDirection = new Phaser.Point(-1,0);
+    //         }
+    //         else
+    //         {
+    //             //this.y -= Global.TILE_SIZE * this.enemySpeed;
+    //             enemyDirection = new Phaser.Point(0,-1);
+    //         }
+    //     }
         
-        if(this.getTilePosition().x == playerPosition.x
-        && this.getTilePosition().y > playerPosition.y)
-        {
-            enemyDirection = new Phaser.Point(0,-1);
-        }
+    //     if(this.getTilePosition().x == playerPosition.x
+    //     && this.getTilePosition().y > playerPosition.y)
+    //     {
+    //         enemyDirection = new Phaser.Point(0,-1);
+    //     }
         
-        if(this.getTilePosition().x == playerPosition.x
-        && this.getTilePosition().y < playerPosition.y)
-        {
-            enemyDirection = new Phaser.Point(0,1);
-        }
+    //     if(this.getTilePosition().x == playerPosition.x
+    //     && this.getTilePosition().y < playerPosition.y)
+    //     {
+    //         enemyDirection = new Phaser.Point(0,1);
+    //     }
         
-        if(this.getTilePosition().x > playerPosition.x
-        && this.getTilePosition().y == playerPosition.y)
-        {
-            enemyDirection = new Phaser.Point(-1,0);
-        }
+    //     if(this.getTilePosition().x > playerPosition.x
+    //     && this.getTilePosition().y == playerPosition.y)
+    //     {
+    //         enemyDirection = new Phaser.Point(-1,0);
+    //     }
         
-        if(this.getTilePosition().x < playerPosition.x
-        && this.getTilePosition().y == playerPosition.y)
-        {
-            enemyDirection = new Phaser.Point(1,0);
-        }
+    //     if(this.getTilePosition().x < playerPosition.x
+    //     && this.getTilePosition().y == playerPosition.y)
+    //     {
+    //         enemyDirection = new Phaser.Point(1,0);
+    //     }
         
-        return enemyDirection;
-    }
+    //     return enemyDirection;
+    // }
     
     setDirections()
     {
@@ -246,73 +217,71 @@ class EnemyObject extends BaseGameObject{
         }
     }
     
-    moveAndKeepDirection(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
-    {
-        if(this.keepDirection % this.factorDirectionChange == 0)
-        {
-            this.enemyDirection = this.pickDirection();
-        }
-        this.keepDirection++;
+    // moveAndKeepDirection(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
+    // {
+    //     if(this.keepDirection % this.factorDirectionChange == 0)
+    //     {
+    //         this.enemyDirection = this.pickDirection();
+    //     }
+    //     this.keepDirection++;
         
-        if(!this.updateEnemy(this.enemyDirection, tileMatrix))
+    //     if(!this.updateEnemy(this.enemyDirection, tileMatrix))
+    //     {
+    //         var newDir = this.getFirstFreeDirection(this.enemyDirection, tileMatrix);//this.pickDirectionWithThisConstraint(this.findDirectionIndex(this.enemyDirection));
+    //         this.updateEnemy(newDir, tileMatrix);
+    //         this.goEnemy(newDir, tileMatrix);
+    //     }else{
+    //         this.goEnemy(this.enemyDirection, tileMatrix);
+    //     }
+    // }
+    goEnemy(enemyDirection:Phaser.Point, tileMap:TileTypeEnum[][])
+    {   
+        if (enemyDirection.x > 0)
         {
-            var newDir = this.getFirstFreeDirection(this.enemyDirection, tileMatrix);//this.pickDirectionWithThisConstraint(this.findDirectionIndex(this.enemyDirection));
-            this.updateEnemy(newDir, tileMatrix);
-            this.goEnemy(newDir, tileMatrix);
-        }else{
-            this.goEnemy(this.enemyDirection, tileMatrix);
+            if(tileMap[this.getTilePosition().x + 1][this.getTilePosition().y] == TileTypeEnum.Passable)
+            {
+                this.x += Global.TILE_SIZE * this.enemySpeed;
+                if(this.cannons != [])
+                {
+                    this.cannons[0].x = this.x/32;
+                }
+            }   
         }
-    }
-    
-    circleDirectionClockWise(direction:Phaser.Point)
-    {
-        if(direction.equals(new Phaser.Point(1,0)))
-        {
-            return new Phaser.Point(0,1);
-        }
-        if(direction.equals(new Phaser.Point(0,1)))
-        {
-            return new Phaser.Point(-1,0);
-        }
-        if(direction.equals(new Phaser.Point(-1,0)))
-        {
-            return new Phaser.Point(0,-1);
-        }
-        if(direction.equals(new Phaser.Point(0,-1)))
-        {
-            return new Phaser.Point(1,0);
-        }
-    }
-    
-    moveCircleClockWise(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
-    {
-        if(this.keepDirection % this.factorDirectionChange == 0)
-        {
-            this.enemyDirection = this.circleDirectionClockWise(this.enemyDirection);
-        }
-        this.keepDirection++;
         
-        if(!this.updateEnemy(this.enemyDirection, tileMatrix))
+        if(enemyDirection.x < 0)
         {
-            var newDir = this.pickDirectionWithThisConstraint(this.findDirectionIndex(this.enemyDirection));
-            this.updateEnemy(newDir, tileMatrix);
+            if(tileMap[this.getTilePosition().x - 1][this.getTilePosition().y] == TileTypeEnum.Passable)
+            {
+               this.x -= Global.TILE_SIZE * this.enemySpeed;
+                if(this.cannons != [])
+                {
+                    this.cannons[0].x = this.x/32;
+                }
+            }   
         }
-    }
-    
-    moveCircleCounterClockWise(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
-    {
-        if(this.keepDirection % this.factorDirectionChange == 0)
-        {
-            this.enemyDirection = this.circleDirectionClockWise(this.enemyDirection);
-            this.enemyDirection.x = this.enemyDirection.x * (-1);
-            this.enemyDirection.y = this.enemyDirection.y * (-1);
-        }
-        this.keepDirection++;
         
-        if(!this.updateEnemy(this.enemyDirection, tileMatrix))
+        if(enemyDirection.y > 0)
         {
-            var newDir = this.pickDirectionWithThisConstraint(this.findDirectionIndex(this.enemyDirection));
-            this.updateEnemy(newDir, tileMatrix);
+            if(tileMap[this.getTilePosition().x][this.getTilePosition().y + 1] == TileTypeEnum.Passable)
+            {
+                this.y += Global.TILE_SIZE * this.enemySpeed;
+                 if(this.cannons != [])
+                {
+                    this.cannons[0].x = this.x/32;
+                }
+            }
+        }
+        
+        if(enemyDirection.y < 0)
+        {
+            if(tileMap[this.getTilePosition().x][this.getTilePosition().y - 1] == TileTypeEnum.Passable)
+            {
+                this.y -= Global.TILE_SIZE * this.enemySpeed;
+                 if(this.cannons != [])
+                {
+                    this.cannons[0].x = this.x/32;
+                }
+            }
         }
     }
     
@@ -336,24 +305,25 @@ class EnemyObject extends BaseGameObject{
         }
     }
     
-    moveBackAndForth(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
-    {
-        if(!this.updateEnemy(this.enemyDirection, tileMatrix) && 
-            !this.updateEnemy(this.reverseDirection(this.enemyDirection), tileMatrix))
-        {
-                this.enemyDirection = this.revertAxis(this.enemyDirection);
-        }
+    // moveBackAndForth(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
+    // {
+    //     if(!this.updateEnemy(this.enemyDirection, tileMatrix) && 
+    //         !this.updateEnemy(this.reverseDirection(this.enemyDirection), tileMatrix))
+    //     {
+    //             this.enemyDirection = this.revertAxis(this.enemyDirection);
+    //     }
         
-        if(!this.updateEnemy(this.enemyDirection, tileMatrix))
-        {
-            this.goEnemy(this.reverseDirection(this.enemyDirection), tileMatrix);
-        }else{
-            this.goEnemy(this.enemyDirection, tileMatrix);
-        }
-    }
+    //     if(!this.updateEnemy(this.enemyDirection, tileMatrix))
+    //     {
+    //         this.goEnemy(this.reverseDirection(this.enemyDirection), tileMatrix);
+    //     }else{
+    //         this.goEnemy(this.enemyDirection, tileMatrix);
+    //     }
+    // }
     
     moveEnemy(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
     {
+        console.log("HiHIHIHI!");
         var enemyDirection = this.pickDirection();
         if(!this.updateEnemy(enemyDirection, tileMatrix))
         {
@@ -362,19 +332,7 @@ class EnemyObject extends BaseGameObject{
         }
     }
     
-    moveChaser(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
-    {
-        var enemyDirection = this.chaser(playerPosition)
-        if(!this.updateEnemy(enemyDirection, tileMatrix))
-        {
-            var newDir = this.getNearDirectionToPlayer(enemyDirection, playerPosition, tileMatrix);//this.pickDirectionWithThisConstraint(this.findDirectionIndex(enemyDirection));
-            this.goEnemy(newDir, tileMatrix);
-        }else{
-            this.goEnemy(enemyDirection, tileMatrix);
-        }
-    }
-    
-    enemyShot(player:PlayerObject)
+    enemyShot(playerPosition:Phaser.Point, tileMap:TileTypeEnum[][])
     {
         if (typeof this.cannons == 'undefined')
         {
@@ -382,13 +340,7 @@ class EnemyObject extends BaseGameObject{
         }
         if(this.cannons.length == 1)
         {
-            return this.cannons[0].shoot(player, this);
-        }
-        if(this.cannons.length == 2)
-        {
-            var shoot1 = this.cannons[0].shoot(player, this);
-            var shoot2 = this.cannons[1].shoot(player, this);
-            return (shoot1 || shoot2);
+            return this.cannons[0].shoot(playerPosition, this, tileMap);
         }
     }
     
@@ -398,7 +350,9 @@ class EnemyObject extends BaseGameObject{
         
         if (enemyDirection.x > 0)
         {
-            if(tileMap[this.getTilePosition().x + 1][this.getTilePosition().y] == TileTypeEnum.Passable)
+            
+            if((this.getTilePosition().x + this.enemySpeed) < 10  &&
+                tileMap[this.getTilePosition().x + this.enemySpeed][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
                 //this.x += Global.TILE_SIZE * this.enemySpeed;
                 canMove = true;
@@ -407,25 +361,28 @@ class EnemyObject extends BaseGameObject{
         
         if(enemyDirection.x < 0)
         {
-            if(tileMap[this.getTilePosition().x - 1][this.getTilePosition().y] == TileTypeEnum.Passable)
+            if((this.getTilePosition().x - this.enemySpeed) > 0 &&
+                tileMap[this.getTilePosition().x - this.enemySpeed][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
-               // this.x -= Global.TILE_SIZE * this.enemySpeed;
+                //this.x -= Global.TILE_SIZE * this.enemySpeed;
                 canMove = true;
             }   
         }
         
         if(enemyDirection.y > 0)
         {
-            if(tileMap[this.getTilePosition().x][this.getTilePosition().y + 1] == TileTypeEnum.Passable)
+            if((this.getTilePosition().y + this.enemySpeed) < 10 &&
+                tileMap[this.getTilePosition().x][this.getTilePosition().y + this.enemySpeed] == TileTypeEnum.Passable)
             {
-             //   this.y += Global.TILE_SIZE * this.enemySpeed;
+                //this.y += Global.TILE_SIZE * this.enemySpeed;
                 canMove = true;
             }
         }
         
         if(enemyDirection.y < 0)
         {
-            if(tileMap[this.getTilePosition().x][this.getTilePosition().y - 1] == TileTypeEnum.Passable)
+            if((this.getTilePosition().y - this.enemySpeed) > 0 &&
+                tileMap[this.getTilePosition().x][this.getTilePosition().y - this.enemySpeed] == TileTypeEnum.Passable)
             {
                 //this.y -= Global.TILE_SIZE * this.enemySpeed;
                 canMove = true;
@@ -435,58 +392,9 @@ class EnemyObject extends BaseGameObject{
         return canMove;
     }
     
-    goEnemy(enemyDirection:Phaser.Point, tileMap:TileTypeEnum[][])
+    enemyMove(enemyDirection:Phaser.Point, tileMatrix:TileTypeEnum[][])
     {   
-        if (enemyDirection.x > 0)
-        {
-            if(tileMap[this.getTilePosition().x + 1][this.getTilePosition().y] == TileTypeEnum.Passable)
-            {
-                this.x += Global.TILE_SIZE * this.enemySpeed;
-            }   
-        }
-        
-        if(enemyDirection.x < 0)
-        {
-            if(tileMap[this.getTilePosition().x - 1][this.getTilePosition().y] == TileTypeEnum.Passable)
-            {
-               this.x -= Global.TILE_SIZE * this.enemySpeed;
-            }   
-        }
-        
-        if(enemyDirection.y > 0)
-        {
-            if(tileMap[this.getTilePosition().x][this.getTilePosition().y + 1] == TileTypeEnum.Passable)
-            {
-                this.y += Global.TILE_SIZE * this.enemySpeed;
-            }
-        }
-        
-        if(enemyDirection.y < 0)
-        {
-            if(tileMap[this.getTilePosition().x][this.getTilePosition().y - 1] == TileTypeEnum.Passable)
-            {
-                this.y -= Global.TILE_SIZE * this.enemySpeed;
-            }
-        }
-    }
-   
-    movement(playerPosition:Phaser.Point, tileMap:TileTypeEnum[][])
-    {
-       console.log("movType : " + this.enemyType);
-       if(this.enemyType == EnemyTypeEnum.BackAndForth)
-       {
-           this.moveBackAndForth(playerPosition, tileMap);
-       }
-       
-       if(this.enemyType == EnemyTypeEnum.Chaser)
-       {
-           this.moveChaser(playerPosition, tileMap)
-       }
-       
-       if(this.enemyType == EnemyTypeEnum.Random)
-       {
-           this.moveAndKeepDirection(playerPosition, tileMap);
-       }
+        console.log("stay");
     }
     
     takeDamage(damage:number)
@@ -736,11 +644,11 @@ class EnemyObject extends BaseGameObject{
         super.update();
         
         this.healthText.text = this.enemyHealth.toString();
-        this.healthText.anchor.set(1, 1);
+        this.healthText.anchor.set(0, 0);
+        this.healthText.alpha = 1;
+        if(this.enemyHealth <= 1){
+            this.healthText.alpha = 0;
+        }
     }
     
-    static getEnemey(game:Phaser.Game, x:number, y:number, params:number[])
-    {
-        return new EnemyObject(game, x, y, params);
-    }
 }
