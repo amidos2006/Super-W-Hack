@@ -136,7 +136,7 @@ class GameplayState extends BaseGameState{
             var point:Phaser.Point = list[this.game.rnd.integerInRange(0, list.length - 1)];
             tiles[point.x][point.y] = TileTypeEnum.Enemy;
             
-            var tempEnemy:EnemyObject = EnemyObject.getEnemey(this.game, point.x, point.y, null);
+            var tempEnemy:EnemyObject = EnemyFactory.getEnemey(this.game, point.x, point.y, null);
             this.enemyObjects.push(tempEnemy);
             this.game.add.existing(tempEnemy);
         }
@@ -289,7 +289,7 @@ class GameplayState extends BaseGameState{
         for (var i = 0; i < this.enemyObjects.length; i++) {
             var tileMatrix:number[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
             tileMatrix[this.boxObject.getTilePosition().x][this.boxObject.getTilePosition().y] = TileTypeEnum.Box;
-            this.enemyObjects[i].movement(this.lastPosition, tileMatrix);
+            this.enemyObjects[i].updateEnemy(this.lastPosition, tileMatrix);
         }
         
         if(this.handleEnemyCollision()){

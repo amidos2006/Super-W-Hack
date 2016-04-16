@@ -2,6 +2,7 @@
 
 class MiniMap extends BaseUIObject{
     outline:Phaser.Graphics;
+    text:Phaser.Text;
     graphics:Phaser.Graphics;
     player:Phaser.Graphics;
     
@@ -12,6 +13,13 @@ class MiniMap extends BaseUIObject{
         this.outline.lineStyle(2, 0xffffff, 1);
         this.outline.drawRect(0, 0, (Global.mapWidth + 1) * Global.MAP_SIZE, (Global.mapHeight + 1) * Global.MAP_SIZE);
         this.add(this.outline);
+        
+        var style = { font: "14px pixelFont", fill: "#ffffff", align: "center" };
+        
+        this.text = this.game.add.text(x - Global.MAP_SIZE / 2 + 
+            (Global.mapWidth + 1) * Global.MAP_SIZE / 2, y - Global.MAP_SIZE / 2 + 2, "map", style, this);
+        this.text.anchor.set(0.5, 1);
+        this.add(this.text);
         
         this.graphics = this.game.add.graphics(x, y, this);
         this.updateGraphics();
