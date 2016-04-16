@@ -110,8 +110,8 @@ class WeaponGenerator {
                        weapon.objectFade = false;
                    }
                } else {
-                   width = random.integerInRange(1, 3);
-                   height = 1
+                   width = random.integerInRange(1, Math.ceil(Global.ROOM_WIDTH / 3));
+                   height = random.integerInRange(1, Math.ceil(Global.ROOM_HEIGHT / 3));
                    weapon.lingering = false;
                    
                }

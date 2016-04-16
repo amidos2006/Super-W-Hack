@@ -459,19 +459,26 @@ class Weapon {
             var maxH: number = Math.ceil(Global.ROOM_HEIGHT / 2) > 3 ? Math.ceil(Global.ROOM_HEIGHT / 2) : 3;
             var MAX_BLACK: number = (maxH * maxW);
             this.areaLevel += black / MAX_BLACK;
-
         } else {
-            var MAX_BLACK: number = Math.ceil(Global.ROOM_HEIGHT / 3) * Math.ceil(Global.ROOM_WIDTH / 3);
-            var maxRepetitions: number = Global.ROOM_HEIGHT / Math.ceil(Global.ROOM_HEIGHT / 2);
+            if (this.repeat) {
+                var MAX_BLACK: number = Math.ceil(Global.ROOM_HEIGHT / 3) * Math.ceil(Global.ROOM_WIDTH / 3);
+                var maxRepetitions: number = Global.ROOM_HEIGHT / Math.ceil(Global.ROOM_HEIGHT / 2);
 
-            var repetitions: number = 0;
+                var repetitions: number = 0;
 
-            if (this.pattern.length > this.pattern[0].length)
-                repetitions = Global.ROOM_HEIGHT / this.pattern.length;
-            else
-                repetitions = Global.ROOM_WIDTH / this.pattern[0].length;
+                if (this.pattern.length > this.pattern[0].length)
+                    repetitions = Global.ROOM_HEIGHT / this.pattern.length;
+                else
+                    repetitions = Global.ROOM_WIDTH / this.pattern[0].length;
 
-            this.areaLevel += (repetitions * black) / (MAX_BLACK * maxRepetitions);
+                this.areaLevel += (repetitions * black) / (MAX_BLACK * maxRepetitions);
+                
+            } else {
+                var maxW: number = Math.ceil(Global.ROOM_WIDTH / 3);
+                var maxH: number = Math.ceil(Global.ROOM_HEIGHT / 3);
+                var MAX_BLACK: number = (maxH * maxW);
+                this.areaLevel += black / MAX_BLACK;
+            }
         }
     }
 
@@ -531,17 +538,24 @@ class Weapon {
             area= black / MAX_BLACK;
 
         } else {
-            var MAX_BLACK: number = Math.ceil(Global.ROOM_HEIGHT / 3) * Math.ceil(Global.ROOM_WIDTH / 3);
-            var maxRepetitions: number = Global.ROOM_HEIGHT / Math.ceil(Global.ROOM_HEIGHT / 2);
-            
-            var repetitions: number = 0;
+            if (this.repeat) {
+                var MAX_BLACK: number = Math.ceil(Global.ROOM_HEIGHT / 3) * Math.ceil(Global.ROOM_WIDTH / 3);
+                var maxRepetitions: number = Global.ROOM_HEIGHT / Math.ceil(Global.ROOM_HEIGHT / 2);
 
-            if (this.pattern.length > this.pattern[0].length)
-                repetitions = Global.ROOM_HEIGHT / this.pattern.length;
-            else
-                repetitions = Global.ROOM_WIDTH / this.pattern[0].length;
+                var repetitions: number = 0;
 
-            area = (repetitions * black) / (MAX_BLACK * maxRepetitions);
+                if (this.pattern.length > this.pattern[0].length)
+                    repetitions = Global.ROOM_HEIGHT / this.pattern.length;
+                else
+                    repetitions = Global.ROOM_WIDTH / this.pattern[0].length;
+
+                area = (repetitions * black) / (MAX_BLACK * maxRepetitions);
+            } else  {
+                var maxW: number = Math.ceil(Global.ROOM_WIDTH / 3);
+                var maxH: number = Math.ceil(Global.ROOM_HEIGHT / 3);
+                var MAX_BLACK: number = (maxH * maxW);
+                this.areaLevel += black / MAX_BLACK;
+            }
         }
         MAX++;
 
