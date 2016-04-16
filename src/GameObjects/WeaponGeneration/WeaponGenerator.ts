@@ -179,8 +179,7 @@ class WeaponGenerator {
                weapon.damage = minDamage;
            else
                weapon.damage = random.integerInRange(Weapon.MIN_DAMAGE, Weapon.MAX_DAMAGE);
-           var i: number = Math.floor(Weapon.MAX_COOLDOWN - Weapon.MIN_COOLDOWN / Weapon.COOLDOWN_INTERVAL) + 1;
-           weapon.cooldown = random.integerInRange(0, Weapon.MAX_COOLDOWN);
+           weapon.cooldown = random.integerInRange(Weapon.MIN_COOLDOWN, Weapon.MAX_COOLDOWN);
            weapon.curCooldown = 0;
            console.log("LOGGING " + weapon.toString());
            

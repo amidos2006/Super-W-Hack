@@ -50,8 +50,8 @@ class Weapon {
     damage: number = 1;
     
     /** Time of shot cooldown: 1, 3, 5 */
-    static MIN_COOLDOWN:number = 0;
-    static MAX_COOLDOWN:number = 4;
+    static MIN_COOLDOWN:number = 1;
+    static MAX_COOLDOWN:number = 5;
     static COOLDOWN_INTERVAL:number = 2;
     cooldown :number = 1;
     curCooldown: number = 0;
