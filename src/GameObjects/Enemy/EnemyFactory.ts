@@ -12,13 +12,16 @@ class EnemyFactory
         }
         else if(randomType == 2){
             var direction:Phaser.Point = new Phaser.Point();
+            var cannonDirection:Phaser.Point = new Phaser.Point();
             if(Math.random() < 0.5){
                 direction.x = 2 * random.integerInRange(0, 1) - 1;
+                cannonDirection.y = 2 * random.integerInRange(0, 1) - 1;
             }
             else{
                 direction.y = 2 * random.integerInRange(0, 1) - 1;
+                cannonDirection.x = 2 * random.integerInRange(0, 1) - 1;
             }
-            enemyObject = new BackAndForthEnemyObject(game, x, y, random.integerInRange(1, 3), 1, direction.rperp(), direction);
+            enemyObject = new BackAndForthEnemyObject(game, x, y, random.integerInRange(1, 3), 1, cannonDirection, direction);
         }
         return enemyObject;
     }

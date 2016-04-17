@@ -40,6 +40,18 @@ class EnemyObject extends BaseGameObject implements Movement{
             this.enemyHealth.toString(), style, this);
         this.healthText.anchor.set(1, 1);
         this.add(this.healthText);
+        
+        if(numberOfCannons > 0){
+            console.log("attack: " + cannonDirection1);
+            var tempSprite = this.game.add.sprite((cannonDirection1.x + 1) * Global.TILE_SIZE / 2 - cannonDirection1.x * 4, 
+                (cannonDirection1.y + 1) * Global.TILE_SIZE / 2 - cannonDirection1.y * 4, "graphics");
+            tempSprite.animations.add("normal", [12]);
+            tempSprite.animations.play("normal");
+            tempSprite.tint = 0xcc6668;
+            tempSprite.angle = cannonDirection1.angle(new Phaser.Point(), true) + 180;
+            tempSprite.anchor.set(0.5, 0.5);
+            this.add(tempSprite);
+        }
     }
     
     initializeCannons(numberOfCannons:number, cannonPos1:Phaser.Point, cannonDir1:Phaser.Point)
