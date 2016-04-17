@@ -16,6 +16,7 @@ class RandomEnemyObject extends EnemyObject implements Movement
      {
         if(this.keepDirection % this.factorDirectionChange == 0)
         {
+            this.factorDirectionChange = Math.floor(Math.random() * 3) + 1;
             this.enemyDirection = this.pickDirection();
         }
         this.keepDirection++;
