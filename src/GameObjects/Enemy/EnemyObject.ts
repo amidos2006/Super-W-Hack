@@ -353,7 +353,7 @@ class EnemyObject extends BaseGameObject implements Movement{
     {
         if (typeof this.cannons == 'undefined')
         {
-            return false;
+            return null;
         }
         if(this.cannons.length == 1)
         {

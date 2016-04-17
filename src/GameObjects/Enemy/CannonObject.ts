@@ -7,7 +7,7 @@ class CannonObject extends BaseGameObject
          this.cannonDirection = cannonDirection;
     }
     
-    blockShot(playerPosition:Phaser.Point, enemy:EnemyObject, tileMap:TileTypeEnum[][])
+    blockShot(playerPosition:Phaser.Point, enemy:EnemyObject, tileMap:TileTypeEnum[][], checkType:TileTypeEnum)
     {
          if (enemy.getTilePosition().y == playerPosition.y
                 && enemy.getTilePosition().x > playerPosition.x
@@ -15,9 +15,9 @@ class CannonObject extends BaseGameObject
                 {
                     for(var i = enemy.getTilePosition().x; i > playerPosition.x; i--)
                     {
-                        if(tileMap[i][playerPosition.y] == TileTypeEnum.Wall)
+                        if(tileMap[i][playerPosition.y] == checkType)
                         {
-                            return true;
+                            return new Phaser.Point(i, playerPosition.y);
                         }
                     }
                 }
@@ -28,9 +28,9 @@ class CannonObject extends BaseGameObject
                 {
                     for(var i = enemy.getTilePosition().x; i < playerPosition.x; i++)
                     {
-                        if(tileMap[i][playerPosition.y] == TileTypeEnum.Wall)
+                        if(tileMap[i][playerPosition.y] == checkType)
                         {
-                            return true;
+                            return new Phaser.Point(i, playerPosition.y);
                         }
                     }
                 }
@@ -41,9 +41,9 @@ class CannonObject extends BaseGameObject
                 {
                     for(var i = enemy.getTilePosition().y; i > playerPosition.y; i--)
                     {
-                        if(tileMap[playerPosition.x][i] == TileTypeEnum.Wall)
+                        if(tileMap[playerPosition.x][i] == checkType)
                         {
-                            return true;
+                            return new Phaser.Point(playerPosition.x, i);
                         }
                     }
                 }
@@ -54,19 +54,19 @@ class CannonObject extends BaseGameObject
                 {
                     for(var i = enemy.getTilePosition().y; i < playerPosition.y; i++)
                     {
-                        if(tileMap[playerPosition.x][i] == TileTypeEnum.Wall)
+                        if(tileMap[playerPosition.x][i] == checkType)
                         {
-                            return true;
+                            return new Phaser.Point(playerPosition.x, i);
                         }
                     }
                 }
                 
-         return false;       
+         return null;       
     }
       
     shoot(playerPosition:Phaser.Point, enemy:EnemyObject, tileMap:TileTypeEnum[][])
     {
-        var shot = false;
+        var colPoint:Phaser.Point = null;
         
         console.log("player.x: " + playerPosition.x);
         console.log("player.y: " + playerPosition.y);
@@ -80,34 +80,44 @@ class CannonObject extends BaseGameObject
             if (enemy.getTilePosition().y == playerPosition.y
                 && enemy.getTilePosition().x > playerPosition.x
                 && this.cannonDirection.equals(new Phaser.Point(-1, 0))
-                && !this.blockShot(playerPosition, enemy, tileMap)) 
-                {
-                shot = true;
+                && !this.blockShot(playerPosition, enemy, tileMap, TileTypeEnum.Wall) != null) {
+                colPoint = this.blockShot(playerPosition, enemy, tileMap, TileTypeEnum.Enemy);
+                if(colPoint == null){
+                    colPoint = playerPosition;
+                }
             }
 
             if (enemy.getTilePosition().y == playerPosition.y
                 && enemy.getTilePosition().x < playerPosition.x
                 && this.cannonDirection.equals(new Phaser.Point(1, 0))
-                && !this.blockShot(playerPosition, enemy, tileMap)) {
-                    console.log("shoot!!!!");
-                shot = true;
+                && !this.blockShot(playerPosition, enemy, tileMap, TileTypeEnum.Wall) != null) {
+                colPoint = this.blockShot(playerPosition, enemy, tileMap, TileTypeEnum.Enemy);
+                if(colPoint == null){
+                    colPoint = playerPosition;
+                }
             }
 
             if (enemy.getTilePosition().x == playerPosition.x
                 && enemy.getTilePosition().y < playerPosition.y
                 && this.cannonDirection.equals(new Phaser.Point(0, 1))
-                && !this.blockShot(playerPosition, enemy, tileMap)) {
-                shot = true;
+                && !this.blockShot(playerPosition, enemy, tileMap, TileTypeEnum.Wall) != null) {
+                colPoint = this.blockShot(playerPosition, enemy, tileMap, TileTypeEnum.Enemy);
+                if(colPoint == null){
+                    colPoint = playerPosition;
+                }
             }
 
             if (enemy.getTilePosition().x == playerPosition.x
                 && enemy.getTilePosition().y > playerPosition.y
                 && this.cannonDirection.equals(new Phaser.Point(0, -1))
-                && !this.blockShot(playerPosition, enemy, tileMap)) {
-                shot = true;
+                && this.blockShot(playerPosition, enemy, tileMap, TileTypeEnum.Wall) != null) {
+                colPoint = this.blockShot(playerPosition, enemy, tileMap, TileTypeEnum.Enemy);
+                if(colPoint == null){
+                    colPoint = playerPosition;
+                }
             }
         
-        return shot;
+        return colPoint;
     }
     
     getCannonDirection()

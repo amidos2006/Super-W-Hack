@@ -296,6 +296,15 @@ class GameplayState extends BaseGameState{
                 this.playerObject = null;
                 return true;
             }
+            var colPoint:Phaser.Point = this.enemyObjects[i].enemyShot(playerPosition, 
+                Global.getCurrentRoom().getMatrix(this.enemyObjects));
+            if(colPoint != null){
+                if(colPoint.equals(playerPosition)){
+                    this.playerObject.killObject();
+                    this.playerObject = null;
+                    return true;
+                }
+            }
         }
         
         return false;
