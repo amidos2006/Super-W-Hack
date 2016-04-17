@@ -290,6 +290,7 @@ class GameplayState extends BaseGameState{
     
     handleEnemyCollision(){
         var playerPosition:Phaser.Point = this.playerObject.getTilePosition();
+        var enemyAttacked:Phaser.Point[] = [];
         for(var i:number=0; i<this.enemyObjects.length; i++){
             if(this.enemyObjects[i].checkCollision(playerPosition.x, playerPosition.y)){
                 this.playerObject.killObject();
@@ -299,12 +300,32 @@ class GameplayState extends BaseGameState{
             var colPoint:Phaser.Point = this.enemyObjects[i].enemyShot(playerPosition, 
                 Global.getCurrentRoom().getMatrix(this.enemyObjects));
             console.log("laser attack:" + colPoint);
-            if(colPoint != null && colPoint.equals(playerPosition)){
-                this.playerObject.killObject();
-                this.playerObject = null;
-                return true;
+            if(colPoint != null){
+                if(colPoint.equals(playerPosition)){
+                    this.playerObject.killObject();
+                    this.playerObject = null;
+                    return true;
+                }
+                else{
+                    enemyAttacked.push(colPoint);
+                }
             }
         }
+        
+        var damageMatrix:number[][] = [];
+        for(var y:number=0; y<Global.ROOM_HEIGHT; y++){
+            damageMatrix.push([]);
+            for (var x = 0; x < Global.ROOM_WIDTH; x++) {
+                damageMatrix[y].push(0);
+                for (var i = 0; i < enemyAttacked.length; i++) {
+                    var pos = enemyAttacked[i];
+                    if(pos.x == x && pos.y == y){
+                        damageMatrix[y][x] = 1;
+                    }
+                }
+            }
+        }
+        this.handleAttack(damageMatrix);
         
         return false;
     }
