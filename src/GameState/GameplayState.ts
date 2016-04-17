@@ -302,6 +302,9 @@ class GameplayState extends BaseGameState{
             console.log("laser attack:" + colPoint);
             if(colPoint != null){
                 if(colPoint.equals(playerPosition)){
+                    var enemyPos:Phaser.Point = this.enemyObjects[i].getTilePosition();
+                    this.game.add.existing(new LaserEffect(this.game, enemyPos.x, enemyPos.y, 
+                        playerPosition.x, playerPosition.y));
                     this.playerObject.killObject();
                     this.playerObject = null;
                     return true;
