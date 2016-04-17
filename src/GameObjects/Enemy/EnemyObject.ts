@@ -190,15 +190,9 @@ class EnemyObject extends BaseGameObject{
         }
     }
     
-    moveEnemy(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
+    enemyMove(playerPosition:Phaser.Point, tileMatrix:TileTypeEnum[][])
     {
-        console.log("HiHIHIHI!");
-        var enemyDirection = this.pickDirection();
-        if(!this.updateEnemy(enemyDirection, tileMatrix))
-        {
-            var newDir = this.pickDirectionWithThisConstraint(this.findDirectionIndex(enemyDirection));
-            this.updateEnemy(newDir, tileMatrix);
-        }
+        
     }
     
     enemyShot(playerPosition:Phaser.Point, tileMap:TileTypeEnum[][])
