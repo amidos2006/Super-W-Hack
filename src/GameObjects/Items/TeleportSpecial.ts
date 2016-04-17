@@ -52,6 +52,7 @@ class TeleportSpecial extends BaseSpecial{
         var index:number = Phaser.ArrayUtils.getRandomItem(maxIndex);
         level.playerObject.x = Math.floor(index / Global.ROOM_WIDTH) * Global.TILE_SIZE;
         level.playerObject.y = Math.floor(index % Global.ROOM_WIDTH) * Global.TILE_SIZE;
+        level.add.existing(new WhiteLayer(level.game, 0, 0, 0.03));
         Global.audioManager.playSpecial(AudioManager.SPECIAL_TAT);
     }
 }
