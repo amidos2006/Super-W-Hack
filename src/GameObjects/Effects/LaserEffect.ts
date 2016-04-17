@@ -5,7 +5,7 @@ class LaserEffect extends BaseGameObject{
     
     constructor(game:Phaser.Game, x:number, y:number, destX:number, destY:number){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
-        this.scaleDownSpeed = 0.06;
+        this.scaleDownSpeed = 0.05;
         
         this.direction = new Phaser.Point(destX - x, destY - y);
         this.direction = this.direction.normalize();
