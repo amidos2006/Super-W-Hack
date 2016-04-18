@@ -20,7 +20,7 @@ class BackAndForthEnemyObject extends EnemyObject implements Movement
         if(!this.updateEnemy(this.enemyDirection, tileMatrix) && 
             !this.updateEnemy(this.reverseDirection(this.enemyDirection), tileMatrix))
         {
-            this.enemyDirection = this.revertAxis(this.enemyDirection);
+            this.goEnemy(new Phaser.Point(0,0), tileMatrix);
         }
         if(!this.updateEnemy(this.enemyDirection, tileMatrix))
         {
