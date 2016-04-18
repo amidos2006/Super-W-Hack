@@ -14,7 +14,7 @@ class WallTile extends BaseTile{
                 this.sprite.tint = 0x664729;
                 break;
             case 1:
-                this.sprite.tint = 0x664729;
+                this.sprite.tint = 0x808080;
                 break;
             case 2:
                 this.sprite.tint = 0x3d2966;

@@ -33,6 +33,7 @@ class Global{
     static MAP_SIZE:number = 10;
     static ROOM_WIDTH:number = 11;
     static ROOM_HEIGHT:number = 11;
+    static MAX_LVL_CATEGORY:number = 0;
     
     static weaponNameGenerator:WeaponNameGenerator;
     static audioManager:AudioManager;
@@ -74,11 +75,13 @@ class Global{
     }
     
     static constructLevelName(inputText1:string, inputText2:string, inputText3:string, random:Phaser.RandomDataGenerator){
-        Global.levelCategory = random.integerInRange(0, inputText1.split("\n").length-1);
+        Global.MAX_LVL_CATEGORY = inputText1.split("\n").length;
+        Global.levelCategory = random.integerInRange(0, Global.MAX_LVL_CATEGORY - 1);
+        var sizeChoice:number = Math.floor(AudioManager.AMOUNT_OF_MUSIC / Global.MAX_LVL_CATEGORY);
+        Global.levelMusic = random.integerInRange(0, sizeChoice - 1);
         var i1:number = random.integerInRange(0, inputText1.split("\n")[Global.levelCategory].split(",").length - 1);
         var i2:number = random.integerInRange(0, inputText2.split(",").length-1);
         var i3:number = random.integerInRange(0, inputText3.split(",").length-1);
-        Global.levelMusic = Global.levelCategory * 8 + i1 * 4 + i2 * 2 + i3;
         
         var f1:string = inputText1.split("\n")[Global.levelCategory].split(",")[i1].trim();
         var f2:string = inputText2.split(",")[i2].trim();
