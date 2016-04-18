@@ -59,7 +59,6 @@ class Global{
         Global.currentWeapon = null;
         Global.currentPlayer = null;
         Global.itemUsage = 0;
-        Global.previousDirection = new Phaser.Point(0, 0);
         switch(Global.currentGameMode){
             case GameplayModes.adventure:
                 Global.constructLevelName(text1, text2, text3, random);
@@ -119,6 +118,8 @@ class Global{
     }
     
     static constructLevel(random:Phaser.RandomDataGenerator){
+        Global.previousDirection = new Phaser.Point(0, 0);
+        
         var probabilityOfEmptyPlace:number = 0.08;
         var precentageCovered:number = 0.6;
         
@@ -199,5 +200,18 @@ class Global{
     
     static getCurrentRoom():RoomInfoObject{
         return Global.levelRooms[Global.currentX][Global.currentY];
+    }
+    
+    static isDungeonFinished(){
+        for (var x = 0; x < Global.mapWidth; x++) {
+            for (var y = 0; y < Global.mapHeight; y++) {
+                if(Global.levelRooms[x][y] != null && !(Global.currentX == x && Global.currentY == y) &&
+                    (!Global.levelRooms[x][y].cleared && 
+                    Global.levelRooms[x][y].difficulty != DifficultyEnum.None)){
+                        return false;
+                }
+            }  
+        }
+        return true;
     }
 }

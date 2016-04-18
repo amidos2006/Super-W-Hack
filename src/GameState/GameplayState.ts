@@ -14,6 +14,7 @@ class GameplayState extends BaseGameState{
     playerObject:PlayerObject;
     enemyObjects:EnemyObject[];
     boxObject:BoxObject;
+    portalObject:PortalObject;
     lastPosition:Phaser.Point;
     lastDirection:Phaser.Point;
     miniMap:MiniMap;
@@ -116,7 +117,9 @@ class GameplayState extends BaseGameState{
         }
         
         this.boxObject = new BoxObject(this.game);
+        this.portalObject = new PortalObject(this.game);
         this.game.add.existing(this.boxObject);
+        this.game.add.existing(this.portalObject);
         
         this.enemyObjects = [];
         var numOfEnemies:number = room.difficulty * 3;
@@ -225,7 +228,12 @@ class GameplayState extends BaseGameState{
         }
         
         if(lastEnemyDied != null && this.enemyObjects.length <= 0){
-             this.showBoxObject(lastEnemyDied);
+            if(Global.isDungeonFinished()){
+                this.portalObject.showPortal(lastEnemyDied.x, lastEnemyDied.y);
+            }
+            else{
+                this.showBoxObject(lastEnemyDied);
+            }
         }
     }
     
@@ -275,15 +283,11 @@ class GameplayState extends BaseGameState{
                     this.currentDoors[i].unlock();
                 }
                 Global.getCurrentRoom().cleared = true;
-                var damage:number[][] = [];
-                for (var x = 0; x < Global.ROOM_WIDTH; x++) {
-                    damage.push([]);
-                    for (var y = 0; y < Global.ROOM_HEIGHT; y++) {
-                        damage[x].push(3);
-                    }
-                }
-                this.handleAttack(damage);
                 Global.crateNumber += 1;
+            }
+            if(this.portalObject.checkCollision(playerPosition.x, playerPosition.y)){
+                Global.getCurrentRoom().cleared = true;
+                this.portalObject.enterPortal();
             }
         }
         
