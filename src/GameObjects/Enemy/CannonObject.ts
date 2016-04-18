@@ -15,7 +15,6 @@ class CannonObject extends BaseGameObject
                 {
                     for(var i = enemy.getTilePosition().x - 1; i >= playerPosition.x; i--)
                     {
-                        console.log("Checking for type (" + checkType + "): " + i + "," + playerPosition.y + " " + tileMap[i][playerPosition.y])
                         if(tileMap[i][playerPosition.y] == checkType)
                         {
                             return new Phaser.Point(i, playerPosition.y);
@@ -29,7 +28,6 @@ class CannonObject extends BaseGameObject
                 {
                     for(var i = enemy.getTilePosition().x + 1; i <= playerPosition.x; i++)
                     {
-                        console.log("Checking for type (" + checkType + "): " + i + "," + playerPosition.y + " " + tileMap[i][playerPosition.y])
                         if(tileMap[i][playerPosition.y] == checkType)
                         {
                             return new Phaser.Point(i, playerPosition.y);
@@ -43,7 +41,6 @@ class CannonObject extends BaseGameObject
                 {
                     for(var i = enemy.getTilePosition().y - 1; i >= playerPosition.y; i--)
                     {
-                        console.log("Checking for type (" + checkType + "): " + playerPosition.x + "," + i + " " + tileMap[i][playerPosition.y])
                         if(tileMap[playerPosition.x][i] == checkType)
                         {
                             return new Phaser.Point(playerPosition.x, i);
@@ -57,7 +54,6 @@ class CannonObject extends BaseGameObject
                 {
                     for(var i = enemy.getTilePosition().y + 1; i <= playerPosition.y; i++)
                     {
-                        console.log("Checking for type (" + checkType + "): " + playerPosition.x + "," + i + " " + tileMap[i][playerPosition.y])
                         if(tileMap[playerPosition.x][i] == checkType)
                         {
                             return new Phaser.Point(playerPosition.x, i);
