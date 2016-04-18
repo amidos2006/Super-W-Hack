@@ -18,7 +18,7 @@ class AdventureName extends BaseUIObject{
         sprite.animations.play("normal");
         sprite.anchor.set(0.5, 0.5);
         sprite.scale.set(0.5, 0.5);
-        sprite.tint = 0x664729;
+        sprite.tint = FloorColors.getWallColors(Global.levelCategory);
         this.add(sprite);
         
         sprite = this.game.add.sprite(mainPoint.x + Global.TILE_SIZE / 2, mainPoint.y, "graphics");
@@ -26,7 +26,7 @@ class AdventureName extends BaseUIObject{
         sprite.animations.play("normal");
         sprite.anchor.set(0.5, 0.5);
         sprite.scale.set(0.5, 0.5);
-        sprite.tint = 0x664729;
+        sprite.tint = FloorColors.getWallColors(Global.levelCategory);
         this.add(sprite);
         
         sprite = this.game.add.sprite(mainPoint.x, mainPoint.y + Global.TILE_SIZE / 2, "graphics");
@@ -34,7 +34,7 @@ class AdventureName extends BaseUIObject{
         sprite.animations.play("normal");
         sprite.anchor.set(0.5, 0.5);
         sprite.scale.set(0.5, 0.5);
-        sprite.tint = 0x664729;
+        sprite.tint = FloorColors.getWallColors(Global.levelCategory);
         this.add(sprite);
         
         mainPoint = new Phaser.Point(x + text.width / 2 + Global.TILE_SIZE, y + text.height / 2 + Global.TILE_SIZE / 2 - 5);
@@ -43,7 +43,7 @@ class AdventureName extends BaseUIObject{
         sprite.animations.play("normal");
         sprite.anchor.set(0.5, 0.5);
         sprite.scale.set(0.5, 0.5);
-        sprite.tint = 0x664729;
+        sprite.tint = FloorColors.getWallColors(Global.levelCategory);
         this.add(sprite);
         
         sprite = this.game.add.sprite(mainPoint.x - Global.TILE_SIZE / 2, mainPoint.y, "graphics");
@@ -51,7 +51,7 @@ class AdventureName extends BaseUIObject{
         sprite.animations.play("normal");
         sprite.anchor.set(0.5, 0.5);
         sprite.scale.set(0.5, 0.5);
-        sprite.tint = 0x664729;
+        sprite.tint = FloorColors.getWallColors(Global.levelCategory);
         this.add(sprite);
         
         sprite = this.game.add.sprite(mainPoint.x, mainPoint.y - Global.TILE_SIZE / 2, "graphics");
@@ -59,7 +59,7 @@ class AdventureName extends BaseUIObject{
         sprite.animations.play("normal");
         sprite.anchor.set(0.5, 0.5);
         sprite.scale.set(0.5, 0.5);
-        sprite.tint = 0x664729;
+        sprite.tint = FloorColors.getWallColors(Global.levelCategory);
         this.add(sprite);
         
         this.alpha = 0;

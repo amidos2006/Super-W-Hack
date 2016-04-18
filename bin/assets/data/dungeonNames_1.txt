@@ -1,5 +1,5 @@
-dungeon, stairs, lair, cave, mud
-castle, tower, citadel, palace, home, room, lab
+dungeon, lair, cave, mud, dirt, shit
+castle, tower, citadel, palace, home, room, lab, stairs
 desk, drawer, closet, shelf, pants
 desert, storm, beach, sand castle
 lake, sea, river, ocean, ice cave

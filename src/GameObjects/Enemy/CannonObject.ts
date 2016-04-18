@@ -38,7 +38,7 @@ class CannonObject extends BaseGameObject
                 }
                 
          if (enemy.getTilePosition().x == playerPosition.x
-                && enemy.getTilePosition().y < playerPosition.y
+                && enemy.getTilePosition().y > playerPosition.y
                 && this.cannonDirection.equals(new Phaser.Point(0, -1)))
                 {
                     for(var i = enemy.getTilePosition().y - 1; i >= playerPosition.y; i--)
@@ -52,7 +52,7 @@ class CannonObject extends BaseGameObject
                 }
                 
          if (enemy.getTilePosition().x == playerPosition.x
-                && enemy.getTilePosition().y > playerPosition.y
+                && enemy.getTilePosition().y < playerPosition.y
                 && this.cannonDirection.equals(new Phaser.Point(0, 1)))
                 {
                     for(var i = enemy.getTilePosition().y + 1; i <= playerPosition.y; i++)
