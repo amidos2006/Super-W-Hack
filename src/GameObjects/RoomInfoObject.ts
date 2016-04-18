@@ -157,4 +157,16 @@ class RoomInfoObject{
         
         return false;
     }
+    
+    getNumberOfConnection(){
+        var value:number = 0;
+        for (var x = -1; x <= 1; x++) {
+            for (var y = -1; y <= 1; y++) {
+                if(this.checkDoor(new Phaser.Point(x, y))){
+                    value += 1;
+                }             
+            }
+        }
+        return value;
+    }
 }

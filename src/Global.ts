@@ -186,6 +186,17 @@ class Global{
                 }
             }
         }
+        
+        for (var x = 0; x < Global.mapWidth; x++) {
+            for (var y = 0; y < Global.mapHeight; y++) {
+                if(Global.levelRooms[x][y] != null && 
+                    Global.levelRooms[x][y].difficulty == DifficultyEnum.None && 
+                    Global.levelRooms[x][y].getNumberOfConnection() <= 1 &&
+                    !(x == Global.currentX && y == Global.currentY)){
+                    Global.levelRooms[x][y].difficulty = DifficultyEnum.Easy;
+                }
+            }         
+        }
     }
     
     static getCurrentRoom():RoomInfoObject{
