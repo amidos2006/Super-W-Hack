@@ -174,12 +174,10 @@ class Global{
                 sets[firstIndex].combine(sets[secondIndex]);
                 sets.splice(secondIndex, 1);
                 var numConn:number = random.integerInRange(1, connections.length / 2);
-                console.log(connections.length / 2);
                 for(var i:number=0; i<numConn; i++){
                     var randomIndex:number = random.integerInRange(0, connections.length / 2 - 1);
                     var fRoom:Phaser.Point = connections.splice(2*randomIndex + 1, 1)[0];
                     var sRoom:Phaser.Point = connections.splice(2*randomIndex, 1)[0];
-                    console.log(numConn + " " + connections.length)
                                   
                     Global.levelRooms[fRoom.x][fRoom.y].setDoor(new Phaser.Point(sRoom.x - fRoom.x, sRoom.y - fRoom.y));
                     Global.levelRooms[sRoom.x][sRoom.y].setDoor(new Phaser.Point(fRoom.x - sRoom.x, fRoom.y - sRoom.y));
