@@ -29,7 +29,9 @@ class MainMenuState extends BaseGameState{
         this.choices[this.index].changeText(this.selectedValues[this.index]);
         this.choices[this.index].selectText(true);
         
-        this.game.add.existing(new HintText(this.game, this.game.width/2, this.game.height, "(up/down) to choose\n(x) to select"));
+        this.game.add.existing(new WhiteLayout(this.game, 10, 10, this.game.width - 20, this.game.height - 20));
+        this.game.add.existing(new HintText(this.game, this.game.width/2, 
+            this.game.height - 5, "(up/down) to choose\n(x) to select"));
     }
     
     update(){

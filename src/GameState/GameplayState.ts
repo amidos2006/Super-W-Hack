@@ -57,7 +57,8 @@ class GameplayState extends BaseGameState{
         this.game.add.existing(new CrateText(this.game, this.game.width/2, this.game.height - 
             (this.game.height - this.game.width) + 25));
         this.game.add.existing(new LevelName(this.game, this.game.width/2, 5));
-        this.game.add.existing(new WhiteLayout(this.game, -this.game.camera.x, -this.game.camera.y));
+        this.game.add.existing(new WhiteLayout(this.game, -this.game.camera.x, -this.game.camera.y, 
+            Global.ROOM_WIDTH * Global.TILE_SIZE, Global.ROOM_HEIGHT * Global.TILE_SIZE));
     }
     
     addDoor(direction:Phaser.Point, cleared:boolean){
