@@ -12,20 +12,31 @@ class RandomEnemyObject extends EnemyObject implements Movement
         this.add(this.enemySprite);
     }
     
+    getRandomFreeDirection(enemyDirection:Phaser.Point, tileMap:TileTypeEnum[][])
+    {
+        var dir:Phaser.Point = new Phaser.Point(0,0);
+        var dirs:Phaser.Point[] = [];
+        for(var i:number = 1; i < this.directions.length; i++)
+        {
+            if(this.updateEnemy(this.directions[i], tileMap) == true)
+            {
+                dirs.push(this.directions[i]);
+            }
+        }
+        
+        if (dirs.length > 0)
+        {
+            dir = dirs[(Math.floor(Math.random() * dirs.length) + 1) - 1];
+        }
+        return dir;
+    }
+     
      enemyMove(enemyDirection:Phaser.Point, tileMatrix:TileTypeEnum[][])
      {
-        if(this.keepDirection % this.factorDirectionChange == 0)
-        {
-            this.factorDirectionChange = Math.floor(Math.random() * 3) + 1;
-            this.enemyDirection = this.pickDirection();
-        }
-        this.keepDirection++;
-        
         if(!this.updateEnemy(this.enemyDirection, tileMatrix))
         {
-            var newDir = this.getFirstFreeDirection(this.enemyDirection, tileMatrix);//this.pickDirectionWithThisConstraint(this.findDirectionIndex(this.enemyDirection));
-            this.updateEnemy(newDir, tileMatrix);
-            this.goEnemy(newDir, tileMatrix);
+            this.enemyDirection = this.getRandomFreeDirection(this.enemyDirection, tileMatrix);//this.pickDirectionWithThisConstraint(this.findDirectionIndex(this.enemyDirection));
+            this.goEnemy(this.enemyDirection, tileMatrix);
         }else{
             this.goEnemy(this.enemyDirection, tileMatrix);
         }
