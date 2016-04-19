@@ -20,6 +20,9 @@
             position:absolute;    
             left:-100px;
         }
+        #content{
+            zoom: 1.25;
+        }
     </style>
     <script src="js/phaser.js"></script>
     <script src="js/sfxr.js"></script>
@@ -28,5 +31,12 @@
 <body>
     <div class="fontPreload" style="font-family: pixelFont;">.</div>
     <div align="center" id="content"></div>
+    <script type="text/javascript">
+    window.addEventListener('keydown', function(e) {
+        if (e.keyCode > -1) {
+            e.preventDefault();
+        }
+    }); 
+    </script>
 </body>
 </html>
