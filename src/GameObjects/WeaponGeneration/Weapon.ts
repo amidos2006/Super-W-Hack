@@ -1,24 +1,5 @@
 //import WeaponShape = require('WeaponShape'); 
-enum WeaponShape {
-    AREA,
-    LINE_1,
-    LINE_2,
-    LINE_3,
-    LINE_INF/*,
-    CONE_2,
-    CONE_3,
-    CONE_4*/
-}
-
-enum WeaponOnColision {
-    PENETRATE,
-    EXPLODE
-}
-
-enum ShotType {
-    NORMAL,
-    LEAVE_OBJECT
-}
+/// <reference path="../../Global.ts"/>
 
 enum WeaponCrazyEffects {
     NOTHING,
@@ -26,12 +7,14 @@ enum WeaponCrazyEffects {
     KNOCKBACK_ENEMY_1,
     KNOCKBACK_ENEMY_2,
     KNOCKBACK_PLAYER_1,
-    KNOCKBACK_PLAYER2
+    KNOCKBACK_PLAYER2,
+    CONVERT_CONTROL
 }
 
 class Weapon {
-    name: String = "";
     
+
+
     /**Damage that weapon gives: 1 <= damage <= 3 */
     static MIN_DAMAGE:number = 1;
     static MAX_DAMAGE:number = 3;
@@ -45,28 +28,15 @@ class Weapon {
     cooldown :number = 1;
     curCooldown: number = 0;
     
-    /** Where the weapon attack start: 0, 1, 2, 3 (squares ahead the player) */
-    static MIN_SHIFT:number = 0;
-    static MAX_SHIFT:number = 2;
-    static SHIFT_INTERVAL:number = 1;
-    startPointShif: number = 1;
-    
-    /**The way the shooting area is presented */
-    shape: WeaponShape = WeaponShape.LINE_1;
-    static WEAPON_SHAPE: WeaponShape[] = [WeaponShape.LINE_1, WeaponShape.LINE_2, WeaponShape.LINE_3, WeaponShape.LINE_INF,
-        WeaponShape.AREA/*, WeaponShape.CONE_2, WeaponShape.CONE_3, WeaponShape.CONE_4*/];
-
-    /** Type of the shot: normal or leave_behind (e.g. mine) */
-    static SHOT_TYPE: ShotType[] = [ShotType.NORMAL, ShotType.LEAVE_OBJECT];
-    shotType: ShotType = ShotType.NORMAL;
-    
-    /** What happen when bullet collide with enemy  */
-    static WEAPON_ON_COLISION: WeaponOnColision[] = [WeaponOnColision.EXPLODE, WeaponOnColision.PENETRATE];
-    wOnColision: WeaponOnColision = WeaponOnColision.PENETRATE;	
-    
     static CHANCE_CENTERED: number = 0.4;
     static CHANCE_REPEAT: number = 0.3;
+    static MAX_AREA_SIZE_CENTER_W: number = (Math.ceil(Global.ROOM_WIDTH / 2) > 3 ? Math.ceil(Global.ROOM_WIDTH / 2) : 3);
+    static MAX_AREA_SIZE_CENTER_H: number = (Math.ceil(Global.ROOM_HEIGHT / 2) > 3 ? Math.ceil(Global.ROOM_HEIGHT / 2) : 3);
+    static MAX_AREA_SIZE_FRONT_W: number = (Math.ceil(Global.ROOM_WIDTH / 2) > 3 ? Math.ceil(Global.ROOM_WIDTH / 2) : 3);//Math.ceil(Global.ROOM_WIDTH / 3);
+    static MAX_AREA_SIZE_FRONT_H: number = (Math.ceil(Global.ROOM_HEIGHT / 2) > 3 ? Math.ceil(Global.ROOM_HEIGHT / 2) : 3);//Math.ceil(Global.ROOM_HEIGHT / 3);
 
+
+    name: String = "";
     lingering: boolean = false;
     amountOfLingeringLive: number = 0;
     poison: boolean = false;
@@ -79,12 +49,14 @@ class Weapon {
     areaLevel: number = 0;
     objectExplode: boolean = false;
     objectFade: boolean = false;
+    objectPattern: number[][];
+
     static EFFECTS: WeaponCrazyEffects[] = [WeaponCrazyEffects.NOTHING, WeaponCrazyEffects.TELEPORT, WeaponCrazyEffects.KNOCKBACK_ENEMY_1,
-        WeaponCrazyEffects.KNOCKBACK_ENEMY_2, WeaponCrazyEffects.KNOCKBACK_PLAYER2, WeaponCrazyEffects.KNOCKBACK_PLAYER_1];
+        WeaponCrazyEffects.KNOCKBACK_ENEMY_2, WeaponCrazyEffects.KNOCKBACK_PLAYER2,
+        WeaponCrazyEffects.KNOCKBACK_PLAYER_1, WeaponCrazyEffects.CONVERT_CONTROL];
     crazyEffect: WeaponCrazyEffects = WeaponCrazyEffects.NOTHING;
 
     constructor() {
-        this.shape = WeaponShape.LINE_1;
         this.weaponPower = -1;
     }
 
@@ -355,9 +327,9 @@ class Weapon {
     
     toString():string{
         var text: string = "";
-        text += this.name+": Damage: " + this.damage + ", Cooldown: " + this.cooldown + " , Shift: " + this.startPointShif + ", "
+        text += this.name+": Damage: " + this.damage + ", Cooldown: " + this.cooldown + ", "
             + ", Size pattern: " + this.pattern.length + "x" + this.pattern[0].length + ", centered: " +
-        this.centered+", repeat?"+this. repeat+"\n";
+        this.centered+", repeat?"+this. repeat+" power:"+this.weaponPower+ "\n";
         for (var i: number = 0; i < this.pattern.length; i++) {
             for (var j: number = 0; j < this.pattern[0].length; j++) {
                 text += this.pattern[i][j];
@@ -370,7 +342,7 @@ class Weapon {
 
     calculateAreaLevel() {
         this.areaLevel = 0;
-        var black: number = 0;
+        var black: number = 0, div:number = 1;
         for (var i: number = 0; i < this.pattern.length; i++) {
             for (var j: number = 0; j < this.pattern[0].length; j++) {
                 if (this.pattern[i][j] == 1) {
@@ -379,32 +351,27 @@ class Weapon {
             }
         }
 
-        if (this.centered) {
-            var maxW: number = Math.ceil(Global.ROOM_WIDTH / 2) > 3 ? Math.ceil(Global.ROOM_WIDTH / 2) : 3;
-            var maxH: number = Math.ceil(Global.ROOM_HEIGHT / 2) > 3 ? Math.ceil(Global.ROOM_HEIGHT / 2) : 3;
-            var MAX_BLACK: number = (maxH * maxW);
-            this.areaLevel += black / MAX_BLACK;
-        } else {
-            if (this.repeat) {
-                var MAX_BLACK: number = Math.ceil(Global.ROOM_HEIGHT / 3) * Math.ceil(Global.ROOM_WIDTH / 3);
-                var maxRepetitions: number = Global.ROOM_HEIGHT / Math.ceil(Global.ROOM_HEIGHT / 2);
+        if (!this.centered && this.repeat) {
+            div = (Global.ROOM_HEIGHT-1) * Weapon.MAX_AREA_SIZE_FRONT_W;
 
-                var repetitions: number = 0;
+            var repetitions: number = 0;
 
-                if (this.pattern.length > this.pattern[0].length)
-                    repetitions = Global.ROOM_HEIGHT / this.pattern.length;
-                else
-                    repetitions = Global.ROOM_WIDTH / this.pattern[0].length;
-
-                this.areaLevel += (repetitions * black) / (MAX_BLACK * maxRepetitions);
-                
+            if (this.pattern.length > this.pattern[0].length) {
+                repetitions = (Global.ROOM_HEIGHT - 1) / this.pattern.length;
             } else {
-                var maxW: number = Math.ceil(Global.ROOM_WIDTH / 3);
-                var maxH: number = Math.ceil(Global.ROOM_HEIGHT / 3);
-                var MAX_BLACK: number = (maxH * maxW);
-                this.areaLevel += black / MAX_BLACK;
+                repetitions = (Global.ROOM_WIDTH - 1) / this.pattern[0].length;
             }
+            black = black * repetitions;
+        } else {
+            var maxW: number = Weapon.MAX_AREA_SIZE_FRONT_W;
+            var maxH: number = Weapon.MAX_AREA_SIZE_FRONT_H;
+            div = (Weapon.MAX_AREA_SIZE_FRONT_W * Weapon.MAX_AREA_SIZE_FRONT_H);
         }
+
+        this.areaLevel += black / div;
+        console.log("calc:" + this.areaLevel + " black:" + black + " div:"+div+" max:" +
+            Weapon.MAX_AREA_SIZE_FRONT_W + "x" + Weapon.MAX_AREA_SIZE_FRONT_H + " global:" +
+            Global.ROOM_WIDTH + "x" + Global.ROOM_HEIGHT + " pat:" + this.pattern[0].length + "x" + this.pattern.length);
     }
 
     howPowerful(): number {
@@ -446,41 +413,7 @@ class Weapon {
         }
         MAX++;
 
-        var area: number = 0;
-        var black: number = 0;
-        for (var i: number = 0; i < this.pattern.length; i++) {
-            for (var j: number = 0; j < this.pattern[0].length; j++) {
-                if (this.pattern[i][j] == 1) {
-                    black++;
-                }
-            }
-        }
-
-        if (this.centered) {
-            var maxW: number = Math.ceil(Global.ROOM_WIDTH / 2) > 3 ? Math.ceil(Global.ROOM_WIDTH / 2) : 3;
-            var maxH: number = Math.ceil(Global.ROOM_HEIGHT / 2) > 3 ? Math.ceil(Global.ROOM_HEIGHT / 2) : 3;
-            var MAX_BLACK: number = (maxH * maxW);
-            area= black / MAX_BLACK;
-
-        } else {
-            if (this.repeat) {
-                var MAX_BLACK: number = Math.ceil(Global.ROOM_HEIGHT / 3) * Math.ceil(Global.ROOM_WIDTH / 3);
-                var maxRepetitions: number = Global.ROOM_HEIGHT / Math.ceil(Global.ROOM_HEIGHT / 2);
-
-                var repetitions: number = 0;
-
-                if (this.pattern.length > this.pattern[0].length)
-                    repetitions = Global.ROOM_HEIGHT / this.pattern.length;
-                else
-                    repetitions = Global.ROOM_WIDTH / this.pattern[0].length;
-
-                area = (repetitions * black) / (MAX_BLACK * maxRepetitions);
-            } else  {
-                var maxW: number = Math.ceil(Global.ROOM_WIDTH / 3);
-                var maxH: number = Math.ceil(Global.ROOM_HEIGHT / 3);
-                var MAX_BLACK: number = (maxH * maxW);
-            }
-        }
+        var area: number = this.areaLevel;
         MAX++;
 
         var ling: number = this.lingering ? (this.amountOfLingeringLive > 0 ? this.amountOfLingeringLive / 3 : 4) : 0;

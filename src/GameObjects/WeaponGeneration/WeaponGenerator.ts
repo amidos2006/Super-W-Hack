@@ -1,3 +1,5 @@
+/// <reference path="Weapon.ts"/>
+
 class WeaponGenerator {
     
     static DAMAGE: number = 0;
@@ -77,8 +79,8 @@ class WeaponGenerator {
 
            if (random.realInRange(0, 1) < Weapon.CHANCE_CENTERED) {
                weapon.centered = true;
-               width = random.integerInRange(3, Math.ceil(Global.ROOM_WIDTH / 2) > 3 ? Math.ceil(Global.ROOM_WIDTH / 2) : 3);
-               height = random.integerInRange(3, Math.ceil(Global.ROOM_HEIGHT / 2) > 3 ? Math.ceil(Global.ROOM_HEIGHT / 2) : 3);
+               width = random.integerInRange(3, Weapon.MAX_AREA_SIZE_CENTER_W);
+               height = random.integerInRange(3, Weapon.MAX_AREA_SIZE_CENTER_H);
                weapon.repeat = false;
                weapon.lingering = false;
            } else {
@@ -93,12 +95,12 @@ class WeaponGenerator {
                    weapon.lingering = true;
                    if (random.frac() < 0.5) {
                        width = 1;
-                       height = random.integerInRange(1, 3);
+                       height = random.integerInRange(1, Weapon.MAX_AREA_SIZE_FRONT_H);
                    }
                    if (random.frac() < 0.15)
                        weapon.amountOfLingeringLive = -1;
                    else
-                       weapon.amountOfLingeringLive = random.integerInRange(1, 3);
+                       weapon.amountOfLingeringLive = random.integerInRange(1, Weapon.MAX_AREA_SIZE_FRONT_W);
                    if (random.frac() < 0.35) {
                        weapon.objectExplode = true;
                    } else {
@@ -110,8 +112,8 @@ class WeaponGenerator {
                        weapon.objectFade = false;
                    }
                } else {
-                   width = random.integerInRange(1, Math.ceil(Global.ROOM_WIDTH / 3));
-                   height = random.integerInRange(1, Math.ceil(Global.ROOM_HEIGHT / 3));
+                   width = random.integerInRange(1, Weapon.MAX_AREA_SIZE_FRONT_W);
+                   height = random.integerInRange(1, Weapon.MAX_AREA_SIZE_FRONT_H);
                    weapon.lingering = false;
                    
                }
@@ -141,7 +143,15 @@ class WeaponGenerator {
                }
            }
 
-           //console.log("checking " + height + "x" + width + " " + pattern.length + "x" + pattern[0].length);
+           var s: string = "";
+
+           for (var i: number = 0; i < height; i++) {
+               for (var j: number = 0; j < width; j++) {
+                   s += pattern[i][j];
+               }
+               s += "\n";
+           }
+           console.log("checking " + height + "x" + width + " " + pattern.length + "x" + pattern[0].length+"\n"+s);
 
 
            if (width == 1) {
@@ -259,9 +269,10 @@ class WeaponGenerator {
         }
 
         if (!hasAnyFilled) {
-            if (width > 2)
-                pattern[random.integerInRange(0, Math.floor(width / 2) - 1)][0] = 1;
-            else
+            if (width > 2) {
+                var rand: number = random.integerInRange(0, (Math.floor(width / 2) - 1 < 1 ? 1 : Math.floor(width / 2) - 1));
+                pattern[0][rand] = 1;
+            } else
                 pattern[0][0] = 1;
         }
 
@@ -470,11 +481,11 @@ class WeaponGenerator {
 
     static generateName(weapon: Weapon, pattern: number[][], random: Phaser.RandomDataGenerator,
         nameGenerator: WeaponNameGenerator): string {
-        var seed: number[] = new Array(7);
+        var seed: number[] = new Array(8);
         seed[0] = weapon.damage;
         seed[1] = weapon.cooldown;
         seed[2] = weapon.centered ? 1 : 0;
-        seed[3] = weapon.poison ? 1 : 0;
+        seed[3] = weapon.objectExplode ? 1 : 0;
         seed[4] = weapon.repeat ? 1 : 0;
         seed[5] = weapon.lingering ? 1 : 0;
         var patternValue: number = 0, last: number = 0;
@@ -485,6 +496,7 @@ class WeaponGenerator {
             }
         }
         seed[6] = patternValue;
+        seed[7] = weapon.objectFade ? 1 : 0;
         random = new Phaser.RandomDataGenerator(seed);
         
         var quantAdj: number = 1, weaponValue: number = 0;;
@@ -507,7 +519,8 @@ class WeaponGenerator {
             quantAdj = 3;
             weaponValue = 1;
         }
-       return nameGenerator.generateAName(quantAdj, random, weaponValue);
+        return nameGenerator.generateAName(quantAdj, random, (weapon.weaponPower > 7 ? true : false),
+            (weapon.weaponPower < 7 && weapon.weaponPower > 3 ? true : false));
     }
 
 }
