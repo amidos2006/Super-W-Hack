@@ -68,7 +68,7 @@ class Boss extends BaseGameObject {
         super(game,x,y);
     }
 
-    stepUpdate(playerPosition: Phaser.Point, map: TileTypeEnum[][], random: Phaser.RandomDataGenerator) {
-
+    stepUpdate(playerPosition: Phaser.Point, map: TileTypeEnum[][]) {
+        // you can get the random object using this.game.rnd
     }
 }
