@@ -87,16 +87,16 @@ class GameplayState extends BaseGameState{
                     break;
                     case TileTypeEnum.Door:
                     if(x == 0){
-                        this.addDoor(new Phaser.Point(-1, 0), room.cleared || room.difficulty == DifficultyEnum.None);
+                        this.addDoor(new Phaser.Point(-1, 0), room.cleared || room.roomType == RoomTypeEnum.None);
                     }
                     if(x == Global.ROOM_WIDTH - 1){
-                        this.addDoor(new Phaser.Point(1, 0), room.cleared || room.difficulty == DifficultyEnum.None);
+                        this.addDoor(new Phaser.Point(1, 0), room.cleared || room.roomType == RoomTypeEnum.None);
                     }
                     if(y == 0){
-                        this.addDoor(new Phaser.Point(0, -1), room.cleared || room.difficulty == DifficultyEnum.None);
+                        this.addDoor(new Phaser.Point(0, -1), room.cleared || room.roomType == RoomTypeEnum.None);
                     }
                     if(y == Global.ROOM_HEIGHT - 1){
-                        this.addDoor(new Phaser.Point(0, 1), room.cleared || room.difficulty == DifficultyEnum.None);
+                        this.addDoor(new Phaser.Point(0, 1), room.cleared || room.roomType == RoomTypeEnum.None);
                     }
                     break;
                 }   
@@ -122,8 +122,9 @@ class GameplayState extends BaseGameState{
         this.game.add.existing(this.portalObject);
         
         this.enemyObjects = [];
-        var numOfEnemies:number = room.difficulty * 3;
-        if(room.cleared || room.difficulty == DifficultyEnum.None){
+        var numOfEnemies:number = (Global.levelNumber + 1) + this.game.rnd.integerInRange(1 * (Global.levelNumber + 1), 
+            2 * (Global.levelNumber + 1));
+        if(room.cleared || room.roomType == RoomTypeEnum.None){
             numOfEnemies = 0;
         }
         var tiles:TileTypeEnum[][] = room.getMatrix(this.enemyObjects);
@@ -161,7 +162,7 @@ class GameplayState extends BaseGameState{
                 Global.currentWeapon);
         this.game.add.existing(this.playerObject);
         
-        if(!room.cleared && room.difficulty == DifficultyEnum.None){
+        if(!room.cleared && room.roomType == RoomTypeEnum.None){
             this.showBoxObject(new Phaser.Point(Math.floor(Global.ROOM_WIDTH / 2), Math.floor(Global.ROOM_HEIGHT / 2)));
         }
         

@@ -112,7 +112,7 @@ class Global{
     static constructSingleLevel(random:Phaser.RandomDataGenerator){
         Global.mapWidth = 1;
         Global.mapHeight = 1;
-        Global.levelRooms = [[new RoomInfoObject(DifficultyEnum.Easy, random)]];
+        Global.levelRooms = [[new RoomInfoObject(RoomTypeEnum.Enemy, random)]];
         Global.currentX = 0;
         Global.currentY = 0;
     }
@@ -144,11 +144,11 @@ class Global{
         while(queue.length != 0 && roomNumbers / (Global.mapWidth * Global.mapHeight) < precentageCovered){
             var p:Phaser.Point = queue.splice(random.integerInRange(0, queue.length - 1), 1)[0];
             if(Global.levelRooms[p.x][p.y] == null){
-                var diff:number = random.integerInRange(1, 2);
+                var roomType:RoomTypeEnum = RoomTypeEnum.Enemy;
                 if(Math.random() < probabilityOfEmptyPlace){
-                    diff = 0;
+                    roomType = RoomTypeEnum.None;
                 }
-                Global.levelRooms[p.x][p.y] = new RoomInfoObject(diff, random);
+                Global.levelRooms[p.x][p.y] = new RoomInfoObject(roomType, random);
                 sets.push(new RoomSet(p));
                 roomNumbers += 1;
             }
@@ -164,7 +164,10 @@ class Global{
             }
         }
         
-        Global.levelRooms[Global.currentX][Global.currentY].difficulty = DifficultyEnum.None;
+        Global.levelRooms[Global.currentX][Global.currentY].roomType = RoomTypeEnum.None;
+        if(Global.levelNumber > 0){
+            Global.levelRooms[Global.currentX][Global.currentY].cleared = true;
+        }
         
         while(sets.length > 1){
             var firstIndex:number = random.integerInRange(0, sets.length - 1);
@@ -189,10 +192,10 @@ class Global{
         for (var x = 0; x < Global.mapWidth; x++) {
             for (var y = 0; y < Global.mapHeight; y++) {
                 if(Global.levelRooms[x][y] != null && 
-                    Global.levelRooms[x][y].difficulty == DifficultyEnum.None && 
+                    Global.levelRooms[x][y].roomType == RoomTypeEnum.None && 
                     Global.levelRooms[x][y].getNumberOfConnection() <= 1 &&
                     !(x == Global.currentX && y == Global.currentY)){
-                    Global.levelRooms[x][y].difficulty = DifficultyEnum.Easy;
+                    Global.levelRooms[x][y].roomType = RoomTypeEnum.Enemy;
                 }
             }         
         }
@@ -207,7 +210,7 @@ class Global{
             for (var y = 0; y < Global.mapHeight; y++) {
                 if(Global.levelRooms[x][y] != null && !(Global.currentX == x && Global.currentY == y) &&
                     (!Global.levelRooms[x][y].cleared && 
-                    Global.levelRooms[x][y].difficulty != DifficultyEnum.None)){
+                    Global.levelRooms[x][y].roomType != RoomTypeEnum.None)){
                         return false;
                 }
             }  

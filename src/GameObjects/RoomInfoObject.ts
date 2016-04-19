@@ -1,15 +1,15 @@
-/// <reference path="DifficultyEnum.ts"/>
+/// <reference path="RoomTypeEnum.ts"/>
 /// <reference path="TileTypeEnum.ts"/>
 
 class RoomInfoObject{
     tileMatrix:TileTypeEnum[][];
     cleared:boolean;
-    difficulty:DifficultyEnum;
+    roomType:RoomTypeEnum;
     connections:number;
     visited:boolean;
     
-    constructor(difficulty:DifficultyEnum, random:Phaser.RandomDataGenerator){
-        this.difficulty = difficulty;
+    constructor(type:RoomTypeEnum, random:Phaser.RandomDataGenerator){
+        this.roomType = type;
         this.cleared = false;
         this.visited = false;
         this.connections = 0;
@@ -104,7 +104,7 @@ class RoomInfoObject{
             returnMatrix[enemyPosition.x][enemyPosition.y] = TileTypeEnum.Enemy;
         }
         
-        if(this.cleared || (this.difficulty == DifficultyEnum.None && 
+        if(this.cleared || (this.roomType == RoomTypeEnum.None && 
             !(Global.previousDirection.getMagnitude() == 0 && Global.levelNumber == 0))){
             if(this.checkDoor(new Phaser.Point(-1, 0))){
                 returnMatrix[0][Math.floor(Global.ROOM_HEIGHT / 2)] = TileTypeEnum.Passable;
