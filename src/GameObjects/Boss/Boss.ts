@@ -56,7 +56,7 @@ class Boss extends BaseGameObject {
 
     health: number = 0;
     damage: number = 0;
-
+    //
     attackCooldown: number = 0;
     movementCooldown: number = 0;
     movementSpeed: number = 0;
