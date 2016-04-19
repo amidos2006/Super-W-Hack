@@ -15,20 +15,9 @@ enum WeaponOnColision {
     EXPLODE
 }
 
-enum ColidedEndingType {
-    //Comment
-    NOTHING,
-    EXPLODE
-}
-
 enum ShotType {
     NORMAL,
     LEAVE_OBJECT
-}
-
-enum TypeColidedObject {
-    DIE_WITH_TIME,
-    DIE_ON_COLISION
 }
 
 enum WeaponCrazyEffects {
@@ -75,14 +64,6 @@ class Weapon {
     static WEAPON_ON_COLISION: WeaponOnColision[] = [WeaponOnColision.EXPLODE, WeaponOnColision.PENETRATE];
     wOnColision: WeaponOnColision = WeaponOnColision.PENETRATE;	
     
-    /** What happen when the left object do on collosion  */
-    static TYPE_COLIDED_OBJECT: TypeColidedObject[] = [TypeColidedObject.DIE_ON_COLISION, TypeColidedObject.DIE_WITH_TIME];
-    typeColidedObj: TypeColidedObject = TypeColidedObject.DIE_ON_COLISION;
-    
-    /** What happen when time is out from LeaveObj */
-    static ENDING_TYPES: ColidedEndingType[] = [ColidedEndingType.NOTHING, ColidedEndingType.EXPLODE];
-    endingType: ColidedEndingType = ColidedEndingType.NOTHING;	
-
     static CHANCE_CENTERED: number = 0.4;
     static CHANCE_REPEAT: number = 0.3;
 
@@ -105,61 +86,6 @@ class Weapon {
     constructor() {
         this.shape = WeaponShape.LINE_1;
         this.weaponPower = -1;
-    }
-
-    attackInLine(result: number[][], intAttPosX: number, intAttPosY: number,
-        playerPos: Phaser.Point, faceDirection: Phaser.Point, valueMatrix: TileTypeEnum[][], quantSpaces: number): number[][] {
-        if (intAttPosX == playerPos.x && intAttPosY == playerPos.y) {
-            intAttPosX += 1 * faceDirection.x;
-            intAttPosY += 1 * faceDirection.y;
-        }
-
-        if (faceDirection.x > 0) {
-            for (var i: number = intAttPosX; (i < intAttPosX + quantSpaces || quantSpaces == -1)
-                && i < result[0].length &&
-                valueMatrix[intAttPosY][i] != TileTypeEnum.Wall; i++) {
-                result[intAttPosY][i] = this.damage;
-            }
-        } else if (faceDirection.x < 0) {
-            for (var i: number = intAttPosX; (i > intAttPosX - quantSpaces || quantSpaces == -1)
-                && i >= 0 && valueMatrix[intAttPosY][i] != TileTypeEnum.Wall; i--) {
-                result[intAttPosY][i] = this.damage;
-            }
-        } else {
-            if (faceDirection.y > 0) {  
-                for (var i: number = intAttPosY; (i < intAttPosY + quantSpaces || quantSpaces == -1) && i < result.length &&
-                    valueMatrix[i][intAttPosX] != TileTypeEnum.Wall; i++) {
-                    result[i][intAttPosX] = this.damage;
-                }
-            } else if (faceDirection.y < 0) {
-                for (var i: number = intAttPosY; (i > intAttPosY - quantSpaces || quantSpaces == -1)
-                    && i >= 0 && valueMatrix[i][intAttPosX] != TileTypeEnum.Wall; i--) {
-                    result[i][intAttPosX] = this.damage;
-                }
-            }
-        }
-
-        return result;
-    }
-
-    attackInArea(result: number[][], intAttPosX: number, intAttPosY: number,
-        playerPos: Phaser.Point, faceDirection: Phaser.Point, valueMatrix: TileTypeEnum[][]): number[][] {
-
-        var topx: number = (intAttPosX - 1 < 0 ? 0 : intAttPosX - 1);
-        var topy: number = (intAttPosY - 1 < 0 ? 0 : intAttPosY - 1);
-        var bottomx: number = (valueMatrix[0].length < intAttPosX + 2 ? valueMatrix[0].length : intAttPosX + 2);
-        var bottomy: number = (valueMatrix.length < intAttPosY + 2 ? valueMatrix.length : intAttPosY + 2);
-        var s: String = "";
-        for (var j: number = topy; j < bottomy; j++) {
-            for (var i: number = topx; i < bottomx; i++) {
-                result[j][i] = this.damage;
-                s += result[j][i]+"";
-            }
-            s += "\n";
-        }
-        console.log(s);
-
-        return result;
     }
 
     getLingeringObjectPositions(objectPos: Phaser.Point, valueMatrix: TileTypeEnum[][]): number[][] {
@@ -384,7 +310,6 @@ class Weapon {
     getAreaLevel(): number {
         return this.areaLevel;
     }
-    //LeftOnFloor():List of FloorObject{}	
 
     updateCoolDown() {
         if(this.curCooldown > -5) {
@@ -431,7 +356,7 @@ class Weapon {
     toString():string{
         var text: string = "";
         text += this.name+": Damage: " + this.damage + ", Cooldown: " + this.cooldown + " , Shift: " + this.startPointShif + ", "
-            + this.endingType + ", Size pattern: " + this.pattern.length + "x" + this.pattern[0].length + ", centered: " +
+            + ", Size pattern: " + this.pattern.length + "x" + this.pattern[0].length + ", centered: " +
         this.centered+", repeat?"+this. repeat+"\n";
         for (var i: number = 0; i < this.pattern.length; i++) {
             for (var j: number = 0; j < this.pattern[0].length; j++) {
@@ -554,7 +479,6 @@ class Weapon {
                 var maxW: number = Math.ceil(Global.ROOM_WIDTH / 3);
                 var maxH: number = Math.ceil(Global.ROOM_HEIGHT / 3);
                 var MAX_BLACK: number = (maxH * maxW);
-                this.areaLevel += black / MAX_BLACK;
             }
         }
         MAX++;

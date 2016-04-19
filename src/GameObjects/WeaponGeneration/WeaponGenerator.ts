@@ -290,7 +290,7 @@ class WeaponGenerator {
         var orientation: number = (centered ? random.frac() : random.between(0, 0.65));
         //console.log("Orientation: " + orientation);
 
-        if (orientation < 0.66) {
+        if (orientation < 2) {
             //copy horizontally and diagonally
 
             for (var i: number = 0; i < height; i++) {
@@ -337,7 +337,7 @@ class WeaponGenerator {
                 }
             }
             
-            if (orientation < 0.33) {
+            if (orientation < 0.55) {
                 //copy horizontally
                 for (var i: number = 0; i < height; i++) {
                     //copy other half
@@ -486,17 +486,28 @@ class WeaponGenerator {
         }
         seed[6] = patternValue;
         random = new Phaser.RandomDataGenerator(seed);
-
-        var quantAdj: number = 1;
-        if (weapon.damage > Weapon.MAX_DAMAGE / 2)
+        
+        var quantAdj: number = 1, weaponValue: number = 0;;
+        /*if (weapon.damage > Weapon.MAX_DAMAGE / 2)
             quantAdj++;
         if (weapon.isWeaponPoisoned() || weapon.isWeaponLingering())
             quantAdj++;
         if (weapon.cooldown < Weapon.MAX_COOLDOWN / 2)
             quantAdj++;
         if (quantAdj < 3 && (weapon.pattern.length > 3 && weapon.pattern[0].length > 3))
-            quantAdj++;
-       return nameGenerator.generateAName(quantAdj, random);
+            quantAdj++;*/
+
+        if (weapon.weaponPower > 7) {
+            quantAdj = 1;
+            weaponValue = 3;
+        } else if (weapon.weaponPower > 3) {
+            quantAdj = 2;
+            weaponValue = 2;
+        } else {
+            quantAdj = 3;
+            weaponValue = 1;
+        }
+       return nameGenerator.generateAName(quantAdj, random, weaponValue);
     }
 
 }
