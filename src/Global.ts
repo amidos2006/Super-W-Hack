@@ -33,7 +33,7 @@ class Global{
     static MAP_SIZE:number = 10;
     static ROOM_WIDTH:number = 11;
     static ROOM_HEIGHT:number = 11;
-    static MAX_LVL_CATEGORY:number = 0;
+    static MAX_LVL_CATEGORY:number = 1;
     
     static weaponNameGenerator:WeaponNameGenerator;
     static audioManager:AudioManager;
@@ -110,9 +110,11 @@ class Global{
     }
     
     static constructSingleLevel(random:Phaser.RandomDataGenerator){
+        Global.previousDirection = new Phaser.Point(0, 1);
+        
         Global.mapWidth = 1;
         Global.mapHeight = 1;
-        Global.levelRooms = [[new RoomInfoObject(RoomTypeEnum.Enemy, random)]];
+        Global.levelRooms = [[new RoomInfoObject(RoomTypeEnum.Boss, random)]];
         Global.currentX = 0;
         Global.currentY = 0;
     }

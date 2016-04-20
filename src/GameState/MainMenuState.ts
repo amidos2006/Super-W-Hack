@@ -70,9 +70,6 @@ class MainMenuState extends BaseGameState{
                 case 1:
                 Global.currentGameMode = GameplayModes.arcade;
                 break;
-                case 2:
-                Global.currentGameMode = GameplayModes.endless;
-                break;
                 case 3:
                 break;
                 case 4:
@@ -80,7 +77,7 @@ class MainMenuState extends BaseGameState{
                 case 5:
                 break;
             }
-            if(this.index >= 0 && this.index<=0){
+            if(this.index >= 0 && this.index<=1){
                 this.game.state.start("playerselect", true);
             }
             Global.audioManager.playMenuSelected();
