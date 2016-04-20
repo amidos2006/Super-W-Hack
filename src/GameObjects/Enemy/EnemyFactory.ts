@@ -8,7 +8,11 @@ class EnemyFactory
              enemyObject = new RandomEnemyObject(game, x, y, random.integerInRange(1, 3), 0, new Phaser.Point());
         }
         else if(randomType == 1){
-            enemyObject = new ChaserEnemyObject(game, x, y, random.integerInRange(1, 3), 0, new Phaser.Point());
+            var maxChaserHP:number = 3;
+            if(Math.floor(Global.currentWeapon.getAreaLevel() * 10) <= 1){
+                maxChaserHP = Global.currentWeapon.getDamage();
+            }    
+            enemyObject = new ChaserEnemyObject(game, x, y, random.integerInRange(1, maxChaserHP), 0, new Phaser.Point());
         }
         else if(randomType == 2){
             var direction:Phaser.Point = new Phaser.Point();
