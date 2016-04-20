@@ -34,14 +34,17 @@ class RoomInfoObject{
             this.tileMatrix[0][y] = TileTypeEnum.Wall;
             this.tileMatrix[Global.ROOM_WIDTH - 1][y] = TileTypeEnum.Wall;
         }
-        
-       var shapeSize:number = random.integerInRange(1, 4);
-       var numberOfShapes:number = random.integerInRange(0, 3);
-       if(numberOfShapes == 3){
-           shapeSize = random.integerInRange(1, 3);
-       }
+          
+        var shapeSize:number = random.integerInRange(1, 3);
+        var numberOfShapes:number = random.integerInRange(0, 3);
+        if(numberOfShapes == 3){
+            shapeSize = random.integerInRange(1, 3);
+        }
+        if(this.roomType == RoomTypeEnum.Boss){
+            numberOfShapes = 0;
+        }
        
-       for(var s:number=0; s<numberOfShapes; s++){
+        for(var s:number=0; s<numberOfShapes; s++){
             var pattern:Phaser.Point[] = [];
             var direction:Phaser.Point = new Phaser.Point();
             var tileType:number = TileTypeEnum.Wall;
@@ -88,6 +91,35 @@ class RoomInfoObject{
             } 
        }
        
+       this.fixOpenAreas();
+    }
+    
+    fixOpenAreas(){
+        var tileMatrix:number[][] = this.getMatrix([]);
+        var nextTiles:Phaser.Point[] = [new Phaser.Point(Math.floor(Global.ROOM_WIDTH / 2), 
+            Math.floor(Global.ROOM_HEIGHT / 2))];
+        while (nextTiles.length > 0) {
+            var currentTile:Phaser.Point = nextTiles.splice(0, 1)[0];
+            tileMatrix[currentTile.x][currentTile.y] = TileTypeEnum.Wall;
+            for (var x = -1; x <= 1; x++) {
+                for (var y = -1; y <= 1; y++) {
+                    if(Math.abs(x) != Math.abs(y) &&
+                        currentTile.x + x >= 0 && currentTile.x + x < Global.ROOM_WIDTH &&
+                        currentTile.y + y >= 0 && currentTile.y + y < Global.ROOM_HEIGHT &&
+                        tileMatrix[currentTile.x + x][currentTile.y + y] != TileTypeEnum.Wall){
+                        nextTiles.push(new Phaser.Point(currentTile.x + x, currentTile.y + y));
+                    }
+                }
+            }
+        }
+        
+        for (var x = 0; x < Global.ROOM_WIDTH; x++) {
+            for (var y = 0; y < Global.ROOM_HEIGHT; y++) {
+                if(tileMatrix[x][y] == TileTypeEnum.Passable){
+                    this.tileMatrix[x][y] = TileTypeEnum.Wall;
+                }
+            }
+        }
     }
     
     getMatrix(enemyList:EnemyObject[]){

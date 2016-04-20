@@ -157,6 +157,7 @@ class GameplayState extends BaseGameState{
             this.game.add.existing(tempEnemy);
         }
         
+        this.bossObject = null;
         if(room.roomType == RoomTypeEnum.Boss){
             this.bossObject = new Boss(this.game, Global.ROOM_WIDTH / 2 - Global.previousDirection.x * 2, 
                 Global.ROOM_HEIGHT / 2 - Global.previousDirection.y * 2);
