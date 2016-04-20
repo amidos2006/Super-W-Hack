@@ -6,6 +6,7 @@
 /// <reference path="../GameObjects/Enemy/EnemyObject.ts"/>
 /// <reference path="../GameObjects/PlayerObject.ts"/>
 /// <reference path="../GameObjects/HUDElements/MiniMap.ts"/>
+/// <reference path="../GameObjects/Boss/Boss.ts"/>
 
 class GameplayState extends BaseGameState{    
     currentDoors:DoorTile[];
@@ -13,6 +14,7 @@ class GameplayState extends BaseGameState{
     arrowHighlight:DirHighlightTile;
     playerObject:PlayerObject;
     enemyObjects:EnemyObject[];
+    bossObject:Boss;
     boxObject:BoxObject;
     portalObject:PortalObject;
     lastPosition:Phaser.Point;
@@ -124,7 +126,7 @@ class GameplayState extends BaseGameState{
         this.enemyObjects = [];
         var numOfEnemies:number = (Global.levelNumber + 1) + this.game.rnd.integerInRange(1 * (Global.levelNumber + 1), 
             2 * (Global.levelNumber + 1));
-        if(room.cleared || room.roomType == RoomTypeEnum.None){
+        if(room.cleared || room.roomType == RoomTypeEnum.None || room.roomType == RoomTypeEnum.Boss){
             numOfEnemies = 0;
         }
         var tiles:TileTypeEnum[][] = room.getMatrix(this.enemyObjects);
@@ -153,6 +155,12 @@ class GameplayState extends BaseGameState{
             var tempEnemy:EnemyObject = EnemyFactory.getEnemey(this.game, point.x, point.y, this.game.rnd);
             this.enemyObjects.push(tempEnemy);
             this.game.add.existing(tempEnemy);
+        }
+        
+        if(room.roomType == RoomTypeEnum.Boss){
+            this.bossObject = new Boss(this.game, Global.ROOM_WIDTH / 2 - Global.previousDirection.x * 2, 
+                Global.ROOM_HEIGHT / 2 - Global.previousDirection.y * 2);
+            this.game.add.existing(this.bossObject);
         }
         
         this.playerObject = new PlayerObject(this.game, Math.floor(Global.ROOM_WIDTH / 2) + 
@@ -223,9 +231,17 @@ class GameplayState extends BaseGameState{
                 listOfIndeces.push(i);
             }
         }
+        
         for(var i:number = listOfIndeces.length - 1; i >= 0; i--){
             lastEnemyDied = this.enemyObjects[i].getTilePosition();
             this.enemyObjects.splice(listOfIndeces[i], 1);
+        }
+        
+        if(this.bossObject != null){
+            var bP:Phaser.Point = this.bossObject.getTilePosition();
+            if(this.bossObject.takeDamage(damage[bP.y][bP.x])){
+                this.bossObject = null;
+            }
         }
         
         if(lastEnemyDied != null && this.enemyObjects.length <= 0){
@@ -300,7 +316,7 @@ class GameplayState extends BaseGameState{
         var enemyAttacked:Phaser.Point[] = [];
         for(var i:number=0; i<this.enemyObjects.length; i++){
             if(this.enemyObjects[i].checkCollision(playerPosition.x, playerPosition.y)){
-                this.playerObject.killObject();
+                this.playerObject.takeDamage();
                 this.playerObject = null;
                 return true;
             }
@@ -312,7 +328,7 @@ class GameplayState extends BaseGameState{
                 this.game.add.existing(new LaserEffect(this.game, enemyPos.x, enemyPos.y, 
                         colPoint.x, colPoint.y));
                 if(colPoint.equals(playerPosition)){
-                    this.playerObject.killObject();
+                    this.playerObject.takeDamage();
                     this.playerObject = null;
                     return true;
                 }
@@ -320,6 +336,13 @@ class GameplayState extends BaseGameState{
                     enemyAttacked.push(colPoint);
                 }
             }
+        }
+        
+        if(this.bossObject != null && 
+            this.bossObject.checkCollision(playerPosition.x, playerPosition.y)){
+            this.playerObject.takeDamage();
+            this.playerObject = null;
+            return true;
         }
         
         var damageMatrix:number[][] = [];
@@ -347,8 +370,11 @@ class GameplayState extends BaseGameState{
         
         for (var i = 0; i < this.enemyObjects.length; i++) {
             var tileMatrix:number[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
-            tileMatrix[this.boxObject.getTilePosition().x][this.boxObject.getTilePosition().y] = TileTypeEnum.Box;
             this.enemyObjects[i].enemyMove(this.lastPosition, tileMatrix);
+        }
+        
+        if(this.bossObject != null){
+            this.bossObject.stepUpdate(this.lastPosition, Global.getCurrentRoom().getMatrix(this.enemyObjects));
         }
         
         if(this.handleEnemyCollision()){

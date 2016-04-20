@@ -64,11 +64,19 @@ class Boss extends BaseGameObject {
 
     spawnEnemy: EnemyTypeEnum = EnemyTypeEnum.Random;
 
-    constructor(game: Phaser.Game, x: number, y: number) {
-        super(game,x,y);
+    constructor(game: Phaser.Game, xTile: number, yTile: number) {
+        super(game, xTile * Global.TILE_SIZE, yTile * Global.TILE_SIZE);
     }
 
     stepUpdate(playerPosition: Phaser.Point, map: TileTypeEnum[][]) {
         // you can get the random object using this.game.rnd
+    }
+    
+    /**
+     * Handle the damage taken by the player shot
+     * Return true if the boss is dead and false otherwise
+     */
+    takeDamage(damage:number){
+        
     }
 }
