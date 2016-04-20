@@ -71,8 +71,7 @@ class EnemyObject extends BaseGameObject{
     
     setDirections()
     {
-       this.directions = [new Phaser.Point(0,0), 
-                          new Phaser.Point(1,0),
+       this.directions = [new Phaser.Point(1,0),
                           new Phaser.Point(0,1),
                           new Phaser.Point(-1,0),
                           new Phaser.Point(0,-1)];
@@ -81,7 +80,7 @@ class EnemyObject extends BaseGameObject{
     pickDirection()
     {
         var dir:Phaser.Point;
-        var choose:number = Math.floor(Math.random() * 4) + 1;
+        var choose:number = (Math.floor(Math.random() * 4) + 1) - 1;
         dir = this.directions[choose];
         return dir;
     }
@@ -100,7 +99,7 @@ class EnemyObject extends BaseGameObject{
     
     pickDirectionWithThisConstraint(constraint:number)
     {
-        var choose:number = (Math.floor(Math.random() * 4) + 1) % constraint;
+        var choose:number = ((Math.floor(Math.random() * 4) + 1) - 1) % constraint;
         return this.directions[choose];
     }
     
