@@ -266,6 +266,11 @@ class GameplayState extends BaseGameState{
         }
     }
     
+    addEnemy(enemy:EnemyObject){
+        this.enemyObjects.push(enemy);
+        this.game.add.existing(enemy);
+    }
+    
     showBoxObject(position:Phaser.Point){
         this.boxObject.show(position);
     }

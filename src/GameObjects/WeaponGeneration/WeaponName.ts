@@ -17,11 +17,11 @@ class WeaponName extends BaseGameObject{
         text.wordWrapWidth = (Global.ROOM_WIDTH - 4) * Global.TILE_SIZE;
         this.add(text);
         
-        if(this.x < text.width / 2){
-            this.x = text.width/2;
+        if(this.x < text.width / 2 + Global.TILE_SIZE){
+            this.x = text.width/2 + Global.TILE_SIZE;
         }
-        if(this.x > this.game.width - text.width/2){
-            this.x = this.game.width - text.width/2;
+        if(this.x > this.game.width - text.width/2 - Global.TILE_SIZE){
+            this.x = this.game.width - text.width/2 - Global.TILE_SIZE;
         }
         
         this.alpha = 0;
