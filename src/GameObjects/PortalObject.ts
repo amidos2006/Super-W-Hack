@@ -9,7 +9,7 @@ class PortalObject extends BaseGameObject{
         this.sprite = this.game.add.sprite(0, 0, "graphics");
         this.sprite.animations.add("normal", [0]);
         this.sprite.animations.play("normal");
-        this.sprite.tint = 0xffcc66;
+        this.sprite.tint = 0x80bfff;
         this.sprite.alpha = 0;
         this.add(this.sprite);
     }

@@ -167,25 +167,33 @@ class GameplayState extends BaseGameState{
             this.game.add.existing(this.bossObject);
         }
         
-        this.playerObject = new PlayerObject(this.game, Math.floor(Global.ROOM_WIDTH / 2) + 
-                Global.previousDirection.x * (Math.floor(Global.ROOM_WIDTH / 2) - 1), 
-                Math.floor(Global.ROOM_HEIGHT / 2) + 
-                Global.previousDirection.y * (Math.floor(Global.ROOM_HEIGHT / 2) - 1), 
-                Global.currentWeapon);
-        this.game.add.existing(this.playerObject);
-        
         if(!room.cleared && room.roomType == RoomTypeEnum.None){
             this.showBoxObject(new Phaser.Point(Math.floor(Global.ROOM_WIDTH / 2), Math.floor(Global.ROOM_HEIGHT / 2)));
         }
         
-        if(Global.levelNumber == 0 && Global.previousDirection.getMagnitude() == 0){
-            this.playerObject.y += Global.TILE_SIZE;
-            this.boxObject.y -= Global.TILE_SIZE;
-            for (var i = 0; i < this.currentDoors.length; i++) {
-                this.currentDoors[i].lock();
+        if(Global.previousDirection.getMagnitude() == 0){
+            var shift:number = 0;
+            if(Global.levelNumber == 0){
+                this.boxObject.y -= Global.TILE_SIZE;
+                for (var i = 0; i < this.currentDoors.length; i++) {
+                    this.currentDoors[i].lock();
+                }
+                shift = 1;
             }
+            
+            this.game.add.existing(new PlayerEntranceEffect(this.game, Math.floor(Global.ROOM_WIDTH / 2), 
+                Math.floor(Global.ROOM_HEIGHT / 2) + shift, 8));
         }
-        this.lastPosition = this.playerObject.getTilePosition();
+        else{
+            this.playerObject = new PlayerObject(this.game, Math.floor(Global.ROOM_WIDTH / 2) + 
+                Global.previousDirection.x * (Math.floor(Global.ROOM_WIDTH / 2) - 1), 
+                Math.floor(Global.ROOM_HEIGHT / 2) + 
+                Global.previousDirection.y * (Math.floor(Global.ROOM_HEIGHT / 2) - 1), 
+                Global.currentWeapon);
+            this.game.add.existing(this.playerObject);
+            this.lastPosition = this.playerObject.getTilePosition();
+        }
+        
     }
 
     highlight(damageMatrix:number[][]){
