@@ -126,6 +126,9 @@ class GameplayState extends BaseGameState{
         this.enemyObjects = [];
         var numOfEnemies:number = (Global.levelNumber + 1) + this.game.rnd.integerInRange(1 * (Global.levelNumber + 1), 
             2 * (Global.levelNumber + 1));
+        if(numOfEnemies <= 2 && Math.random() < 0.5){
+            numOfEnemies = 3;
+        }
         if(room.cleared || room.roomType == RoomTypeEnum.None || room.roomType == RoomTypeEnum.Boss){
             numOfEnemies = 0;
         }

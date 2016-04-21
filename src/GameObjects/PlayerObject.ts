@@ -138,6 +138,12 @@ class PlayerObject extends BaseGameObject{
         return this.isAlive;
     }
     
+    killObject(){
+        this.game.add.existing(new DeathEffect(this.game, this.getTilePosition().x, 
+            this.getTilePosition().y, Global.currentPlayer.graphicsIndex, 0xffffff));
+        super.killObject();
+    }
+    
     update(){
         super.update();
         

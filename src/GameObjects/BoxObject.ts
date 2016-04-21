@@ -26,4 +26,10 @@ class BoxObject extends BaseGameObject{
         Global.audioManager.playPickUpCrate();
         this.killObject();
     }
+    
+    killObject(){
+        this.game.add.existing(new DeathEffect(this.game, this.getTilePosition().x, 
+            this.getTilePosition().y, 4, 0xffcc66));
+        super.killObject();
+    }
 }

@@ -4,9 +4,11 @@ class RandomEnemyObject extends EnemyObject implements Movement
         cannonDirection1:Phaser.Point)
     {
         super(game, x, y, health, numberOfCannons, cannonDirection1);
+        this.enemySpriteIndex = 8;
+        
         this.enemyDirection = this.pickDirection();
         this.enemySprite = this.game.add.sprite(0, 0, "graphics");
-        this.enemySprite.animations.add("normal", [8]);
+        this.enemySprite.animations.add("normal", [this.enemySpriteIndex]);
         this.enemySprite.animations.play("normal");
         this.enemySprite.tint = 0xcc6668;
         this.add(this.enemySprite);

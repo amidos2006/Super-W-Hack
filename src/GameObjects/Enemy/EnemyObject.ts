@@ -1,5 +1,6 @@
 class EnemyObject extends BaseGameObject{
     
+    enemySpriteIndex:number;
     enemySprite:Phaser.Sprite;
     healthText:Phaser.Text;
     enemyHealth:number;
@@ -263,11 +264,17 @@ class EnemyObject extends BaseGameObject{
         else
         {
             this.isAlive = false;
-            super.killObject();
+            this.killObject();
             return true;
         } 
         
         return false;   
+    }
+    
+    killObject(){
+        this.game.add.existing(new DeathEffect(this.game, this.getTilePosition().x, 
+            this.getTilePosition().y, this.enemySpriteIndex, 0xcc6668));
+        super.killObject();
     }
     
     isEnemyAlive()
