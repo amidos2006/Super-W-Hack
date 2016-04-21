@@ -1,6 +1,6 @@
 class PlayerLeaveEffect extends BaseGameObject{
     constructor(game:Phaser.Game, xTile:number, yTile:number){
-        super(game, xTile * Global.TILE_SIZE, yTile * Global.TILE_SIZE);
+        super(game, (xTile + 0.5) * Global.TILE_SIZE, (yTile + 0.5) * Global.TILE_SIZE);
         
         var graphics:Phaser.Sprite = this.game.add.sprite(0, 0, 'graphics');
         graphics.animations.add("normal", [Global.currentPlayer.graphicsIndex]);
@@ -9,7 +9,7 @@ class PlayerLeaveEffect extends BaseGameObject{
         this.add(graphics);
         
         var scaleTween:Phaser.Tween = this.game.add.tween(this.scale);
-        scaleTween.to({x : 0, y: 0}, 800, Phaser.Easing.Linear.None);
+        scaleTween.to({x : 0, y: 0}, 400, Phaser.Easing.Linear.None);
         scaleTween.onComplete.add(this.onAnimationComplete, this);
         scaleTween.start();
     }

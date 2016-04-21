@@ -21,6 +21,9 @@ class PortalObject extends BaseGameObject{
     }
     
     enterPortal(){
+        var level:GameplayState = <GameplayState>this.game.state.getCurrentState();
+        level.playerObject.alpha = 0;
+        level.playerObject = null;
         this.game.add.existing(new PlayerLeaveEffect(this.game, 
             this.getTilePosition().x, this.getTilePosition().y));
     }

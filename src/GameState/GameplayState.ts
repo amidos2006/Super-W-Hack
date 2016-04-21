@@ -329,6 +329,9 @@ class GameplayState extends BaseGameState{
     }
     
     handleEnemyCollision(){
+        if(this.playerObject == null){
+            return true;
+        }
         var playerPosition:Phaser.Point = this.playerObject.getTilePosition();
         var enemyAttacked:Phaser.Point[] = [];
         for(var i:number=0; i<this.enemyObjects.length; i++){
