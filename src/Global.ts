@@ -53,6 +53,9 @@ class Global{
     static previousDirection:Phaser.Point;
     static currentGameMode:GameplayModes;
     
+    static enemyNumbers:EnemyNumbers;
+    static enemyTypes:EnemyTypes;
+    
     static initialize(text1:string, text2:string, text3:string, random:Phaser.RandomDataGenerator){
         Global.levelNumber = 0;
         Global.crateNumber = 0;
@@ -106,6 +109,31 @@ class Global{
             }
         }
         
+        return result;
+    }
+    
+    static matrixReflectX(matrix:TileTypeEnum[][]){
+        var result:TileTypeEnum[][] = [];
+        
+        for(var x:number = 0; x < matrix.length; x++){
+            result.push([])
+            for(var y:number = 0; y < matrix[x].length; y++){
+                result[x].push(matrix[matrix.length - x - 1][y]);
+            }
+        }
+        
+        return result;
+    }
+    
+    static getEmptyTiles(tiles:TileTypeEnum[][]){
+        var result:Phaser.Point[] = [];
+        for (var x = 0; x < tiles.length; x++) {
+            for (var y = 0; y < tiles[x].length; y++) {
+                if(tiles[x][y] == TileTypeEnum.Passable){
+                    result.push(new Phaser.Point(x, y));
+                }
+            }
+        }
         return result;
     }
     

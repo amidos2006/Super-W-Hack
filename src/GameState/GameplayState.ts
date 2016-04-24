@@ -40,6 +40,8 @@ class GameplayState extends BaseGameState{
         }
         Global.levelRooms[Global.currentX][Global.currentY].visited = true;
         this.createHUDElements();
+        
+        Global.enemyTypes.initNewRoom(Global.levelNumber, Global.previousDirection);
     }
     
     createHUDElements(){
@@ -124,38 +126,38 @@ class GameplayState extends BaseGameState{
         this.game.add.existing(this.portalObject);
         
         this.enemyObjects = [];
-        var numOfEnemies:number = (Global.levelNumber + 1) + this.game.rnd.integerInRange(1 * (Global.levelNumber + 1), 
-            2 * (Global.levelNumber + 1));
-        if(numOfEnemies <= 2 && Math.random() < 0.5){
-            numOfEnemies = 3;
-        }
+        var numOfEnemies:number = Global.enemyNumbers.getNumber(this.rnd, Global.levelNumber);
         if(room.cleared || room.roomType == RoomTypeEnum.None || room.roomType == RoomTypeEnum.Boss){
             numOfEnemies = 0;
         }
-        var tiles:TileTypeEnum[][] = room.getMatrix(this.enemyObjects);
-        for (var dx = -2; dx <= 2; dx++) {
-            for (var dy = -2; dy <= 2; dy++) {
-                if(dy > -2){
-                    tiles[Math.floor(Global.ROOM_WIDTH / 2) + dx][1 + dy] = TileTypeEnum.Wall;
-                }
-                if(dy < 2){
-                    tiles[Math.floor(Global.ROOM_WIDTH / 2) + dx][Global.ROOM_HEIGHT - 2 + dy] = TileTypeEnum.Wall;
-                }
-                if(dx > -2){
-                    tiles[1 + dx][Math.floor(Global.ROOM_HEIGHT / 2) + dy] = TileTypeEnum.Wall;
-                }
-                if(dx < 2){
-                    tiles[Global.ROOM_WIDTH - 2 + dx][Math.floor(Global.ROOM_HEIGHT / 2) + dy] = TileTypeEnum.Wall;
-                }
-            }
-        }
         
+        // var tiles:TileTypeEnum[][] = room.getMatrix(this.enemyObjects);
+        // for (var dx = -2; dx <= 2; dx++) {
+        //     for (var dy = -2; dy <= 2; dy++) {
+        //         if(dy > -2){
+        //             tiles[Math.floor(Global.ROOM_WIDTH / 2) + dx][1 + dy] = TileTypeEnum.Wall;
+        //         }
+        //         if(dy < 2){
+        //             tiles[Math.floor(Global.ROOM_WIDTH / 2) + dx][Global.ROOM_HEIGHT - 2 + dy] = TileTypeEnum.Wall;
+        //         }
+        //         if(dx > -2){
+        //             tiles[1 + dx][Math.floor(Global.ROOM_HEIGHT / 2) + dy] = TileTypeEnum.Wall;
+        //         }
+        //         if(dx < 2){
+        //             tiles[Global.ROOM_WIDTH - 2 + dx][Math.floor(Global.ROOM_HEIGHT / 2) + dy] = TileTypeEnum.Wall;
+        //         }
+        //     }
+        // }
+        
+        var normalTiles:TileTypeEnum[][] = room.getMatrix(this.enemyObjects);
         for(var i:number=0; i<numOfEnemies; i++){
-            var list:Phaser.Point[] = this.getEmptyTiles(tiles);
+            var list:Phaser.Point[] = Global.getEmptyTiles(normalTiles);
             var point:Phaser.Point = list[this.game.rnd.integerInRange(0, list.length - 1)];
-            tiles[point.x][point.y] = TileTypeEnum.Enemy;
+            normalTiles[point.x][point.y] = TileTypeEnum.Enemy;
             
-            var tempEnemy:EnemyObject = EnemyFactory.getEnemey(this.game, point.x, point.y, this.game.rnd);
+            var tempEnemy:EnemyObject = Global.enemyTypes.getEnemy(this.game, normalTiles, 
+                Global.currentWeapon.getWeaponPositions(new Phaser.Point(Math.floor(Global.ROOM_WIDTH / 2), 
+                Math.floor(Global.ROOM_HEIGHT / 2)), new Phaser.Point(0, -1), normalTiles));
             this.enemyObjects.push(tempEnemy);
             this.game.add.existing(tempEnemy);
         }
@@ -222,18 +224,6 @@ class GameplayState extends BaseGameState{
         return this.highlightTiles[0].alpha == 1;
     }
     
-    getEmptyTiles(tiles:TileTypeEnum[][]){
-        var result:Phaser.Point[] = [];
-        for (var x = 0; x < tiles.length; x++) {
-            for (var y = 0; y < tiles[x].length; y++) {
-                if(tiles[x][y] == TileTypeEnum.Passable){
-                    result.push(new Phaser.Point(x, y));
-                }
-            }
-        }
-        return result;
-    }
-
     handleAttack(damage:number[][]){
         var lastEnemyDied:Phaser.Point = null;
         var listOfIndeces:number[] = [];
