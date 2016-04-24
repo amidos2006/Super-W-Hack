@@ -1,3 +1,5 @@
+/// <reference path="../BaseUIObject.ts"/>
+
 class WhiteLayout extends BaseUIObject{
     graphics:Phaser.Graphics;
     

@@ -1,3 +1,5 @@
+/// <reference path="../BaseUIObject.ts"/>
+
 class CrateText extends BaseUIObject{
     crateText:Phaser.Text;
     

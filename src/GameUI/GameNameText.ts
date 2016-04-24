@@ -1,3 +1,5 @@
+/// <reference path="../BaseUIObject.ts"/>
+
 class GameNameText extends BaseUIObject{
     superHackText:Phaser.Text;
     wText:Phaser.Text;

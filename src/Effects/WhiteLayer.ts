@@ -1,3 +1,5 @@
+/// <reference path="../BaseGameObject.ts"/>
+
 class WhiteLayer extends BaseGameObject{
     graphics:Phaser.Graphics;
     fadeOutSpeed:number;

@@ -108,7 +108,7 @@ class GameplayState extends BaseGameState{
         }
         
         this.highlightTiles = [];
-        for(var i:number=0; i< 2 * (Global.ROOM_WIDTH + Global.ROOM_HEIGHT); i++){
+        for(var i:number=0; i< 4 * (Global.ROOM_WIDTH + Global.ROOM_HEIGHT); i++){
             var tempTile:HighlightTile = new HighlightTile(this.game)
             this.highlightTiles.push(tempTile);
             this.game.add.existing(tempTile);
@@ -131,33 +131,12 @@ class GameplayState extends BaseGameState{
             numOfEnemies = 0;
         }
         
-        // var tiles:TileTypeEnum[][] = room.getMatrix(this.enemyObjects);
-        // for (var dx = -2; dx <= 2; dx++) {
-        //     for (var dy = -2; dy <= 2; dy++) {
-        //         if(dy > -2){
-        //             tiles[Math.floor(Global.ROOM_WIDTH / 2) + dx][1 + dy] = TileTypeEnum.Wall;
-        //         }
-        //         if(dy < 2){
-        //             tiles[Math.floor(Global.ROOM_WIDTH / 2) + dx][Global.ROOM_HEIGHT - 2 + dy] = TileTypeEnum.Wall;
-        //         }
-        //         if(dx > -2){
-        //             tiles[1 + dx][Math.floor(Global.ROOM_HEIGHT / 2) + dy] = TileTypeEnum.Wall;
-        //         }
-        //         if(dx < 2){
-        //             tiles[Global.ROOM_WIDTH - 2 + dx][Math.floor(Global.ROOM_HEIGHT / 2) + dy] = TileTypeEnum.Wall;
-        //         }
-        //     }
-        // }
-        
         var normalTiles:TileTypeEnum[][] = room.getMatrix(this.enemyObjects);
         for(var i:number=0; i<numOfEnemies; i++){
-            var list:Phaser.Point[] = Global.getEmptyTiles(normalTiles);
-            var point:Phaser.Point = list[this.game.rnd.integerInRange(0, list.length - 1)];
-            normalTiles[point.x][point.y] = TileTypeEnum.Enemy;
-            
             var tempEnemy:EnemyObject = Global.enemyTypes.getEnemy(this.game, normalTiles, 
                 Global.currentWeapon.getWeaponPositions(new Phaser.Point(Math.floor(Global.ROOM_WIDTH / 2), 
                 Math.floor(Global.ROOM_HEIGHT / 2)), new Phaser.Point(0, -1), normalTiles));
+            normalTiles[tempEnemy.getTilePosition().x][tempEnemy.getTilePosition().y] = TileTypeEnum.Enemy;
             this.enemyObjects.push(tempEnemy);
             this.game.add.existing(tempEnemy);
         }

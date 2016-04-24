@@ -8,6 +8,11 @@ class LoadingState extends BaseGameState{
     preload(){
         super.preload();
         
+        var style = { font: "30px pixelFont", fill: "#ffffff", align: "center" };
+        var text:Phaser.Text = this.game.add.text(this.game.width/2, this.game.height/2, "loading", style);
+        text.anchor.set(0.5, 0.5);
+        this.game.add.existing(new WhiteLayout(this.game, 10, 10, this.game.width - 20, this.game.height - 20));
+        
         this.game.load.spritesheet("graphics", "assets/graphics/gameGraphics.png", 32, 32);
         this.game.load.text("dungeonNames_1", "assets/data/dungeonNames_1.txt");
         this.game.load.text("dungeonNames_2", "assets/data/dungeonNames_2.txt");

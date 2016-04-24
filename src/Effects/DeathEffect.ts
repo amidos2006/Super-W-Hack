@@ -1,3 +1,5 @@
+/// <reference path="../BaseGameObject.ts"/>
+
 class DeathEffect extends BaseGameObject{
     alphaSpeed:number;
     scaleSpeed:number;

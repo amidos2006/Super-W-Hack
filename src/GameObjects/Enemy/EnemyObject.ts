@@ -1,3 +1,5 @@
+/// <reference path="../../BaseGameObject.ts"/>
+
 class EnemyObject extends BaseGameObject{
     
     enemySpriteIndex:number;

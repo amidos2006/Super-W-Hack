@@ -1,3 +1,5 @@
+/// <reference path="../BaseGameObject.ts"/>
+
 class PlayerObject extends BaseGameObject{
     playerSprite:Phaser.Sprite;
     playerWeapon:Weapon;

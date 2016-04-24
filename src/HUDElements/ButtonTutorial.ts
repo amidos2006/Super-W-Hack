@@ -1,3 +1,5 @@
+/// <reference path="../BaseUIObject.ts"/>
+
 class ButtonTutorial extends BaseUIObject{
     xText:Phaser.Text;
     zText:Phaser.Text;

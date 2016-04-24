@@ -1,3 +1,5 @@
+/// <reference path="../BaseUIObject.ts"/>
+
 class AdventureName extends BaseUIObject{
     alphaSpeed:number;
     constructor(game:Phaser.Game, x:number, y:number, name:string, alphaSpeed:number = 0.05){

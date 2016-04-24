@@ -1,3 +1,5 @@
+/// <reference path="../BaseGameObject.ts"/>
+
 class PlayerLeaveEffect extends BaseGameObject{
     constructor(game:Phaser.Game, xTile:number, yTile:number){
         super(game, (xTile + 0.5) * Global.TILE_SIZE, (yTile + 0.5) * Global.TILE_SIZE);

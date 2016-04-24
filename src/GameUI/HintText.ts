@@ -1,3 +1,5 @@
+/// <reference path="../BaseUIObject.ts"/>
+
 class HintText extends BaseUIObject{
     constructor(game:Phaser.Game, x:number, y:number, text:string){
         super(game);

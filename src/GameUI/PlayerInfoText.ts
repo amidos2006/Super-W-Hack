@@ -1,3 +1,5 @@
+/// <reference path="../BaseUIObject.ts"/>
+
 class PlayerInfoText extends BaseUIObject{
     heroSprite:Phaser.Sprite;
     playerName:FlyingText;

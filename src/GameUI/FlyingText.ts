@@ -1,3 +1,5 @@
+/// <reference path="../BaseUIObject.ts"/>
+
 class FlyingText extends BaseUIObject{
     upcomingText:string;
     text:Phaser.Text;

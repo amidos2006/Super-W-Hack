@@ -1,3 +1,5 @@
+/// <reference path="../BaseUIObject.ts"/>
+
 class LevelName extends BaseUIObject{
     text:Phaser.Text;
     nameText:Phaser.Text;

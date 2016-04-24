@@ -1,4 +1,4 @@
-﻿/// <reference path="../BaseGameObject.ts"/>
+﻿/// <reference path="../../BaseGameObject.ts"/>
 /// <reference path="Astar.ts"/>
 
 /*

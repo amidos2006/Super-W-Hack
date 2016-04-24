@@ -1,3 +1,5 @@
+/// <reference path="../BaseUIObject.ts"/>
+
 enum HandObjects{
     Empty,
     Weapon,

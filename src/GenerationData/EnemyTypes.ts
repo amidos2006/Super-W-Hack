@@ -76,7 +76,14 @@ class EnemyTypes{
         var locations:Phaser.Point[] = this.getFarAwayTiles(map);
         var empty:Phaser.Point = locations[game.rnd.integerInRange(0, locations.length - 1)];
         var health:number = this.getIndex(game.rnd, this.healthProbabilites) + 1;
-        if(distances.length == 1 && distances[0] == 1){
+        var maxHealth:boolean = true;
+        for (var i = 0; i < distances.length; i++) {
+            if(distances[i] > 1){
+                maxHealth = false;
+                break;
+            }
+        }
+        if(maxHealth){
             health = damage;
         }
         
@@ -134,7 +141,7 @@ class EnemyTypes{
         return positions[random.integerInRange(0, positions.length - 1)];
     }
     
-    createPatrol(game:Phaser.Game, map:TileTypeEnum[][], distances:number[]){
+    createPatrol(game:Phaser.Game, map:TileTypeEnum[][], damage:number, distances:number[]){
         var position:Phaser.Point = new Phaser.Point();
         var health:number = this.getIndex(game.rnd, this.healthProbabilites) + 1;
         var cannonDirection:Phaser.Point = this.patrols.splice(game.rnd.integerInRange(0, this.patrols.length-1), 1)[0];
@@ -173,7 +180,7 @@ class EnemyTypes{
         
         if(position == null){
             this.patrols.push(cannonDirection);
-            return this.createPatrol(game, map, distances);
+            return this.createChaser(game, map, damage, distances);
         }
         
         return new BackAndForthEnemyObject(game, position.x, position.y, health, 1, cannonDirection, moveDirection);
@@ -206,7 +213,7 @@ class EnemyTypes{
                 enemy = this.createChaser(game, map, damageValue, distances);
                 break;
             case 2:
-                enemy = this.createPatrol(game, map, distances);
+                enemy = this.createPatrol(game, map, damageValue, distances);
                 break; 
         }
         

@@ -1,3 +1,5 @@
+/// <reference path="../BaseGameObject.ts"/>
+
 class WeaponName extends BaseGameObject{
     movingSpeed:number;
     fadingSpeed:number;
