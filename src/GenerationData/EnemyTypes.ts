@@ -172,6 +172,7 @@ class EnemyTypes{
         }
         
         if(position == null){
+            this.patrols.push(cannonDirection);
             return this.createPatrol(game, map, distances);
         }
         
