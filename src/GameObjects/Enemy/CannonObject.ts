@@ -1,9 +1,7 @@
-class CannonObject extends BaseGameObject
+class CannonObject
 {
     cannonDirection:Phaser.Point;
-    constructor(game:Phaser.Game, x:number, y:number, cannonDirection:Phaser.Point)
-    {
-         super(game, x, y);
+    constructor(cannonDirection:Phaser.Point){
          this.cannonDirection = cannonDirection;
     }
     
@@ -72,8 +70,6 @@ class CannonObject extends BaseGameObject
         console.log("player.y: " + playerPosition.y);
         console.log("e.x: " + enemy.getTilePosition().x);
         console.log("e.y: " + enemy.getTilePosition().y);
-        console.log("c.x: " + this.x);
-        console.log("c.y: " + this.y);
         console.log("cannon.x : " + this.cannonDirection.x);
         console.log("cannon.y : " + this.cannonDirection.y);
         

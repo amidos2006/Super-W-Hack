@@ -149,20 +149,26 @@ class EnemyTypes{
         }
         if(cannonDirection.x == -1){
             position = this.getBestPatrolPositions(game.rnd, Global.matrixReflectX(map), 3);
-            position.x = Global.ROOM_WIDTH - position.x - 1;
+            if(position != null){
+                position.x = Global.ROOM_WIDTH - position.x - 1;
+            }
         }
         if(cannonDirection.y == 1){
             position = this.getBestPatrolPositions(game.rnd, Global.matrixTranspose(map), 3);
-            var tempY:number = position.y;
-            position.y = position.x;
-            position.x = tempY;
+            if(position != null){
+                var tempY:number = position.y;
+                position.y = position.x;
+                position.x = tempY;
+            }
         }
         if(cannonDirection.y == -1){
             position = this.getBestPatrolPositions(game.rnd, Global.matrixReflectX(Global.matrixTranspose(map)), 3);
-            var tempY:number = position.y;
-            position.y = position.x;
-            position.x = tempY;
-            position.y = Global.ROOM_HEIGHT - position.y - 1;
+            if(position != null){
+                var tempY:number = position.y;
+                position.y = position.x;
+                position.x = tempY;
+                position.y = Global.ROOM_HEIGHT - position.y - 1;
+            }
         }
         
         if(position == null){
@@ -188,7 +194,7 @@ class EnemyTypes{
         var currentClassIndex:number = 0;
         do{
             currentClassIndex = this.getIndex(game.rnd, this.typeProbabilities);
-        }while(currentClassIndex == 3 && this.patrols.length <= 1);
+        }while(currentClassIndex == 2 && this.patrols.length <= 1);
         
         var enemy:EnemyObject = null;
         switch (currentClassIndex) {

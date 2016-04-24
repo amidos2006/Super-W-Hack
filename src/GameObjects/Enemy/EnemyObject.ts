@@ -64,7 +64,7 @@ class EnemyObject extends BaseGameObject{
         }
         else
         {
-           cannons = [new CannonObject(this.game, cannonPos1.x, cannonPos1.y, cannonDir1)]; 
+           cannons = [new CannonObject(cannonDir1)]; 
         }
        
         return cannons;
@@ -126,10 +126,6 @@ class EnemyObject extends BaseGameObject{
             if(tileMap[this.getTilePosition().x + 1][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
                 this.x += Global.TILE_SIZE * this.enemySpeed;
-                if(this.cannons.length > 0)
-                {
-                    this.cannons[0].x = this.x/32;
-                }
             }   
         }
         
@@ -137,11 +133,7 @@ class EnemyObject extends BaseGameObject{
         {
             if(tileMap[this.getTilePosition().x - 1][this.getTilePosition().y] == TileTypeEnum.Passable)
             {
-               this.x -= Global.TILE_SIZE * this.enemySpeed;
-                if(this.cannons.length > 0)
-                {
-                    this.cannons[0].x = this.x/32;
-                }
+                this.x -= Global.TILE_SIZE * this.enemySpeed;
             }   
         }
         
@@ -150,10 +142,6 @@ class EnemyObject extends BaseGameObject{
             if(tileMap[this.getTilePosition().x][this.getTilePosition().y + 1] == TileTypeEnum.Passable)
             {
                 this.y += Global.TILE_SIZE * this.enemySpeed;
-                 if(this.cannons.length > 0)
-                {
-                    this.cannons[0].x = this.x/32;
-                }
             }
         }
         
@@ -162,10 +150,6 @@ class EnemyObject extends BaseGameObject{
             if(tileMap[this.getTilePosition().x][this.getTilePosition().y - 1] == TileTypeEnum.Passable)
             {
                 this.y -= Global.TILE_SIZE * this.enemySpeed;
-                 if(this.cannons.length > 0)
-                {
-                    this.cannons[0].x = this.x/32;
-                }
             }
         }
     }
