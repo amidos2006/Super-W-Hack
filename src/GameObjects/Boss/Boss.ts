@@ -68,7 +68,7 @@ class Boss extends BaseGameObject {
     bossHeight: number = 2;    //
 
     lastSpecial: number = 0;
-    specialCooldown = 3;
+    specialCooldown:number = 8;
 
     attackCooldown: number = 3;
     movementCooldown: number = 0;
@@ -79,7 +79,7 @@ class Boss extends BaseGameObject {
 
     tilePosition: Phaser.Point;
     probDirection: number[] = [25, 25, 25, 25];
-    spawnEnemy: EnemyTypeEnum = EnemyTypeEnum.Random;
+    spawnEnemy: EnemyTypeEnum = EnemyTypeEnum.Chaser;
 
     constructor(game: Phaser.Game, xTile: number, yTile: number) {
         super(game, xTile * Global.TILE_SIZE, yTile * Global.TILE_SIZE);
@@ -100,8 +100,17 @@ class Boss extends BaseGameObject {
     stepUpdate(playerPosition: Phaser.Point, map: TileTypeEnum[][]) {
         // you can get the random object using this.game.rnd
         //this.moveRandom(map);
+        
         this.moveChase(playerPosition, map);
-        console.log(this.tilePosition + " " + this.x + "," + this.y);
+
+        /*if (this.lastSpecial >= this.specialCooldown) {
+            this.specialSpawnEnemy(playerPosition, map);
+            this.lastSpecial = 0;
+        } else {
+            this.lastSpecial++;
+        }
+        console.log(this.tilePosition + " " + this.x + "," + this.y +" special:"+ this.lastSpecial);
+        */
     }
 
     colide(pos: Phaser.Point, map: TileTypeEnum[][]): boolean {
@@ -216,16 +225,52 @@ class Boss extends BaseGameObject {
 
     specialSpawnEnemy(playerPosition: Phaser.Point, map: TileTypeEnum[][]): EnemyObject {
         //add enemies
-        //var level: GameplayState = <GameplayState>this.game.state.getCurrentState();
+        var level: GameplayState = <GameplayState>this.game.state.getCurrentState();
         //level.add(enemy);
-        switch (this.spawnEnemy) {
-            case EnemyTypeEnum.Chaser:
-                break;
-            case EnemyTypeEnum.Random: default:
-                return this.createRandomEnemy(playerPosition, map);
+
+        var enx: number = 0, eny: number = 0;
+
+        var auxMap: TileTypeEnum[][] = new Array(map.length);
+        for (var i: number = 0; i < auxMap.length; i++) {
+            auxMap[i] = new Array(map[0].length);
+            for (var j: number = 0; j < auxMap.length; j++) {
+                if (map[i][j] == TileTypeEnum.Enemy || map[i][j] == TileTypeEnum.Wall || map[i][j] == TileTypeEnum.Hole)
+                    auxMap[i][j] = 1;
+                else
+                    auxMap[i][j] = 0;
+            }
         }
 
+        for (var i: number = this.tilePosition.x; i <= this.tilePosition.x + this.bossWidth; i++) {
+            for (var j: number = this.tilePosition.y; j <= this.tilePosition.y + this.bossHeight; j++) {
+                auxMap[i][j] = 1;
+            }
+        }
 
+        for (var i: number = playerPosition.x > 0 ? playerPosition.x - 1 : playerPosition.x;
+            i <= (playerPosition.x < map.length - 1 ? playerPosition.x - 1 : playerPosition.x); i++) {
+            for (var j: number = playerPosition.y > 0 ? playerPosition.y - 1 : playerPosition.y;
+                j <= (playerPosition.y < map[0].length - 1 ? playerPosition.y - 1 : playerPosition.y); j++) {
+                auxMap[i][j] = 1;
+            }
+        }
+
+        enx = this.game.rnd.integerInRange(this.tilePosition.x - 2, this.tilePosition.x - 1);
+        if (enx < 0)
+            enx = 0;
+        eny = this.game.rnd.integerInRange(this.tilePosition.y - 2, this.tilePosition.y - 1);
+
+        var enemy:EnemyObject = null;
+        switch (this.spawnEnemy) {
+            case EnemyTypeEnum.Chaser:
+                enemy = new ChaserEnemyObject(this.game, enx, eny, 1, 0, new Phaser.Point(0, 1));
+                break;
+            case EnemyTypeEnum.Random: default:
+                enemy = new RandomEnemyObject(this.game, enx, eny, 1, 0, new Phaser.Point(0, 1));
+                break;
+        }
+
+        level.addEnemy(enemy);
 
         return null;
     }

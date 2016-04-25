@@ -10,6 +10,10 @@ class Astar {
         return child;
     }
 
+    dist(x1: number, y1: number, x2: number, y2: number): number {
+        return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+    }
+
     search(boss: Boss, playerPosition: Phaser.Point, map: TileTypeEnum[][]): Phaser.Point {
         var open: ANode[] = [];
         var closed: ANode[] = [];
@@ -19,13 +23,34 @@ class Astar {
         var initial: ANode = new ANode();
         initial.x = bossPosition.x;
         initial.y = bossPosition.y;
+        var minDist: number = this.dist(initial.x, initial.y, playerPosition.x, playerPosition.y);
+        //find closest point to player
+        var aux: number = 0;
+        for (var i: number = boss.tilePosition.x; i < boss.tilePosition.x + boss.bossWidth; i++) {
+            for (var j: number = boss.tilePosition.y; j < boss.tilePosition.y + boss.bossHeight; j++) {
+                aux = this.dist(i, j, playerPosition.x, playerPosition.y);
+                if (minDist > aux) {
+                    minDist = aux;
+                    initial.x = i;
+                    initial.y = j;
+                }
+            }
+        }
+
+
+        initial.xdir = 0;
+        initial.ydir = 0;
         initial.parent = null;
         initial.g = 0;
         initial.h = Math.sqrt(Math.pow(playerPosition.x - bossPosition.x, 2) + Math.pow(playerPosition.y - bossPosition.y, 2));
         open.push(initial);
         var cur: ANode = null;
 
-        var dir: Phaser.Point[] = [new Phaser.Point(1, 0), new Phaser.Point(0, 1), new Phaser.Point(-1, 0), new Phaser.Point(0, -1)];
+        var dir: Phaser.Point[] = [
+            new Phaser.Point(1, 0),
+            new Phaser.Point(0, 1),
+            new Phaser.Point(-1, 0),
+            new Phaser.Point(0, -1)];
         while (open.length > 0) {
             open.sort(function (a: ANode, b: ANode) { return (a.f() - b.f()) * (-1); });
             cur = open.pop();
@@ -46,24 +71,41 @@ class Astar {
             closed.push(cur);
         }
 
-        if (cur.x == playerPosition.x && cur.y == playerPosition.y) {
+        if (this.colide(cur,boss,playerPosition)) {
             var s: string = "";
             for (var i: number = 0; i < map.length; i++) {
                 for (var j: number = 0; j < map[0].length; j++) {
-                    s += map[j][i];
+                    if (i == playerPosition.x && j == playerPosition.y)
+                        s += "P";
+                    else if (i >= cur.x && i <= cur.x + boss.bossWidth && j >= cur.y && j <= cur.y + boss.bossHeight)
+                        s += "B";
+                    else
+                        s += map[j][i];
                 }
                 s += "\n";
             }
             console.log(s);
-            console.log(cur.x + " " + cur.y);
-            while (cur.parent != null && cur.parent.x != initial.x && cur.parent.y != initial.y) {
+            console.log("1 "+cur.x + " " + cur.y + " "+cur.parent+" init"+ initial.x+" "+initial.y);
+            while (cur.parent != null && cur.parent.parent != null && cur.parent.x != initial.x && cur.parent.y != initial.y) {
                 cur = cur.parent;
-                console.log(cur.x + " " + cur.y);
+                console.log("2 "+cur.x + " " + cur.y);
             }
+            console.log("returning " + cur.xdir + " " + cur.ydir +" "+boss.tilePosition.x+" "+boss.tilePosition.y);
             return new Phaser.Point(cur.xdir, cur.ydir);
         } else {
-            return null;
+            return new Phaser.Point(0,0);
         }
+    }
+
+    colide(cur: ANode, boss: Boss, player: Phaser.Point): boolean {
+        for (var i: number = cur.x; i <= cur.x + boss.width; i++) {
+            for (var j: number = cur.y; j <= cur.y + boss.height; j++) {
+                if (player.x == i && player.y == j)
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     appearInList(list: ANode[], child: ANode): boolean {
