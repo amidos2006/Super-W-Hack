@@ -83,7 +83,7 @@ class EnemyTypes{
                 break;
             }
         }
-        if(maxHealth){
+        if(maxHealth && health > damage){
             health = damage;
         }
         
@@ -94,7 +94,7 @@ class EnemyTypes{
         var locations:Phaser.Point[] = this.getFarAwayTiles(map);
         var empty:Phaser.Point = locations[game.rnd.integerInRange(0, locations.length - 1)];
         var health:number = this.getIndex(game.rnd, this.healthProbabilites) + 1;
-        if(this.patrols.length == 3 && distances.length == 1){
+        if(this.patrols.length == 3 && distances.length == 1 && health > damage){
             health = damage;
         }
         

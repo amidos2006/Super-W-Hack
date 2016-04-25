@@ -5,7 +5,7 @@
 /// <reference path="../GameObjects/BoxObject.ts"/>
 /// <reference path="../GameObjects/Enemy/EnemyObject.ts"/>
 /// <reference path="../GameObjects/PlayerObject.ts"/>
-/// <reference path="../GameObjects/HUDElements/MiniMap.ts"/>
+/// <reference path="../HUDElements/MiniMap.ts"/>
 /// <reference path="../GameObjects/Boss/Boss.ts"/>
 
 class GameplayState extends BaseGameState{    
