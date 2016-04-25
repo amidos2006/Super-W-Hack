@@ -1,5 +1,4 @@
-﻿/// <reference path="../../BaseGameObject.ts"/>
-/// <reference path="Astar.ts"/>
+﻿/// <reference path="Astar.ts"/>
 
 /*
 - Boss Fights:
@@ -37,6 +36,13 @@ types of pattern:
 9 stun player
 10 jumper > gives a noise, jump, shows where it will fall (aiming on the player).
 11 rotate around a point
+12 create an enemy with a puddle below him. Puddle does damage and only disapear if you kill the enemy
+13 Sweep attack across room
+14 rotating death laser
+15 safe zone
+16 floor damage that is blocked by walls
+17 floor damage that is highlighted before taking effect
+18 boss that splits itself
 */
 
 enum BossMovementType {
@@ -60,15 +66,19 @@ class Boss extends BaseGameObject {
     damage: number = 0;
     bossWidth: number = 2;
     bossHeight: number = 2;    //
-    attackCooldown: number = 0;
+
+    lastSpecial: number = 0;
+    specialCooldown = 3;
+
+    attackCooldown: number = 3;
     movementCooldown: number = 0;
     movementSpeed: number = 1;
-    dashSpeed: number = 0;
+    dashSpeed: number = 2;
+
+
 
     tilePosition: Phaser.Point;
-
     probDirection: number[] = [25, 25, 25, 25];
-
     spawnEnemy: EnemyTypeEnum = EnemyTypeEnum.Random;
 
     constructor(game: Phaser.Game, xTile: number, yTile: number) {
@@ -95,7 +105,7 @@ class Boss extends BaseGameObject {
     }
 
     colide(pos: Phaser.Point, map: TileTypeEnum[][]): boolean {
-        for (var i:number = pos.x; i < pos.x + this.bossWidth; i++) {
+        for (var i: number = pos.x; i < pos.x + this.bossWidth; i++) {
             for (var j: number = pos.y; j < pos.y + this.bossHeight; j++) {
                 if (map[i][j] == TileTypeEnum.Wall)
                     return true;
@@ -149,8 +159,8 @@ class Boss extends BaseGameObject {
     }
 
     moveRandom(map: TileTypeEnum[][]) {
-        var previousPos: Phaser.Point = new Phaser.Point(this.tilePosition.x,this.tilePosition.y);
-        
+        var previousPos: Phaser.Point = new Phaser.Point(this.tilePosition.x, this.tilePosition.y);
+
         if (this.game.rnd.frac() < 0.4 || this.probCurDirectionNearZero()) {
             this.selectNewDirection();
         } else {
@@ -171,14 +181,14 @@ class Boss extends BaseGameObject {
                 }
             }
         }
-        console.log("in "+this.tilePosition + " " + this.x + "," + this.y+" curDir"+this.curDirection+" prob"+this.probDirection);
-        
+        console.log("in " + this.tilePosition + " " + this.x + "," + this.y + " curDir" + this.curDirection + " prob" + this.probDirection);
+
         this.tilePosition.x = this.tilePosition.x + (this.curDirection[1] * this.movementSpeed);
         if (this.tilePosition.x < 0)
             this.tilePosition.x = 0;
         else if (this.tilePosition.x + this.bossWidth >= Global.ROOM_WIDTH)
             this.tilePosition.x = Global.ROOM_WIDTH - this.bossWidth - 1;
-        
+
         this.tilePosition.y = this.tilePosition.y + (this.curDirection[0] * this.movementSpeed);
         if (this.tilePosition.y < 0)
             this.tilePosition.y = 0;
@@ -196,7 +206,7 @@ class Boss extends BaseGameObject {
     }
 
     moveChase(playerPosition: Phaser.Point, map: TileTypeEnum[][]) {
-        var nextMove: Phaser.Point = new Astar().search(new Phaser.Point(this.tilePosition.x, this.tilePosition.y), playerPosition, map);
+        var nextMove: Phaser.Point = new Astar().search(this, playerPosition, map);
         this.tilePosition.x += nextMove.x;
         this.tilePosition.y += nextMove.y;
 
@@ -204,11 +214,32 @@ class Boss extends BaseGameObject {
         this.y = this.toTile(this.tilePosition.y);
     }
 
+    specialSpawnEnemy(playerPosition: Phaser.Point, map: TileTypeEnum[][]): EnemyObject {
+        //add enemies
+        //var level: GameplayState = <GameplayState>this.game.state.getCurrentState();
+        //level.add(enemy);
+        switch (this.spawnEnemy) {
+            case EnemyTypeEnum.Chaser:
+                break;
+            case EnemyTypeEnum.Random: default:
+                return this.createRandomEnemy(playerPosition, map);
+        }
+
+
+
+        return null;
+    }
+    createRandomEnemy(playerPosition: Phaser.Point, map: TileTypeEnum[][]): EnemyObject {
+        var enX: number = 0, enY: number = 0;
+
+        var random: RandomEnemyObject = new RandomEnemyObject(this.game, enX, enY, 1, 0, new Phaser.Point(0, 0));
+        return random;
+    }
     /**
      * Handle the damage taken by the player shot
      * Return true if the boss is dead and false otherwise
      */
-    takeDamage(damage:number) : boolean {
+    takeDamage(damage: number): boolean {
         this.health -= damage;
         if (this.health <= 0)
             return true;

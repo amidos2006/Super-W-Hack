@@ -1,7 +1,7 @@
 ﻿/// <reference path="ANode.ts"/>
 class Astar {
 
-    createChild(cur: ANode, playerPosition: Phaser.Point, map: TileTypeEnum[][], sumX: number, sumY: number) : ANode {
+    createChild(cur: ANode, playerPosition: Phaser.Point, map: TileTypeEnum[][], sumX: number, sumY: number): ANode {
         var child: ANode = new ANode();
         child.setEverything(cur, cur.x + sumX, cur.y + sumY, cur.g + 1, 0);
         child.h = Math.sqrt(Math.pow(playerPosition.x - child.x, 2) + Math.pow(playerPosition.y - child.y, 2))
@@ -10,16 +10,18 @@ class Astar {
         return child;
     }
 
-    search(bossPosition:Phaser.Point, playerPosition: Phaser.Point, map:TileTypeEnum[][]) : Phaser.Point{
+    search(boss: Boss, playerPosition: Phaser.Point, map: TileTypeEnum[][]): Phaser.Point {
         var open: ANode[] = [];
         var closed: ANode[] = [];
+
+        var bossPosition: Phaser.Point = new Phaser.Point(boss.tilePosition.x, boss.tilePosition.y);
 
         var initial: ANode = new ANode();
         initial.x = bossPosition.x;
         initial.y = bossPosition.y;
         initial.parent = null;
         initial.g = 0;
-        initial.h = Math.sqrt(Math.pow(playerPosition.x - bossPosition.x,2) + Math.pow(playerPosition.y - bossPosition.y, 2));
+        initial.h = Math.sqrt(Math.pow(playerPosition.x - bossPosition.x, 2) + Math.pow(playerPosition.y - bossPosition.y, 2));
         open.push(initial);
         var cur: ANode = null;
 
