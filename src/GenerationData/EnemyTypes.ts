@@ -1,7 +1,14 @@
+enum EnemyNames{
+    Random,
+    Chaser,
+    Patrol
+}
+
 class EnemyTypes{
     typeProbabilities:number[][];
     healthProbabilites:number[][];
     patrols:Phaser.Point[];
+    currentEnemyNumbers:number[];
     levelNumber:number;
     lastDirection:Phaser.Point;
     
@@ -31,6 +38,10 @@ class EnemyTypes{
     
     initNewRoom(levelNumber:number, lastDirection:Phaser.Point){
         this.levelNumber = levelNumber;
+        this.currentEnemyNumbers = [];
+        for (var i = 0; i < 3; i++) {
+            this.currentEnemyNumbers.push(0);
+        }
         this.patrols = [];
         this.lastDirection = lastDirection;
         for (var x = -1; x <= 1; x++) {
@@ -87,6 +98,7 @@ class EnemyTypes{
             health = damage;
         }
         
+        this.currentEnemyNumbers[EnemyNames.Random] += 1;
         return new RandomEnemyObject(game, empty.x, empty.y, health, 0, new Phaser.Point());
     }
     
@@ -94,10 +106,18 @@ class EnemyTypes{
         var locations:Phaser.Point[] = this.getFarAwayTiles(map);
         var empty:Phaser.Point = locations[game.rnd.integerInRange(0, locations.length - 1)];
         var health:number = this.getIndex(game.rnd, this.healthProbabilites) + 1;
-        if(this.patrols.length == 3 && distances.length == 1 && health > damage){
+        var maxHealth:boolean = true;
+        for (var i = 0; i < distances.length; i++) {
+            if(distances[i] > 1){
+                maxHealth = false;
+                break;
+            }
+        }
+        if(this.currentEnemyNumbers[EnemyNames.Patrol] == 3 && maxHealth && health > damage){
             health = damage;
         }
         
+        this.currentEnemyNumbers[EnemyNames.Chaser] += 1;
         return new ChaserEnemyObject(game, empty.x, empty.y, health, 0, new Phaser.Point());
     }
     
@@ -180,9 +200,11 @@ class EnemyTypes{
         
         if(position == null){
             this.patrols.push(cannonDirection);
+            this.currentEnemyNumbers[EnemyNames.Chaser] += 1;
             return this.createChaser(game, map, damage, distances);
         }
         
+        this.currentEnemyNumbers[EnemyNames.Patrol] += 1;
         return new BackAndForthEnemyObject(game, position.x, position.y, health, 1, cannonDirection, moveDirection);
     }
     

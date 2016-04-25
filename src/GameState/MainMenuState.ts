@@ -77,7 +77,7 @@ class MainMenuState extends BaseGameState{
                 case 5:
                 break;
             }
-            if(this.index >= 0 && this.index<=0){
+            if(this.index >= 0 && this.index<=1){
                 this.game.state.start("playerselect", true);
             }
             Global.audioManager.playMenuSelected();
