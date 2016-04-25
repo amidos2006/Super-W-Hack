@@ -172,14 +172,14 @@ class Weapon {
         if (this.repeat) {
             if (faceDirection.x == 1) {
                 for (var i: number = (topLeft.y < 0 ? 0 : topLeft.y); i - topLeft.y < pathRightDir.length; i++) {
-                    for (var j: number = topLeft.x; j < result.length; j++) {
+                    for (var j: number = topLeft.x; j < result[0].length; j++) {
                         if (pathRightDir[(i - topLeft.y)][(j - topLeft.x)%pathRightDir[0].length] == 1) {
                                     result[i][j] = this.damage;
                         }
                     }
                 }
             } else if (faceDirection.x == -1) {
-                for (var i: number = (topLeft.y < 0 ? 0 : topLeft.y); i - topLeft.y < pathRightDir.length; i++) {
+                for (var i: number = (topLeft.y < 0 ? 0 : topLeft.y); i - topLeft.y < pathRightDir.length && i < result.length; i++) {
                     for (var j: number = playerPos.x - 1; j >= 0; j--) {
                         var x: number = (j - (playerPos.x % pathRightDir[0].length) + pathRightDir[0].length) % pathRightDir[0].length,
                             aux: number = 2;
@@ -192,7 +192,6 @@ class Weapon {
             } else if (faceDirection.y == 1) {
                 var auxi: number = 0;
                 for (var i: number = topLeft.y; i < result.length; i++) {
-
                     for (var j: number = (topLeft.x < 0 ? 0 : topLeft.x); j - topLeft.x < pathRightDir[0].length && j < result[0].length; j++) {
                         if (pathRightDir[auxi][j - topLeft.x] == 1) {
                             //if (pathRightDir[(i + topLeft.y) % pathRightDir.length][j - topLeft.x] == 1) {
