@@ -1,12 +1,12 @@
 class ExplosiveEnemyObject extends EnemyObject implements Movement
 {
-    exploded:boolean;
+    lightRay:CannonObject;
     
     constructor(game:Phaser.Game, x:number, y:number, health:number, numberOfCannons:number,
         cannonDirection1:Phaser.Point)
     {
         super(game, x, y, health, numberOfCannons, cannonDirection1);
-        this.exploded = false;
+        this.lightRay = new CannonObject(new Phaser.Point());
         this.enemyDirection = this.pickDirection();
         this.enemySprite = this.game.add.sprite(0, 0, "graphics");
         this.enemySprite.animations.add("normal", [8]);
@@ -15,67 +15,32 @@ class ExplosiveEnemyObject extends EnemyObject implements Movement
         this.add(this.enemySprite);
     }
     
-    getRandomFreeDirection(enemyDirection:Phaser.Point, tileMap:TileTypeEnum[][])
-    {
-        var dir:Phaser.Point = new Phaser.Point(0,0);
-        var dirs:Phaser.Point[] = [];
-        for(var i:number = 1; i < this.directions.length; i++)
-        {
-            if(this.updateEnemy(this.directions[i], tileMap) == true)
-            {
-                dirs.push(this.directions[i]);
-            }
-        }
-        
-        if (dirs.length > 0)
-        {
-            dir = dirs[(Math.floor(Math.random() * dirs.length) + 1) - 1];
-        }
-        return dir;
-    }
-    
     playerInSameDirection(playerPosition:Phaser.Point, tileMap:TileTypeEnum[][])
     {
-         if (this.getTilePosition().y == playerPosition.y
-                && this.getTilePosition().x > playerPosition.x)
-                {
-                    for(var i = this.getTilePosition().x - 1; i >= playerPosition.x; i--)
-                    {
-                        if(tileMap[i][playerPosition.y] == TileTypeEnum.Wall
-                            || tileMap[i][playerPosition.y] == TileTypeEnum.Enemy)
-                        {
-                            return new Phaser.Point(-1, 0);
-                        }
-                    }
+        var result:Phaser.Point = null;
+        for (var x = -1; x <= 1; x++) {
+            for (var y = -1; y <= 1; y++) {
+                result = this.lightRay.shoot(playerPosition, this, tileMap);
+                if(result != null){
+                    return result;
                 }
-                
-         if (this.getTilePosition().y == playerPosition.y
-                && this.getTilePosition().x < playerPosition.x)
-                {
-                    for(var i = this.getTilePosition().x + 1; i <= playerPosition.x; i++)
-                    {
-                         if(tileMap[i][playerPosition.y] == TileTypeEnum.Wall
-                            || tileMap[i][playerPosition.y] == TileTypeEnum.Enemy)
-                        {
-                            return new Phaser.Point(1, 0);
-                        }
-                    }
-                }
+            }
+        }
+        return new Phaser.Point();
+     }
+     
+     killObject(){
+         //TODO Create the explosions
+         super.killObject();
      }
      
      enemyMove(enemyDirection:Phaser.Point, tileMatrix:TileTypeEnum[][])
      {
         this.enemyDirection = this.playerInSameDirection(enemyDirection, tileMatrix);
-        if(this.updateEnemy(this.enemyDirection, tileMatrix))
-        {
+        if(this.updateEnemy(this.enemyDirection, tileMatrix)){
             this.goEnemy(this.enemyDirection, tileMatrix);
         }else{
-            this.exploded = true;
+            this.killObject();
         }
-     }
-     
-     getExploded()
-     {
-         return this.exploded;
      }
 }

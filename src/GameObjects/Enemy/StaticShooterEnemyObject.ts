@@ -19,7 +19,6 @@ class StaticShooterEnemyObject extends EnemyObject implements Movement
     
      enemyMove(enemyDirection:Phaser.Point, tileMatrix:TileTypeEnum[][])
      {
-        console.log("C: " + this.cannons[0].cannonDirection); 
         this.changeCannonDirection();
      }
 }
