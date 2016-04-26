@@ -32,7 +32,7 @@ class BlobEnemyObject extends EnemyObject implements Movement {
                 this.getTilePosition().x,
                 this.getTilePosition().y,
                 1,
-                0,
+                3,
                 false
             );
 
