@@ -1,4 +1,4 @@
-var SOUND_VOL = 0.25;
+var SOUND_VOL = 1;
 var SAMPLE_RATE = 5512;//44100;
 var SAMPLE_SIZE = 8;
 

@@ -48,6 +48,7 @@ declare class SfxrParams{
     
     constructor();
 }
+
 declare function sfxrPlaySeed(seed:number);
 declare function sfxrPlayParam(sfxParam:SfxrParams);
 declare function sfxrPickupCoin():SfxrParams;
