@@ -49,15 +49,14 @@ declare class SfxrParams{
     constructor();
 }
 declare function sfxrPlaySeed(seed:number);
-declare function sfxrPickupCoin();
-declare function sfxrLaserShoot();
-declare function sfxrExplosion();
-declare function sfxrBirdSound();
-declare function sfxrPushSound();
-declare function sfxrPowerUp();
-declare function sfxrHitHurt();
-declare function sfxrJump();
-declare function sfxrBlipSelect();
-declare function sfxrRandom();
-declare function generateFromSeed(seed:SfxrParams);
+declare function sfxrPickupCoin():SfxrParams;
+declare function sfxrLaserShoot():SfxrParams;
+declare function sfxrExplosion():SfxrParams;
+declare function sfxrBirdSound():SfxrParams;
+declare function sfxrPushSound():SfxrParams;
+declare function sfxrPowerUp():SfxrParams;
+declare function sfxrHitHurt():SfxrParams;
+declare function sfxrJump():SfxrParams;
+declare function sfxrBlipSelect():SfxrParams;
+declare function sfxrRandom():SfxrParams;
 
