@@ -15,6 +15,16 @@ class HarmfulFloorObject extends BaseGameObject{
         if(this.explode){
             
         }
+        
         super.killObject();
+    }
+    
+    updateStep(){
+        if(this.time == 0){
+            this.killObject();
+            return;
+        }
+        
+        this.time -= 1;
     }
 }
