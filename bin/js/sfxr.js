@@ -562,7 +562,7 @@ var generatorNames = [
 /*
 i like 9675111
 */
-sfxrGenerateFromSeed = function (seed) {
+generateFromSeed = function (seed) {
   rng = new RNG((seed / 100) | 0);
   var generatorindex = seed % 100;
   var soundGenerator = generators[generatorindex % generators.length];
