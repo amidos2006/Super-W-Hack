@@ -74,8 +74,6 @@ class MainMenuState extends BaseGameState{
                 break;
                 case 4:
                 break;
-                case 5:
-                break;
             }
             if(this.index >= 0 && this.index<=1){
                 this.game.state.start("playerselect", true);
