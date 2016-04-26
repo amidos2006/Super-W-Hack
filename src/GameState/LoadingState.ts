@@ -21,6 +21,8 @@ class LoadingState extends BaseGameState{
         this.game.load.text("weaponNouns", "assets/data/weaponNamesNoun.txt");
         this.game.load.text("playerdata", "assets/data/playerData.txt");
         
+        this.game.load.text("credits", "assets/data/credits.txt");
+        
         this.game.load.text("enemyNumbers", "assets/generationData/enemyNumberProb.txt");
         this.game.load.text("enemyTypes", "assets/generationData/enemyTypeProb.txt");
         this.game.load.text("enemyHealth", "assets/generationData/enemyHealthProb.txt");
