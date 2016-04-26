@@ -2,7 +2,6 @@ var SOUND_VOL = 0.25;
 var SAMPLE_RATE = 5512;//44100;
 var SAMPLE_SIZE = 8;
 
-
 var SQUARE = 0;
 var SAWTOOTH = 1;
 var SINE = 2;
@@ -889,4 +888,14 @@ function sfxrPlaySeed(seed) {
   //    sound.pause();
   //    sound.currentTime = 0;
   sound.cloneNode().play();
+}
+
+function sfxrPlayParam(sfxrParam){
+  sfxrParam.sample_rate = SAMPLE_RATE;
+  sfxrParam.sample_size = SAMPLE_SIZE;
+  
+  var sound = generate(sfxrParam);
+  var audio = new Audio();
+  audio.src = sound.dataURI;
+  audio.cloneNode().play();
 }
