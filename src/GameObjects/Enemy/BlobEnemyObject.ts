@@ -30,7 +30,10 @@ class BlobEnemyObject extends EnemyObject implements Movement {
             trail = new HarmfulFloorObject(
                 this.game,
                 this.getTilePosition().x,
-                this.getTilePosition().y
+                this.getTilePosition().y,
+                1,
+                0,
+                false
             );
 
             this.trailList.push(trail);
