@@ -1,14 +1,17 @@
-declare var masterVolume:number;
-declare function playSeed(seed:number);
-declare function pickupCoin();
-declare function laserShoot();
-declare function explosion();
-declare function birdSound();
-declare function pushSound();
-declare function powerUp();
-declare function hitHurt();
-declare function jump();
-declare function blipSelect();
-declare function random();
-declare function generateFromSeed(seed:number);
+declare var sfxrMasterVolume:number;
+declare class SfxrParams{
+    constructor();
+}
+declare function sfxrPlaySeed(seed:number);
+declare function sfxrPickupCoin();
+declare function sfxrLaserShoot();
+declare function sfxrExplosion();
+declare function sfxrBirdSound();
+declare function sfxrPushSound();
+declare function sfxrPowerUp();
+declare function sfxrHitHurt();
+declare function sfxrJump();
+declare function sfxrBlipSelect();
+declare function sfxrRandom();
+declare function generateFromSeed(seed:SfxrParams);
 

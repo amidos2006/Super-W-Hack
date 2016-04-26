@@ -15,10 +15,10 @@ var SHAPES = [
 ];
 
 // Playback volume
-var masterVolume = 1.0;
+var sfxrMasterVolume = 1.0;
 
 // Sound generation parameters are on [0,1] unless noted SIGNED, & thus [-1,1]
-function Params() {
+function SfxrParams() {
   var result = {};
   // Wave shape
   result.wave_type = SQUARE;
@@ -88,8 +88,8 @@ function rnd(max) {
 }
 
 
-pickupCoin = function () {
-  var result = Params();
+sfxrPickupCoin = function () {
+  var result = SfxrParams();
   result.wave_type = Math.floor(frnd(SHAPES.length));
   if (result.wave_type === 3) {
     result.wave_type = 0;
@@ -109,8 +109,8 @@ pickupCoin = function () {
 };
 
 
-laserShoot = function () {
-  var result = Params();
+sfxrLaserShoot = function () {
+  var result = SfxrParams();
   result.wave_type = rnd(2);
   if (result.wave_type === SINE && rnd(1))
     result.wave_type = rnd(1);
@@ -152,8 +152,8 @@ laserShoot = function () {
   return result;
 };
 
-explosion = function () {
-  var result = Params();
+sfxrExplosion = function () {
+  var result = SfxrParams();
 
   if (rnd(1)) {
     result.p_base_freq = 0.1 + frnd(0.4);
@@ -187,8 +187,8 @@ explosion = function () {
   return result;
 };
 //9675111
-birdSound = function () {
-  var result = Params();
+sfxrBirdSound = function () {
+  var result = SfxrParams();
 
   if (frnd(10) < 1) {
     result.wave_type = Math.floor(frnd(SHAPES.length));
@@ -379,8 +379,8 @@ birdSound = function () {
 };
 
 
-pushSound = function () {
-  var result = Params();
+sfxrPushSound = function () {
+  var result = SfxrParams();
   result.wave_type = Math.floor(frnd(SHAPES.length));//TRIANGLE;
   if (result.wave_type === 2) {
     result.wave_type++;
@@ -407,8 +407,8 @@ pushSound = function () {
 
 
 
-powerUp = function () {
-  var result = Params();
+sfxrPowerUp = function () {
+  var result = SfxrParams();
   if (rnd(1))
     result.wave_type = SAWTOOTH;
   else
@@ -437,8 +437,8 @@ powerUp = function () {
   return result;
 };
 
-hitHurt = function () {
-  result = Params();
+sfxrHitHurt = function () {
+  result = SfxrParams();
   result.wave_type = rnd(2);
   if (result.wave_type === SINE)
     result.wave_type = NOISE;
@@ -456,8 +456,8 @@ hitHurt = function () {
 };
 
 
-jump = function () {
-  result = Params();
+sfxrJump = function () {
+  result = SfxrParams();
   result.wave_type = SQUARE;
   result.wave_type = Math.floor(frnd(SHAPES.length));
   if (result.wave_type === 3) {
@@ -476,8 +476,8 @@ jump = function () {
   return result;
 };
 
-blipSelect = function () {
-  result = Params();
+sfxrBlipSelect = function () {
+  result = SfxrParams();
   result.wave_type = rnd(1);
   result.wave_type = Math.floor(frnd(SHAPES.length));
   if (result.wave_type === 3) {
@@ -493,8 +493,8 @@ blipSelect = function () {
   return result;
 };
 
-random = function () {
-  result = Params();
+sfxrRandom = function () {
+  result = SfxrParams();
   result.wave_type = Math.floor(frnd(SHAPES.length));
   result.p_base_freq = Math.pow(frnd(2.0) - 1.0, 2.0);
   if (rnd(1))
@@ -534,16 +534,16 @@ random = function () {
 };
 
 var generators = [
-  pickupCoin,
-  laserShoot,
-  explosion,
-  powerUp,
-  hitHurt,
-  jump,
-  blipSelect,
-  pushSound,
-  random,
-  birdSound
+  sfxrPickupCoin,
+  sfxrLaserShoot,
+  sfxrExplosion,
+  sfxrPowerUp,
+  sfxrHitHurt,
+  sfxrJump,
+  sfxrBlipSelect,
+  sfxrPushSound,
+  sfxrRandom,
+  sfxrBirdSound
 ];
 
 var generatorNames = [
@@ -562,7 +562,7 @@ var generatorNames = [
 /*
 i like 9675111
 */
-generateFromSeed = function (seed) {
+sfxrGenerateFromSeed = function (seed) {
   rng = new RNG((seed / 100) | 0);
   var generatorindex = seed % 100;
   var soundGenerator = generators[generatorindex % generators.length];
@@ -812,7 +812,7 @@ var generate = function (ps) {
       continue;
     }
 
-    sample = sample / 8 * masterVolume;
+    sample = sample / 8 * sfxrMasterVolume;
     sample *= gain;
 
     if (ps.sample_size === 8) {
@@ -849,7 +849,7 @@ var generate = function (ps) {
 if (typeof exports != 'undefined') {
   // For node.js
   var RIFFWAVE = require('./riffwave').RIFFWAVE;
-  exports.Params = Params;
+  exports.Params = SfxrParams;
   exports.generate = generate;
 }
 
@@ -881,7 +881,7 @@ function cacheSeed(seed) {
   }
 }
 
-function playSeed(seed) {
+function sfxrPlaySeed(seed) {
   //if (unitTesting) return;
 
   cacheSeed(seed);
