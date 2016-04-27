@@ -171,10 +171,9 @@ class Boss extends BaseGameObject {
 
     stepUpdate(playerPosition: Phaser.Point, map: TileTypeEnum[][]) {
         // you can get the random object using this.game.rnd
-        //this.moveRandom(map);
+        this.moveRandom(playerPosition,map,true);
         this.movementCooldown = 0;        
 
-        this.leaveFloorAttack(playerPosition, map);
        // this.moveChase(playerPosition, map);
 
         //Teleport
@@ -215,11 +214,7 @@ means its there forever
 explode
 which means it will explode on destruction
     */
-    leaveFloorAttack(playerPosition: Phaser.Point, map: TileTypeEnum[][]) {
-        var pos: Phaser.Point = new Phaser.Point(0, 0);
-
-
-
+    leaveFloorAttack(playerPosition: Phaser.Point, map: TileTypeEnum[][], pos: Phaser.Point) {
         var floor: HarmfulFloorObject = new HarmfulFloorObject(this.game, pos.x, pos.y, 1, 3, false);
 
     }
@@ -300,7 +295,7 @@ which means it will explode on destruction
         return false;
     }
 
-    moveRandom(map: TileTypeEnum[][]) {
+    moveRandom(playerPosition:Phaser.Point, map: TileTypeEnum[][], isLeavingOnFloor: boolean) {
         var previousPos: Phaser.Point = new Phaser.Point(this.tilePosition.x, this.tilePosition.y);
 
         if (this.game.rnd.frac() < 0.4 || this.probCurDirectionNearZero()) {
@@ -339,6 +334,10 @@ which means it will explode on destruction
 
         if (!this.colide(this.tilePosition, map)) {
             this.updateAbsolutePosition();
+
+            if (isLeavingOnFloor) {
+                this.leaveFloorAttack(playerPosition, map, previousPos);
+            }
         } else {
             this.tilePosition = previousPos;
             this.selectNewDirection();
