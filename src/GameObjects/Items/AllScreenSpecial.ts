@@ -16,7 +16,7 @@ class AllScreenSpecial extends BaseSpecial{
             } 
         }
         
-        level.handleAttack(damage);
+        level.handleAttack(damage, true);
         level.add.existing(new WhiteLayer(level.game, 0, 0, 0.03));
         Global.audioManager.playSpecial(AudioManager.SPECIAL_GAT);
     }

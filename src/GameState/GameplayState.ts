@@ -208,7 +208,7 @@ class GameplayState extends BaseGameState {
         return this.highlightTiles[0].alpha == 1;
     }
 
-    handleAttack(damage: number[][]) {
+    handleAttack(damage: number[][], isPlayer:boolean) {
         for (var i: number = 0; i < this.enemyObjects.length; i++) {
             var eP = this.enemyObjects[i].getTilePosition();
             if (this.enemyObjects[i].takeDamage(damage[eP.y][eP.x])) {
@@ -219,7 +219,7 @@ class GameplayState extends BaseGameState {
         for (var x = 0; x < Global.ROOM_WIDTH; x++) {
             for (var y = 0; y < Global.ROOM_HEIGHT; y++) {
                 if (damage[y][x] > 0) {
-                    this.game.add.existing(new AttackEffect(this.game, x, y));
+                    this.game.add.existing(new AttackEffect(this.game, x, y, isPlayer));
                 }
             }
         }
@@ -378,7 +378,7 @@ class GameplayState extends BaseGameState {
                 }
             }
         }
-        this.handleAttack(damageMatrix);
+        this.handleAttack(damageMatrix, false);
 
         return false;
     }
@@ -414,7 +414,7 @@ class GameplayState extends BaseGameState {
         for (var i = 0; i < this.enemyObjects.length; i++) {
             var e:ExplosiveEnemyObject = <ExplosiveEnemyObject>this.enemyObjects[i];
             if(e.explode != null && !e.isAlive){
-                this.handleAttack(e.explode());
+                this.handleAttack(e.explode(), false);
             }
         }
     }
@@ -502,7 +502,7 @@ class GameplayState extends BaseGameState {
                 this.playerObject.fireWeapon();
                 this.handleAttack(this.playerObject.getWeapon().getWeaponPositions(
                     this.playerObject.getTilePosition(), this.lastDirection,
-                    Global.matrixTranspose(Global.getCurrentRoom().getMatrix(this.enemyObjects))));
+                    Global.matrixTranspose(Global.getCurrentRoom().getMatrix(this.enemyObjects))), true);
                 this.handleEnemyExplosion();
                 this.stepUpdate();
                 this.game.input.keyboard.reset();
