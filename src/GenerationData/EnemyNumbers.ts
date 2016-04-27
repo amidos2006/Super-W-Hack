@@ -9,15 +9,20 @@ class EnemyNumbers{
             this.probabilities.push([]);
             var values:string[] = probString[i].split(",");
             for (var j = 0; j < values.length; j++) {
-                this.probabilities[i].push(parseInt(values[j]) / 100.0);
+                this.probabilities[i].push(parseInt(values[j]));
             }
         }
     }
     
     getNumber(random:Phaser.RandomDataGenerator, levelNumber:number){
         var cdf:number[] = [this.probabilities[levelNumber][0]];
+        var total:number = 0;
         for (var i = 1; i < this.probabilities[levelNumber].length; i++) {
-            cdf.push(cdf[i - 1] + this.probabilities[levelNumber][1]);
+            cdf.push(cdf[i - 1] + this.probabilities[levelNumber][i]);
+            total = cdf[i];
+        }
+        for (var i = 0; i < this.probabilities[levelNumber].length; i++) {
+            cdf[i] /= total;
         }
         var value:number = random.realInRange(0, 1);
         for (var i = 0; i < cdf.length; i++) {

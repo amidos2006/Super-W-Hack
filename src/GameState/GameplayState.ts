@@ -311,7 +311,6 @@ class GameplayState extends BaseGameState{
             }
             var colPoint:Phaser.Point = this.enemyObjects[i].enemyShot(playerPosition, 
                 Global.getCurrentRoom().getMatrix(this.enemyObjects));
-            console.log("laser attack:" + colPoint);
             if(colPoint != null){
                 var enemyPos:Phaser.Point = this.enemyObjects[i].getTilePosition();
                 this.game.add.existing(new LaserEffect(this.game, enemyPos.x, enemyPos.y, 
@@ -388,7 +387,9 @@ class GameplayState extends BaseGameState{
         }
         
         if(this.playerObject == null){
-            Global.audioManager.stopMusic();
+            if(Global.previousDirection.getMagnitude() != 0){
+                Global.audioManager.stopMusic();
+            }
             return;
         }
         

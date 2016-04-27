@@ -4,6 +4,7 @@ class EnemyObject extends BaseGameObject{
     
     enemySpriteIndex:number;
     enemySprite:Phaser.Sprite;
+    cannonSprite:Phaser.Sprite;
     healthText:Phaser.Text;
     enemyHealth:number;
     enemySpeed:number;
@@ -45,15 +46,14 @@ class EnemyObject extends BaseGameObject{
         this.add(this.healthText);
         
         if(numberOfCannons > 0){
-            console.log("attack: " + cannonDirection1);
-            var tempSprite = this.game.add.sprite((cannonDirection1.x + 1) * Global.TILE_SIZE / 2 - cannonDirection1.x * 4, 
+            this.cannonSprite = this.game.add.sprite((cannonDirection1.x + 1) * Global.TILE_SIZE / 2 - cannonDirection1.x * 4, 
                 (cannonDirection1.y + 1) * Global.TILE_SIZE / 2 - cannonDirection1.y * 4, "graphics");
-            tempSprite.animations.add("normal", [12]);
-            tempSprite.animations.play("normal");
-            tempSprite.tint = 0xcc6668;
-            tempSprite.angle = cannonDirection1.angle(new Phaser.Point(), true) + 180;
-            tempSprite.anchor.set(0.5, 0.5);
-            this.add(tempSprite);
+            this.cannonSprite.animations.add("normal", [12]);
+            this.cannonSprite.animations.play("normal");
+            this.cannonSprite.tint = 0xcc6668;
+            this.cannonSprite.angle = cannonDirection1.angle(new Phaser.Point(), true) + 180;
+            this.cannonSprite.anchor.set(0.5, 0.5);
+            this.add(this.cannonSprite);
         }
     }
     
@@ -479,7 +479,6 @@ class EnemyObject extends BaseGameObject{
                 var distX = Math.abs(playerPosition.x - (this.getTilePosition().x + directionsRedux[i].x));
                 var distY = Math.abs(playerPosition.y - (this.getTilePosition().y + directionsRedux[i].y));
                 var newdist = Math.sqrt((distX * distX) + (distY * distY));
-                console.log("newdist : " + newdist);
                 if(newdist < dist)
                 {
                     dist = newdist;

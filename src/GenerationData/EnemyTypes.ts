@@ -1,7 +1,9 @@
 enum EnemyNames{
     Random,
     Chaser,
-    Patrol
+    Patrol,
+    Shooter,
+    TotalEnemies
 }
 
 class EnemyTypes{
@@ -20,7 +22,7 @@ class EnemyTypes{
             this.typeProbabilities.push([]);
             var values:string[] = probString[i].split(",");
             for (var j = 0; j < values.length; j++) {
-                this.typeProbabilities[i].push(parseInt(values[j]) / 100.0);
+                this.typeProbabilities[i].push(parseInt(values[j]));
             }
         }
         
@@ -31,7 +33,7 @@ class EnemyTypes{
             this.healthProbabilites.push([]);
             var values:string[] = probString[i].split(",");
             for (var j = 0; j < values.length; j++) {
-                this.healthProbabilites[i].push(parseInt(values[j]) / 100.0);
+                this.healthProbabilites[i].push(parseInt(values[j]));
             }
         }
     }
@@ -39,7 +41,7 @@ class EnemyTypes{
     initNewRoom(levelNumber:number, lastDirection:Phaser.Point){
         this.levelNumber = levelNumber;
         this.currentEnemyNumbers = [];
-        for (var i = 0; i < 3; i++) {
+        for (var i = 0; i < EnemyNames.TotalEnemies; i++) {
             this.currentEnemyNumbers.push(0);
         }
         this.patrols = [];
@@ -55,8 +57,13 @@ class EnemyTypes{
     
     getIndex(random:Phaser.RandomDataGenerator, prob:number[][]){
         var cdf:number[] = [this.typeProbabilities[this.levelNumber][0]];
+        var total:number = 0;
         for (var i = 1; i < this.typeProbabilities[this.levelNumber].length; i++) {
-            cdf.push(cdf[i - 1] + this.typeProbabilities[this.levelNumber][1]);
+            cdf.push(cdf[i - 1] + this.typeProbabilities[this.levelNumber][i]);
+            total = cdf[i];
+        }
+        for (var i = 0; i < this.typeProbabilities[this.levelNumber].length; i++) {
+            cdf[i] /= total;
         }
         var value:number = random.realInRange(0, 1);
         for (var i = 0; i < cdf.length; i++) {
@@ -72,6 +79,8 @@ class EnemyTypes{
         var playerLocation:Phaser.Point = new Phaser.Point(Math.floor((this.lastDirection.x + 1) * Global.ROOM_WIDTH / 2) 
             - Math.floor((this.lastDirection.x + 1) / 2), Math.floor((this.lastDirection.y + 1) * Global.ROOM_HEIGHT / 2) 
             - Math.floor((this.lastDirection.y + 1) / 2));
+        playerLocation.x -= this.lastDirection.x;
+        playerLocation.y -= this.lastDirection.y;
             
         for (var i = 0; i < locations.length; i++) {
             if(playerLocation.distance(locations[i]) < 3){
@@ -119,6 +128,22 @@ class EnemyTypes{
         
         this.currentEnemyNumbers[EnemyNames.Chaser] += 1;
         return new ChaserEnemyObject(game, empty.x, empty.y, health, 0, new Phaser.Point());
+    }
+    
+    createShooter(game:Phaser.Game, map:TileTypeEnum[][], damage:number, distances:number[]){
+        var health:number = this.getIndex(game.rnd, this.healthProbabilites) + 1;
+        this.currentEnemyNumbers[EnemyNames.Shooter] += 1;
+        var cannonDirection:Phaser.Point = new Phaser.Point(this.lastDirection.x, this.lastDirection.y);
+        cannonDirection = cannonDirection.rotate(0, 0, 90, true);
+        if(Math.abs(cannonDirection.x) == 1){
+            cannonDirection.y = 0;
+        }
+        else{
+            cannonDirection.x = 0;
+        }
+        console.log(this.lastDirection + " " + cannonDirection);
+        return new StaticShooterEnemyObject(game, Math.floor(Global.ROOM_WIDTH/2), 
+            Math.floor(Global.ROOM_HEIGHT/2), health, 1, cannonDirection);
     }
     
     getBestPatrolPositions(random:Phaser.RandomDataGenerator, map:TileTypeEnum[][], refrenceValue:number){
@@ -208,6 +233,16 @@ class EnemyTypes{
         return new BackAndForthEnemyObject(game, position.x, position.y, health, 1, cannonDirection, moveDirection);
     }
     
+    checkConstraints(currentClassIndex:EnemyNames){
+        switch (currentClassIndex){
+            case EnemyNames.Shooter:
+                return this.currentEnemyNumbers[currentClassIndex] < 1;
+            case EnemyNames.Patrol:
+                return this.currentEnemyNumbers[currentClassIndex] < 2;
+        }
+        return true;
+    }
+    
     getEnemy(game:Phaser.Game, map:TileTypeEnum[][], damageMatrix:number[][]){
         var damageValue:number = 0;
         var distances:number[] = [];
@@ -224,19 +259,22 @@ class EnemyTypes{
         var currentClassIndex:number = 0;
         do{
             currentClassIndex = this.getIndex(game.rnd, this.typeProbabilities);
-        }while(currentClassIndex == 2 && this.patrols.length <= 1);
+        }while(!this.checkConstraints(currentClassIndex));
         
         var enemy:EnemyObject = null;
         switch (currentClassIndex) {
-            case 0:
+            case EnemyNames.Random:
                 enemy = this.createRandom(game, map, damageValue, distances);
                 break;
-            case 1:
+            case EnemyNames.Chaser:
                 enemy = this.createChaser(game, map, damageValue, distances);
                 break;
-            case 2:
+            case EnemyNames.Patrol:
                 enemy = this.createPatrol(game, map, damageValue, distances);
-                break; 
+                break;
+            case EnemyNames.Shooter:
+                enemy = this.createShooter(game, map, damageValue, distances);
+                break;
         }
         
         return enemy;

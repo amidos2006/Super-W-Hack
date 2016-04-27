@@ -116,7 +116,7 @@ class PlayerObject extends BaseGameObject{
     }
     
     fireWeapon(){
-        Global.audioManager.playAttack(this.getWeapon().idSound);
+        Global.audioManager.playAttack(this.getWeapon().getSoundParams());
         
         this.getWeapon().fireWeapon();
     }
