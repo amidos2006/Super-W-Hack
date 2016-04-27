@@ -16,8 +16,7 @@ class WeaponGenerator {
 
     static GenerateWeapon(paramSet: number[], random: Phaser.RandomDataGenerator,
         oldWeapon: Weapon, nameGenerator: WeaponNameGenerator, minDamage: number): Weapon {
-        var sound: SfxrParams = sfxrLaserShoot();
-        sfxrPlayParam(sound);
+        
 
         if (minDamage > 0) {
             return WeaponGenerator.GenerateAWeapon(paramSet, random, oldWeapon, nameGenerator, minDamage);
@@ -27,6 +26,7 @@ class WeaponGenerator {
             WeaponGenerator.weapons = new Array(WeaponGenerator.AMOUNT_OF_WEAPONS);
             for (var i: number = 0; i < WeaponGenerator.AMOUNT_OF_WEAPONS; i++) {
                 WeaponGenerator.weapons[i] = WeaponGenerator.GenerateAWeapon(paramSet, random, oldWeapon, nameGenerator, minDamage);
+                
             }
             WeaponGenerator.weapons.sort(function (a: Weapon, b: Weapon) { return a.weaponPower - b.weaponPower; });
         }
@@ -209,6 +209,8 @@ class WeaponGenerator {
        weapon.name = WeaponGenerator.generateName(weapon, pattern, random, nameGenerator);
        weapon.calculateAreaLevel();
        weapon.howPowerful();
+       var sound: SfxrParams = sfxrLaserShoot();
+       weapon.sound = sound;
        random = previousRandom;
        return weapon;
     }	
