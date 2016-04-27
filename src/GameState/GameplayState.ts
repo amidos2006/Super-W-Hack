@@ -535,7 +535,7 @@ class GameplayState extends BaseGameState {
                     this.buttonText.aimMode();
                 }
 
-                if (this.game.input.keyboard.isDown(Phaser.Keyboard.Z) &&
+                if (this.game.input.keyboard.isDown(Phaser.Keyboard.C) &&
                     Global.crateNumber >= Global.getCurrentCost()) {
                     Global.crateNumber -= Global.getCurrentCost();
                     Global.itemUsage += 1;

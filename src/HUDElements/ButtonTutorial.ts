@@ -15,7 +15,7 @@ class ButtonTutorial extends BaseUIObject{
         
         style = { font: "15px pixelFont", fill: "#ffffff", align: "right" };
         
-        this.zText = this.game.add.text(this.game.width - x, y, "[" + Global.getCurrentCost() + "] special (z)", style, this);
+        this.zText = this.game.add.text(this.game.width - x, y, "[" + Global.getCurrentCost() + "] special (c)", style, this);
         this.zText.anchor.set(1, 1);
         this.add(this.zText);
     }
@@ -32,7 +32,7 @@ class ButtonTutorial extends BaseUIObject{
         this.xText.text = "(x) aim";
         this.xText.anchor.set(0, 1);
         
-        this.zText.text = "[" + Global.getCurrentCost() + "] special (z)";
+        this.zText.text = "[" + Global.getCurrentCost() + "] special (c)";
         this.zText.anchor.set(1, 1);
     }
 }
