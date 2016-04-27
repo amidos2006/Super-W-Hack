@@ -61,7 +61,7 @@ class WeaponGenerator {
     
     static GenerateAWeapon(paramSet: number[], random: Phaser.RandomDataGenerator,
         oldWeapon: Weapon, nameGenerator: WeaponNameGenerator, minDamage: number): Weapon {
-        
+
 
         if (paramSet == null) {
             paramSet = new Array(4);
@@ -69,147 +69,156 @@ class WeaponGenerator {
                 paramSet[i] = 0;
             }
         }
-       var weapon: Weapon = new Weapon();
-       var previousRandom: Phaser.RandomDataGenerator = random;
-       var a: number = -1 % 5;
-       do {
-           var width: number = 1;//paramSet.get("width");
-           var height: number = 1;//= paramSet.get("height");
+        var weapon: Weapon = new Weapon();
+        var previousRandom: Phaser.RandomDataGenerator = random;
+        var a: number = -1 % 5;
+        do {
+            var width: number = 1;//paramSet.get("width");
+            var height: number = 1;//= paramSet.get("height");
 
-           var aux: number = 3;//random.integerInRange(1, 4);
-           switch (aux) {
-               case 1: weapon.direction = new Phaser.Point(1, 0); break;
-               case 2: weapon.direction = new Phaser.Point(0, 1); break;
-               case 3: weapon.direction = new Phaser.Point(-1, 0); break;
-               case 4: weapon.direction = new Phaser.Point(0, -1); break;
-           }
-
-
-           if (random.realInRange(0, 1) < Weapon.CHANCE_CENTERED) {
-               weapon.centered = true;
-               width = random.integerInRange(3, Weapon.MAX_AREA_SIZE_CENTER_W);
-               height = random.integerInRange(3, Weapon.MAX_AREA_SIZE_CENTER_H);
-               weapon.repeat = false;
-               weapon.lingering = false;
-           } else {
-               weapon.centered = false;
-
-               if (random.realInRange(0, 1) < Weapon.CHANCE_REPEAT)
-                   weapon.repeat = true;
-               else
-                   weapon.repeat = false;
-
-               if (random.frac() < 0.3) {
-                   weapon.lingering = true;
-                   if (random.frac() < 0.5) {
-                       width = 1;
-                       height = random.integerInRange(1, Weapon.MAX_AREA_SIZE_FRONT_H);
-                   }
-                   if (random.frac() < 0.15)
-                       weapon.amountOfLingeringLive = -1;
-                   else
-                       weapon.amountOfLingeringLive = random.integerInRange(1, Weapon.MAX_AREA_SIZE_FRONT_W);
-                   if (random.frac() < 0.35) {
-                       weapon.objectExplode = true;
-                   } else {
-                       weapon.objectExplode = false;
-                   }
-                   if (random.frac() < 0.40) {
-                       weapon.objectFade = true;
-                   } else {
-                       weapon.objectFade = false;
-                   }
-               } else {
-                   width = random.integerInRange(1, Weapon.MAX_AREA_SIZE_FRONT_W);
-                   height = random.integerInRange(1, Weapon.MAX_AREA_SIZE_FRONT_H);
-                   weapon.lingering = false;
-                   
-               }
-           }
-
-           if (width % 2 == 0) {
-               if (width > 2)
-                   width--;
-               else
-                   width++;
-           }
-           if (height % 2 == 0) {
-               if (height > 2)
-                   height--;
-               else
-                   height++;
-           }
+            var aux: number = 3;//random.integerInRange(1, 4);
+            switch (aux) {
+                case 1: weapon.direction = new Phaser.Point(1, 0); break;
+                case 2: weapon.direction = new Phaser.Point(0, 1); break;
+                case 3: weapon.direction = new Phaser.Point(-1, 0); break;
+                case 4: weapon.direction = new Phaser.Point(0, -1); break;
+            }
 
 
-           //initialize variable
-           var hasAnyFilled: boolean = false;
-           var pattern = new Array(height);
-           for (var i: number = 0; i < height; i++) {
-               pattern[i] = new Array(width);
-               for (var j: number = 0; j < width; j++) {
-                   pattern[i][j] = 0;
-               }
-           }
+            if (random.realInRange(0, 1) < Weapon.CHANCE_CENTERED) {
+                weapon.centered = true;
+                width = random.integerInRange(3, Weapon.MAX_AREA_SIZE_CENTER_W);
+                height = random.integerInRange(3, Weapon.MAX_AREA_SIZE_CENTER_H);
+                weapon.repeat = false;
+                weapon.lingering = false;
+            } else {
+                weapon.centered = false;
 
-           var s: string = "";
+                if (random.realInRange(0, 1) < Weapon.CHANCE_REPEAT)
+                    weapon.repeat = true;
+                else
+                    weapon.repeat = false;
 
-           for (var i: number = 0; i < height; i++) {
-               for (var j: number = 0; j < width; j++) {
-                   s += pattern[i][j];
-               }
-               s += "\n";
-           }
-           console.log("checking " + height + "x" + width + " " + pattern.length + "x" + pattern[0].length+"\n"+s);
+                if (random.frac() < 0.3) {
+                    weapon.lingering = true;
+                    if (random.frac() < 0.5) {
+                        width = 1;
+                        height = random.integerInRange(1, Weapon.MAX_AREA_SIZE_FRONT_H);
+                    }
+                    if (random.frac() < 0.15)
+                        weapon.amountOfLingeringLive = -1;
+                    else
+                        weapon.amountOfLingeringLive = random.integerInRange(1, Weapon.MAX_AREA_SIZE_FRONT_W);
+                    if (random.frac() < 0.35) {
+                        weapon.objectExplode = true;
+                    } else {
+                        weapon.objectExplode = false;
+                    }
+                    if (random.frac() < 0.40) {
+                        weapon.objectFade = true;
+                    } else {
+                        weapon.objectFade = false;
+                    }
+                } else {
+                    width = random.integerInRange(1, Weapon.MAX_AREA_SIZE_FRONT_W);
+                    height = random.integerInRange(1, Weapon.MAX_AREA_SIZE_FRONT_H);
+                    weapon.lingering = false;
+
+                }
+            }
+
+            if (width % 2 == 0) {
+                if (width > 2)
+                    width--;
+                else
+                    width++;
+            }
+            if (height % 2 == 0) {
+                if (height > 2)
+                    height--;
+                else
+                    height++;
+            }
 
 
-           if (width == 1) {
-               pattern = WeaponGenerator.createPatternWithOneWidth(pattern, height, random, weapon.centered,
-                   (minDamage > -1 ? true : false));
-           } else if (height == 1) {
-               pattern = WeaponGenerator.createPatternWithOneHeight(pattern, width, random, weapon.centered,
-                   (minDamage > -1 ? true : false));
-           } else {
-               pattern = WeaponGenerator.createPattern(pattern, width, height, random, weapon.centered,
-                   (minDamage > -1 ? true : false));
-           }
+            //initialize variable
+            var hasAnyFilled: boolean = false;
+            var pattern = new Array(height);
+            for (var i: number = 0; i < height; i++) {
+                pattern[i] = new Array(width);
+                for (var j: number = 0; j < width; j++) {
+                    pattern[i][j] = 0;
+                }
+            }
 
-           //clear player position
-           if (weapon.centered) {
-               var center: Phaser.Point = new Phaser.Point(Math.floor(width / 2), Math.floor(height / 2));
-               pattern[center.y][center.x] = 0;
-           }
+            var s: string = "";
 
-           
-           //printWeapon
+            for (var i: number = 0; i < height; i++) {
+                for (var j: number = 0; j < width; j++) {
+                    s += pattern[i][j];
+                }
+                s += "\n";
+            }
+            console.log("checking " + height + "x" + width + " " + pattern.length + "x" + pattern[0].length + "\n" + s);
+
+
+            if (width == 1) {
+                pattern = WeaponGenerator.createPatternWithOneWidth(pattern, height, random, weapon.centered,
+                    (minDamage > -1 ? true : false));
+            } else if (height == 1) {
+                pattern = WeaponGenerator.createPatternWithOneHeight(pattern, width, random, weapon.centered,
+                    (minDamage > -1 ? true : false));
+            } else {
+                pattern = WeaponGenerator.createPattern(pattern, width, height, random, weapon.centered,
+                    (minDamage > -1 ? true : false));
+            }
+
+            //clear player position
+            if (weapon.centered) {
+                var center: Phaser.Point = new Phaser.Point(Math.floor(width / 2), Math.floor(height / 2));
+                pattern[center.y][center.x] = 0;
+            }
+
+
+            //printWeapon
             var t: String = "";
-           for (var i: number = 0; i < height; i++) {
-               //copy other half
-               for (var j: number = 0; j < width; j++) {
-                   t += pattern[i][j]
-               }
-               t += "\n";
-           }
-           //console.log("before " + t);
+            for (var i: number = 0; i < height; i++) {
+                //copy other half
+                for (var j: number = 0; j < width; j++) {
+                    t += pattern[i][j]
+                }
+                t += "\n";
+            }
+            //console.log("before " + t);
 
-           weapon.pattern = pattern;
+            weapon.pattern = pattern;
 
-           if (minDamage > -1)
-               weapon.damage = minDamage;
-           else
-               weapon.damage = random.integerInRange(Weapon.MIN_DAMAGE, Weapon.MAX_DAMAGE);
-           weapon.cooldown = random.integerInRange(Weapon.MIN_COOLDOWN, Weapon.MAX_COOLDOWN);
-           weapon.curCooldown = 0;
-           console.log("LOGGING " + weapon.toString());
-           
-       } while (oldWeapon != null && WeaponGenerator.isSame(weapon, oldWeapon)); 
+            if (minDamage > -1)
+                weapon.damage = minDamage;
+            else
+                weapon.damage = random.integerInRange(Weapon.MIN_DAMAGE, Weapon.MAX_DAMAGE);
+            weapon.cooldown = random.integerInRange(Weapon.MIN_COOLDOWN, Weapon.MAX_COOLDOWN);
+            weapon.curCooldown = 0;
+            console.log("LOGGING " + weapon.toString());
 
-       weapon.idSound = random.between(0, AudioManager.AMOUNT_OF_ATTACKS - 1);
+        } while (oldWeapon != null && WeaponGenerator.isSame(weapon, oldWeapon));
 
-       //Generate name.
-       weapon.name = WeaponGenerator.generateName(weapon, pattern, random, nameGenerator);
-       weapon.calculateAreaLevel();
-       weapon.howPowerful();
-       var sound: SfxrParams = sfxrLaserShoot();
+        weapon.idSound = random.between(0, AudioManager.AMOUNT_OF_ATTACKS - 1);
+
+        //Generate name.
+        weapon.name = WeaponGenerator.generateName(weapon, pattern, random, nameGenerator);
+        weapon.calculateAreaLevel();
+        weapon.howPowerful();
+
+        var sound: SfxrParams = null;
+        var stype: number = random.frac();
+        if (stype < 0.5)
+            sound = sfxrPowerUp();
+        else if (stype < 0.9)
+            sound = sfxrLaserShoot();
+        else
+            sound = sfxrRandom();
+       
        weapon.sound = sound;
        random = previousRandom;
        return weapon;
