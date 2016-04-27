@@ -7,7 +7,7 @@ class BlobEnemyObject extends EnemyObject implements Movement {
         numberOfCannons: number, cannonDirection1: Phaser.Point, firstPlayerPosition: Phaser.Point) {
         super(game, x, y, health, numberOfCannons, cannonDirection1);
         this.firstPlayerPosition = firstPlayerPosition;
-        this.enemySpriteIndex = 25;
+        this.enemySpriteIndex = 31;
 
         this.enemySprite = this.game.add.sprite(0, 0, "graphics");
         this.enemySprite.animations.add("normal", [this.enemySpriteIndex]);

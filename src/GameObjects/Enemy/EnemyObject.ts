@@ -39,7 +39,7 @@ class EnemyObject extends BaseGameObject{
         this.factorDirectionChange = 2;
         this.hitWall = false;
         
-       var style = { font: "10px pixelFont", fill: "#cc6668", align: "right" };
+        var style = { font: "10px pixelFont", fill: "#cc6668", align: "right" };
         this.healthText = this.game.add.text(Global.TILE_SIZE - 3, Global.TILE_SIZE + 4, 
             this.enemyHealth.toString(), style, this);
         this.healthText.anchor.set(1, 1);

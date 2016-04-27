@@ -3,7 +3,7 @@ class StaticShooterEnemyObject extends EnemyObject implements Movement {
     constructor(game: Phaser.Game, x: number, y: number, health: number,
         numberOfcannons: number, cannonDirection1: Phaser.Point) {
         super(game, x, y, health, numberOfcannons, cannonDirection1);
-        this.enemySpriteIndex = 23;
+        this.enemySpriteIndex = 30;
 
         this.enemySprite = this.game.add.sprite(0, 0, "graphics");
         this.enemySprite.animations.add("normal", [this.enemySpriteIndex]);

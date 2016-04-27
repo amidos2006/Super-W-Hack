@@ -6,7 +6,7 @@ class ExplosiveEnemyObject extends EnemyObject implements Movement {
         super(game, x, y, health, numberOfCannons, cannonDirection1);
         this.lightRay = new CannonObject(new Phaser.Point());
         this.enemyDirection = new Phaser.Point();
-        this.enemySpriteIndex = 24;
+        this.enemySpriteIndex = 29;
 
         this.enemySprite = this.game.add.sprite(0, 0, "graphics");
         this.enemySprite.animations.add("normal", [this.enemySpriteIndex]);

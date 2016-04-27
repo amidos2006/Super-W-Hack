@@ -1,4 +1,6 @@
 class HarmfulFloorObject extends BaseGameObject{
+    sprite:Phaser.Sprite;
+    timeText:Phaser.Text;
     damage:number;
     time:number;
     exp:boolean;
@@ -11,6 +13,24 @@ class HarmfulFloorObject extends BaseGameObject{
         this.time = time;
         this.exp = explode;
         this.isAlive = true;
+        
+        this.sprite = this.game.add.sprite(0, 0, "graphics");
+        this.sprite.animations.add("normal", [32]);
+        this.sprite.animations.play("normal");
+        this.sprite.tint = 0xcc6668;
+        this.add(this.sprite);
+        
+        var style = { font: "10px pixelFont", fill: "#cc6668", align: "right" };
+        this.timeText = this.game.add.text(Global.TILE_SIZE / 2, Global.TILE_SIZE / 2, 
+            this.time.toString(), style, this);
+        this.timeText.anchor.set(0.5, 0.5);
+        this.add(this.timeText);
+    }
+    
+    killObject(){
+        this.game.add.existing(new DeathEffect(this.game, this.getTilePosition().x, 
+            this.getTilePosition().y, 32, 0xcc6668));
+        super.killObject();
     }
     
     explode(){
@@ -39,12 +59,12 @@ class HarmfulFloorObject extends BaseGameObject{
             this.killObject();
             return;
         }
-        
+        this.timeText.text = this.time.toString();
+        this.timeText.anchor.set(0.5, 0.5);
         this.time -= 1;
     }
     
     update(){
         super.update();
-        var pl
     }
 }
