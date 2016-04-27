@@ -13,8 +13,12 @@ class WeaponGenerator {
     static AMOUNT_OF_WEAPONS: number = 100;
     static weapons: Weapon[] = null;
 
+
     static GenerateWeapon(paramSet: number[], random: Phaser.RandomDataGenerator,
         oldWeapon: Weapon, nameGenerator: WeaponNameGenerator, minDamage: number): Weapon {
+        var sound: SfxrParams = sfxrLaserShoot();
+        sfxrPlayParam(sound);
+
         if (minDamage > 0) {
             return WeaponGenerator.GenerateAWeapon(paramSet, random, oldWeapon, nameGenerator, minDamage);
         }
@@ -53,8 +57,12 @@ class WeaponGenerator {
         return w;
     }
 
+    
+    
     static GenerateAWeapon(paramSet: number[], random: Phaser.RandomDataGenerator,
         oldWeapon: Weapon, nameGenerator: WeaponNameGenerator, minDamage: number): Weapon {
+        
+
         if (paramSet == null) {
             paramSet = new Array(4);
             for (var i: number = 0; i < paramSet.length; i++) {
@@ -268,14 +276,6 @@ class WeaponGenerator {
             }
         }
 
-        if (!hasAnyFilled) {
-            if (width > 2) {
-                var rand: number = random.integerInRange(0, (Math.floor(width / 2) - 1 < 1 ? 1 : Math.floor(width / 2) - 1));
-                pattern[0][rand] = 1;
-            } else
-                pattern[0][0] = 1;
-        }
-
         //if odd number, add one row with random
         if (needToHaveAdj) {
             pattern[0][Math.floor(width / 2)] = 1;
@@ -284,6 +284,14 @@ class WeaponGenerator {
                 pattern[0][Math.floor(width / 2)] = 0;
             else
                 pattern[0][Math.floor(width / 2)] = 1;
+        }
+
+        if (!hasAnyFilled) {
+            if (width > 2) {
+                var rand: number = random.integerInRange(0, (Math.floor(width / 2) - 1 < 1 ? 1 : Math.floor(width / 2) - 1));
+                pattern[0][rand] = 1;
+            } else
+                pattern[0][0] = 1;
         }
 
         //copy other half

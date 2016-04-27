@@ -201,8 +201,12 @@
         this.hurt[random.between(0, this.hurt.length - 1)].play();
     }
 
-    playAttack(id: number) {
+    /*playAttack(id: number) {
         this.attacks[id].play();
+    }*/
+
+    playAttack(sound: SfxrParams) {
+        sfxrPlayParam(sound);
     }
 
     playWalk() {

@@ -12,9 +12,6 @@ enum WeaponCrazyEffects {
 }
 
 class Weapon {
-    
-
-
     /**Damage that weapon gives: 1 <= damage <= 3 */
     static MIN_DAMAGE:number = 1;
     static MAX_DAMAGE:number = 3;
@@ -50,6 +47,8 @@ class Weapon {
     objectExplode: boolean = false;
     objectFade: boolean = false;
     objectPattern: number[][];
+    sound: SfxrParams;
+
 
     static EFFECTS: WeaponCrazyEffects[] = [WeaponCrazyEffects.NOTHING, WeaponCrazyEffects.TELEPORT, WeaponCrazyEffects.KNOCKBACK_ENEMY_1,
         WeaponCrazyEffects.KNOCKBACK_ENEMY_2, WeaponCrazyEffects.KNOCKBACK_PLAYER2,
@@ -90,23 +89,6 @@ class Weapon {
                 result[i][j] = 0;
             }
         }
-      
-        /*
-        var inAttPosX:number = playerPos.x + (this.startPointShif*faceDirection.x);
-        var inAttPosY:number = playerPos.y + (this.startPointShif*faceDirection.y);
-        
-        if (this.shape == WeaponShape.LINE_1) {
-            return this.attackInLine(result, inAttPosX, inAttPosY, playerPos, faceDirection, valueMatrix, 1);
-        } else if (this.shape == WeaponShape.LINE_2) {
-            return this.attackInLine(result, inAttPosX, inAttPosY, playerPos, faceDirection, valueMatrix, 2);
-        } else if (this.shape == WeaponShape.LINE_3) {
-            return this.attackInLine(result, inAttPosX, inAttPosY, playerPos, faceDirection, valueMatrix, 3);
-        } else if (this.shape == WeaponShape.LINE_INF) {
-            return this.attackInLine(result, inAttPosX, inAttPosY, playerPos, faceDirection, valueMatrix, -1);
-        } else if (this.shape == WeaponShape.AREA) {
-            return this.attackInArea(result, inAttPosX, inAttPosY, playerPos, faceDirection, valueMatrix);
-        }
-        */
 
         var w: number = (faceDirection.x == 1 || faceDirection.x == -1) ? this.pattern.length : this.pattern[0].length;
         var h: number = (faceDirection.x == 1 || faceDirection.x == -1) ? this.pattern[0].length : this.pattern.length;
@@ -222,6 +204,10 @@ class Weapon {
             }
         }
         return result;
+    }
+
+    getSoundParams(): SfxrParams{
+        return this.sound;
     }
 
     static invertRow(matrix: number[][]) {
