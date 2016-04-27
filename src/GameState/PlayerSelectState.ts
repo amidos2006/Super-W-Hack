@@ -22,6 +22,10 @@ class PlayerSelectState extends BaseGameState{
         this.game.add.existing(new WhiteLayout(this.game, 10, 10, this.game.width - 20, this.game.height - 20));
         this.game.add.existing(new HintText(this.game, this.game.width/2, this.game.height - 5, 
             "(left/right) to choose\n(x) to select"));
+        
+        Global.initialize(this.game.cache.getText("dungeonNames_1"), 
+            this.game.cache.getText("dungeonNames_2"), 
+            this.game.cache.getText("dungeonNames_3"), this.game.rnd);
     }
     
     update(){
@@ -45,11 +49,13 @@ class PlayerSelectState extends BaseGameState{
             this.game.input.keyboard.reset();
         }
         
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.P)){
+            Global.levelNumber = (Global.levelNumber + 1) % 5;
+            this.game.input.keyboard.reset();
+        }
+        
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
             Global.audioManager.stopTitleMusic();
-            Global.initialize(this.game.cache.getText("dungeonNames_1"), 
-                        this.game.cache.getText("dungeonNames_2"), 
-                        this.game.cache.getText("dungeonNames_3"), this.game.rnd);
             Global.currentPlayer = this.characters[this.selectedIndex];
             if(Global.currentGameMode == GameplayModes.adventure){
                 this.game.state.start("adventurename", true);

@@ -8,7 +8,7 @@ class CreditsState extends BaseGameState{
     create(){
         super.create();
         
-        var creditsObj:CreditsName = new CreditsName(this.game, this.game.width/2, this.game.height/2 - 100);
+        var creditsObj:CreditsName = new CreditsName(this.game, this.game.width/2 + 10, this.game.height);
         this.game.add.existing(creditsObj);
         
         this.game.add.existing(new WhiteLayout(this.game, 10, 10, this.game.width - 20, this.game.height - 20));

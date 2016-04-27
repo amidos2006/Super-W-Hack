@@ -7,48 +7,40 @@ class CreditsName extends BaseUIObject{
         
         var credits:string[] = this.game.cache.getText("credits").split("\n");
         this.textHeight = 0;
-        
-        var style = { font: "10px pixelFont", fill: "#ffffff", align: "center" };
-        var gameBy:Phaser.Text = this.game.add.text(x, y + this.textHeight, "game by", style, this);
-        gameBy.anchor.set(0.5, 0);
-        this.add(gameBy);
+
+        this.add(new CreditLine(this.game, x, y+this.textHeight, "game by", 10));
         this.textHeight += 10;
         
-        style = { font: "20px pixelFont", fill: "#ffffff", align: "center" };
         var names:string[] = credits[0].split(",");
         for (var i = 0; i < names.length; i++) {
-            var tempName:Phaser.Text = this.game.add.text(x, y + this.textHeight, names[i].toString(), style, this);
+            this.add(new CreditLine(this.game, x, y+this.textHeight, names[i].toString(), 20));
             this.textHeight += 18;
-            tempName.anchor.set(0.5, 0);
-            this.add(tempName);
         }
         this.textHeight += 18;
         
-        style = { font: "10px pixelFont", fill: "#ffffff", align: "center" };
-        var madeFor:Phaser.Text = this.game.add.text(x, y + this.textHeight, "made for", style, this);
-        madeFor.anchor.set(0.5, 0);
-        this.add(madeFor);
+        this.add(new CreditLine(this.game, x, y+this.textHeight, "made for", 10));
         this.textHeight += 10;
         
-        style = { font: "20px pixelFont", fill: "#ffffff", align: "center" };
-        var gameDesign:Phaser.Text = this.game.add.text(x, y + this.textHeight, credits[1].trim(), style, this);
-        gameDesign.anchor.set(0.5, 0);
-        this.add(madeFor);
+        this.add(new CreditLine(this.game, x, y+this.textHeight, credits[1].trim(), 20));
         this.textHeight += 2 * 18;
         
-        style = { font: "10px pixelFont", fill: "#ffffff", align: "center" };
-        var thanksTo:Phaser.Text = this.game.add.text(x, y + this.textHeight, "thanks to", style, this);
-        thanksTo.anchor.set(0.5, 0);
-        this.add(thanksTo);
+        this.add(new CreditLine(this.game, x, y+this.textHeight, "inspired by", 10));
         this.textHeight += 10;
         
-        style = { font: "20px pixelFont", fill: "#ffffff", align: "center" };
         var names:string[] = credits[2].split(",");
         for (var i = 0; i < names.length; i++) {
-            var tempName:Phaser.Text = this.game.add.text(x, y + this.textHeight, names[i].toString(), style, this);
+            this.add(new CreditLine(this.game, x, y+this.textHeight, names[i].toString(), 20));
             this.textHeight += 18;
-            tempName.anchor.set(0.5, 0);
-            this.add(tempName);
+        }
+        this.textHeight += 18;
+        
+        this.add(new CreditLine(this.game, x, y+this.textHeight, "thanks to", 10));
+        this.textHeight += 10;
+        
+        var names:string[] = credits[3].split(",");
+        for (var i = 0; i < names.length; i++) {
+            this.add(new CreditLine(this.game, x, y+this.textHeight, names[i].toString(), 20));
+            this.textHeight += 18;
         }
     }
 }
