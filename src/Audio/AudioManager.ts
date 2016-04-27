@@ -9,6 +9,7 @@
     walk: Phaser.Sound[] = null;
     specials: Phaser.Sound[] = null;
     pickNPC: Phaser.Sound = null;
+    enemyShot: Phaser.Sound = null;
 
     completeLevelMusic: Phaser.Sound = null;
     
@@ -123,6 +124,8 @@
             this.attacks[i] = game.add.audio("attack" + (i - 12));
         }
 
+        this.enemyShot = game.add.audio("attack5");
+
         for (var i: number = 0; i < AudioManager.AMOUNT_OF_HURT; i++) {
             this.hurt[i] = game.add.audio("hurt" + (i + 1));
         }
@@ -181,7 +184,7 @@
     playMusic(id: number) {
         if (!AudioManager.musics[id].isPlaying)
             AudioManager.musics[id].play();
-        AudioManager.musics[id].volume = 0.5;
+        AudioManager.musics[id].volume = 0.4;
     }
 
     stopMusic() {
@@ -235,6 +238,11 @@
     playSpecial(person: number) {
         this.specials[person].play();
     }
+
+    playEnemyShot() {
+        this.enemyShot.play();
+    }
+
 
     playPickNPC() {
         this.pickNPC.play();
