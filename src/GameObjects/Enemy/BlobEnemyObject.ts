@@ -29,6 +29,9 @@ class BlobEnemyObject extends EnemyObject implements Movement {
     }
 
     enemyMove(enemyDirection: Phaser.Point, tileMatrix: TileTypeEnum[][]) {
+        if (!this.isAlive) {
+            return;
+        }
         var direction = new Phaser.Point(
             (enemyDirection.x - this.firstPlayerPosition.x),
             (enemyDirection.y - this.firstPlayerPosition.y));

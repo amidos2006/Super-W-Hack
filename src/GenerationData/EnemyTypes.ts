@@ -3,6 +3,7 @@ enum EnemyNames{
     Chaser,
     Patrol,
     Shooter,
+    Explosive,
     TotalEnemies
 }
 
@@ -146,6 +147,15 @@ class EnemyTypes{
             Math.floor(Global.ROOM_HEIGHT/2), health, 1, cannonDirection);
     }
     
+    createExplosive(game:Phaser.Game, map:TileTypeEnum[][], damage:number, distances:number[]){
+        var locations:Phaser.Point[] = this.getFarAwayTiles(map);
+        var empty:Phaser.Point = locations[game.rnd.integerInRange(0, locations.length - 1)];
+        var health:number = this.getIndex(game.rnd, this.healthProbabilites) + 1;
+        
+        this.currentEnemyNumbers[EnemyNames.Explosive] += 1;
+        return new ExplosiveEnemyObject(game, empty.x, empty.y, health, 0, new Phaser.Point());
+    }
+    
     getBestPatrolPositions(random:Phaser.RandomDataGenerator, map:TileTypeEnum[][], refrenceValue:number){
         var positions: Phaser.Point[] = [];
         var playerLocation:Phaser.Point = new Phaser.Point(Math.floor((this.lastDirection.x + 1) * Global.ROOM_WIDTH / 2) 
@@ -274,6 +284,9 @@ class EnemyTypes{
                 break;
             case EnemyNames.Shooter:
                 enemy = this.createShooter(game, map, damageValue, distances);
+                break;
+            case EnemyNames.Explosive:
+                enemy = this.createExplosive(game, map, damageValue, distances);
                 break;
         }
         

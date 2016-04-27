@@ -10,10 +10,10 @@ class StaticShooterEnemyObject extends EnemyObject implements Movement {
         this.enemySprite.animations.play("normal");
         this.enemySprite.tint = 0xcc6668;
         this.add(this.enemySprite);
-        
+
         for (var i = 0; i < this.directions.length; i++) {
-            var dir:Phaser.Point = this.directions[i];
-            if(dir.distance(cannonDirection1) < 0.0001){
+            var dir: Phaser.Point = this.directions[i];
+            if (dir.distance(cannonDirection1) < 0.0001) {
                 this.rotatingIndex = i;
                 break;
             }
@@ -28,6 +28,9 @@ class StaticShooterEnemyObject extends EnemyObject implements Movement {
     }
 
     enemyMove(enemyDirection: Phaser.Point, tileMatrix: TileTypeEnum[][]) {
+        if (!this.isAlive) {
+            return;
+        }
         this.rotatingIndex = (this.rotatingIndex + 1) % this.directions.length;
         this.changeCannonDirection();
     }

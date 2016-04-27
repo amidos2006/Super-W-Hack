@@ -250,7 +250,6 @@ class EnemyObject extends BaseGameObject{
         else
         {
             this.isAlive = false;
-            this.killObject();
             return true;
         } 
         
