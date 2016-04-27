@@ -4,6 +4,7 @@ enum EnemyNames{
     Patrol,
     Shooter,
     Explosive,
+    Blob,
     TotalEnemies
 }
 
@@ -123,7 +124,7 @@ class EnemyTypes{
                 break;
             }
         }
-        if(this.currentEnemyNumbers[EnemyNames.Patrol] == 3 && maxHealth && health > damage){
+        if(this.currentEnemyNumbers[EnemyNames.Patrol] == 0 && maxHealth && health > damage){
             health = damage;
         }
         
@@ -147,13 +148,41 @@ class EnemyTypes{
             Math.floor(Global.ROOM_HEIGHT/2), health, 1, cannonDirection);
     }
     
-    createExplosive(game:Phaser.Game, map:TileTypeEnum[][], damage:number, distances:number[]){
+    createExplosive(game:Phaser.Game, map:TileTypeEnum[][], damage:number, distances:number[]):EnemyObject{
+        var locations:Phaser.Point[] = this.getFarAwayTiles(map);
+        var empty:Phaser.Point = locations[game.rnd.integerInRange(0, locations.length - 1)];
+        var health:number = this.getIndex(game.rnd, this.healthProbabilites) + 1;
+        var changeEnemy:boolean = true;
+        for (var i = 0; i < distances.length; i++) {
+            if(distances[i] > 2){
+                changeEnemy = false;
+                break;
+            }
+        }
+        if(this.currentEnemyNumbers[EnemyNames.Patrol] == 0 && changeEnemy){
+            if(Math.random() < 0.5){
+                return this.createPatrol(game, map, damage, distances);
+            }
+            return this.createChaser(game, map, damage, distances);
+        }
+        
+        this.currentEnemyNumbers[EnemyNames.Explosive] += 1;
+        return new ExplosiveEnemyObject(game, empty.x, empty.y, health, 0, new Phaser.Point());
+    }
+    
+    createBlob(game:Phaser.Game, map:TileTypeEnum[][], damage:number, distances:number[]):EnemyObject{
         var locations:Phaser.Point[] = this.getFarAwayTiles(map);
         var empty:Phaser.Point = locations[game.rnd.integerInRange(0, locations.length - 1)];
         var health:number = this.getIndex(game.rnd, this.healthProbabilites) + 1;
         
-        this.currentEnemyNumbers[EnemyNames.Explosive] += 1;
-        return new ExplosiveEnemyObject(game, empty.x, empty.y, health, 0, new Phaser.Point());
+        var playerLocation:Phaser.Point = new Phaser.Point(Math.floor((this.lastDirection.x + 1) * Global.ROOM_WIDTH / 2) 
+            - Math.floor((this.lastDirection.x + 1) / 2), Math.floor((this.lastDirection.y + 1) * Global.ROOM_HEIGHT / 2) 
+            - Math.floor((this.lastDirection.y + 1) / 2));
+        playerLocation.x -= this.lastDirection.x;
+        playerLocation.y -= this.lastDirection.y;
+        
+        this.currentEnemyNumbers[EnemyNames.Blob] += 1;
+        return new BlobEnemyObject(game, empty.x, empty.y, health, 0, new Phaser.Point(), playerLocation);
     }
     
     getBestPatrolPositions(random:Phaser.RandomDataGenerator, map:TileTypeEnum[][], refrenceValue:number){
@@ -287,6 +316,9 @@ class EnemyTypes{
                 break;
             case EnemyNames.Explosive:
                 enemy = this.createExplosive(game, map, damageValue, distances);
+                break;
+            case EnemyNames.Blob:
+                enemy = this.createBlob(game, map, damageValue, distances);
                 break;
         }
         

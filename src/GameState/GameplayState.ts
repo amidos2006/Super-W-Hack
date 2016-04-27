@@ -390,7 +390,13 @@ class GameplayState extends BaseGameState {
 
         for (var i = 0; i < this.enemyObjects.length; i++) {
             var tileMatrix: number[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
-            this.enemyObjects[i].enemyMove(this.lastPosition, tileMatrix);
+            var blob:BlobEnemyObject = <BlobEnemyObject>this.enemyObjects[i];
+            if(blob.dropTrail != null){
+                this.enemyObjects[i].enemyMove(this.playerObject.getTilePosition(), tileMatrix);
+            }
+            else{
+                this.enemyObjects[i].enemyMove(this.lastPosition, tileMatrix);
+            }
         }
 
         if (this.bossObject != null) {

@@ -7,19 +7,13 @@ class BlobEnemyObject extends EnemyObject implements Movement {
         numberOfCannons: number, cannonDirection1: Phaser.Point, firstPlayerPosition: Phaser.Point) {
         super(game, x, y, health, numberOfCannons, cannonDirection1);
         this.firstPlayerPosition = firstPlayerPosition;
-        if (this.firstPlayerPosition.x == 10) {
-            this.firstPlayerPosition.x = 1;
-        }
-        else if (this.firstPlayerPosition.x == 0) {
-            this.firstPlayerPosition.x = 9;
-        }
+        this.enemySpriteIndex = 25;
 
-        if (this.firstPlayerPosition.y == 10) {
-            this.firstPlayerPosition.y = 0;
-        }
-        else if (this.firstPlayerPosition.y == 0) {
-            this.firstPlayerPosition.y = 9;
-        }
+        this.enemySprite = this.game.add.sprite(0, 0, "graphics");
+        this.enemySprite.animations.add("normal", [this.enemySpriteIndex]);
+        this.enemySprite.animations.play("normal");
+        this.enemySprite.tint = 0xcc6668;
+        this.add(this.enemySprite);
     }
 
     dropTrail() {
@@ -38,7 +32,7 @@ class BlobEnemyObject extends EnemyObject implements Movement {
 
         if (this.updateEnemy(direction, tileMatrix)) {
             this.goEnemy(direction, tileMatrix);
-            this.dropTrail();
+            //this.dropTrail();
         }
         this.firstPlayerPosition = enemyDirection;
     }
