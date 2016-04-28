@@ -457,6 +457,7 @@ class GameplayState extends BaseGameState {
         if (!this.playerObject.isAlive) {
             this.playerObject.takeDamage();
             this.playerObject = null;
+            this.game.add.existing(new Gameover(this.game, this.game.width/2, this.game.height/2 - 30));
             return;
         }
 
