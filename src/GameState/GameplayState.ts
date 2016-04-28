@@ -354,8 +354,11 @@ class GameplayState extends BaseGameState {
                 this.playerObject.isAlive = false;
                 return true;
             }
-            var colPoint: Phaser.Point = this.enemyObjects[i].enemyShot(playerPosition,
-                Global.getCurrentRoom().getMatrix(this.enemyObjects));
+            var colPoint: Phaser.Point = null;
+            if(this.enemyObjects[i].isAlive){
+                colPoint = this.enemyObjects[i].enemyShot(playerPosition,
+                    Global.getCurrentRoom().getMatrix(this.enemyObjects));    
+            }
             if (colPoint != null) {
                 var enemyPos: Phaser.Point = this.enemyObjects[i].getTilePosition();
                 this.game.add.existing(new LaserEffect(this.game, enemyPos.x, enemyPos.y,
