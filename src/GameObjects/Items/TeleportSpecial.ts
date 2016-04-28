@@ -2,7 +2,7 @@
 
 class TeleportSpecial extends BaseSpecial{
     constructor(){
-        super(2);
+        super("teleport", 2);
     }
     
     useSpecial(level:GameplayState){

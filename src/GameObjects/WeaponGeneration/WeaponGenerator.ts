@@ -532,10 +532,10 @@ class WeaponGenerator {
             quantAdj = 1;
             weaponValue = 3;
         } else if (weapon.weaponPower > 3) {
-            quantAdj = 2;
+            quantAdj = 1;
             weaponValue = 2;
         } else {
-            quantAdj = 3;
+            quantAdj = 1;
             weaponValue = 1;
         }
         return nameGenerator.generateAName(quantAdj, random, (weapon.weaponPower > 7 ? true : false),

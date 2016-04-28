@@ -1,5 +1,4 @@
 enum GameplayModes{
     adventure,
-    arcade,
-    endless
+    arcade
 }

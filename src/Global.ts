@@ -31,6 +31,7 @@ class RoomSet{
 class Global{
     static TILE_SIZE:number = 32;
     static MAP_SIZE:number = 10;
+    static WEAPON_PATTERN_SIZE:number = 5;
     static ROOM_WIDTH:number = 11;
     static ROOM_HEIGHT:number = 11;
     static MAX_LVL_CATEGORY:number = 1;
@@ -69,9 +70,6 @@ class Global{
                 Global.constructLevel(random);
             break;
             case GameplayModes.arcade:
-                Global.constructSingleLevel(random);
-            break;
-            case GameplayModes.endless:
                 Global.constructSingleLevel(random);
             break;
         }

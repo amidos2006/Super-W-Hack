@@ -1,26 +1,27 @@
 /// <reference path="../BaseUIObject.ts"/>
 
 class CrateText extends BaseUIObject{
+    crateSprite:Phaser.Sprite;
     crateText:Phaser.Text;
     
     constructor(game:Phaser.Game, x:number, y:number){
         super(game);
         
-        var style = { font: "15px pixelFont", fill: "#ffffff", align: "center" };
-        var text:Phaser.Text = this.game.add.text(x, y, "crate", style, this);
-        text.anchor.set(0.5, 0);
-        this.add(text);
+        // this.crateSprite = this.game.add.sprite(x, y - 3, "graphics");
+        // this.crateSprite.animations.add("normal", [13]);
+        // this.crateSprite.animations.play("normal");
+        // this.crateSprite.anchor.set(1, 0.5);
+        // this.add(this.crateSprite);
         
-        style = { font: "60px pixelFont", fill: "#ffffff", align: "center" };
-        this.crateText = this.game.add.text(x, y + 8, "0", style, this);
-        this.crateText.anchor.set(0.5, 0);
+        var style = { font: "14px pixelFont", fill: "#ffffff", align: "center" };
+        this.crateText = this.game.add.text(x, y, "crates: 0", style, this);
+        this.crateText.anchor.set(0.5, 0.5);
         this.add(this.crateText);
     }
     
     update(){
         super.update();
         
-        this.crateText.text = Global.crateNumber.toString();
-        this.crateText.anchor.set(0.5, 0);
+        this.crateText.text = "crates: " + Global.crateNumber.toString();
     }
 }

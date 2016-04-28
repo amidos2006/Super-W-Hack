@@ -1,7 +1,9 @@
 class BaseSpecial{
     specialCost:number;
+    specialName:string;
     
-    constructor(specialCost:number){
+    constructor(specialName:string, specialCost:number){
+        this.specialName = specialName;
         this.specialCost = specialCost;
     }
     

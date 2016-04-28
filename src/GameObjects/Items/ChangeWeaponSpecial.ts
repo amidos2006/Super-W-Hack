@@ -2,7 +2,7 @@
 
 class ChangeWeaponSpecial extends BaseSpecial{
     constructor(){
-        super(2);
+        super("new weapon", 2);
     }
     
     useSpecial(level:GameplayState){

@@ -21,6 +21,7 @@ class GameplayState extends BaseGameState {
     lastDirection: Phaser.Point;
     miniMap: MiniMap;
     handUI: HandUI;
+    weaponUI:WeaponUI;
     buttonText: ButtonTutorial;
 
     listOfAdded: EnemyObject[];
@@ -64,8 +65,12 @@ class GameplayState extends BaseGameState {
         this.buttonText = new ButtonTutorial(this.game, 7, this.game.height);
         this.game.add.existing(this.buttonText);
 
-        this.game.add.existing(new CrateText(this.game, this.game.width / 2, this.game.height -
-            (this.game.height - this.game.width) + 25));
+        this.weaponUI = new WeaponUI(this.game, this.game.width / 2, this.game.height - 70);
+        this.game.add.existing(this.weaponUI);
+        if (Global.currentWeapon != null) {
+            this.updateHandUI();
+        }
+        this.game.add.existing(new CrateText(this.game, this.game.width / 2 + 2, this.game.height - 10));
         this.game.add.existing(new LevelName(this.game, this.game.width / 2, 5));
         this.game.add.existing(new WhiteLayout(this.game, -this.game.camera.x, -this.game.camera.y,
             Global.ROOM_WIDTH * Global.TILE_SIZE, Global.ROOM_HEIGHT * Global.TILE_SIZE));
@@ -208,7 +213,7 @@ class GameplayState extends BaseGameState {
         return this.highlightTiles[0].alpha == 1;
     }
 
-    handleAttack(damage: number[][], isPlayer:boolean) {
+    handleAttack(damage: number[][], isPlayer:boolean, isCreated:boolean = true) {
         for (var i: number = 0; i < this.enemyObjects.length; i++) {
             var eP = this.enemyObjects[i].getTilePosition();
             if (this.enemyObjects[i].takeDamage(damage[eP.y][eP.x])) {
@@ -218,7 +223,7 @@ class GameplayState extends BaseGameState {
 
         for (var x = 0; x < Global.ROOM_WIDTH; x++) {
             for (var y = 0; y < Global.ROOM_HEIGHT; y++) {
-                if (damage[y][x] > 0) {
+                if (damage[y][x] > 0 && isCreated) {
                     this.game.add.existing(new AttackEffect(this.game, x, y, isPlayer));
                 }
             }
@@ -288,10 +293,16 @@ class GameplayState extends BaseGameState {
     }
 
     updateHandUI() {
-        this.handUI.updateDamage(Global.currentWeapon.getDamage(), 0);
-        this.handUI.updatePatternValue(Math.ceil(Global.currentWeapon.getAreaLevel() * 10));
-        this.handUI.updateCooldown(Global.currentWeapon.cooldown - 1, 0);
-        this.handUI.showHide(HandObjects.Weapon);
+        this.weaponUI.updateName(Global.currentWeapon.getWeaponName().toString());
+        this.weaponUI.updateDamage(Global.currentWeapon.getDamage(), 0);
+        this.weaponUI.updateCooldown(Global.currentWeapon.cooldown - 1, 0);
+        
+        if(Global.currentWeapon != null){
+            this.handUI.updateWeaponPattern(Global.currentWeapon.getWeaponPositions(
+                new Phaser.Point(Math.floor(Global.ROOM_HEIGHT/2), Math.floor(Global.ROOM_WIDTH/2)), 
+                new Phaser.Point(0, -1), Global.getCurrentRoom().getMatrix(this.enemyObjects)));
+            this.handUI.showHide(HandObjects.Weapon);
+        }
     }
 
     handleCollision() {
@@ -428,7 +439,7 @@ class GameplayState extends BaseGameState {
         }
 
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.R)) {
-            this.game.state.start("loading", true);
+            this.game.state.start("mainmenu", true);
             Global.audioManager.stopMusic();
             this.game.input.keyboard.reset();
         }

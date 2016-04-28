@@ -12,8 +12,8 @@ class LevelName extends BaseUIObject{
         this.nameText.anchor.set(0.5, 0);
         this.add(this.nameText);
         
-        style = { font: "14px pixelFont", fill: "#ffffff", align: "center" };
-        this.text = new Phaser.Text(this.game, x, y + 14, "(" + (Global.levelNumber + 1).toString() + " / " + Global.MAX_DEPTH.toString()  + ")" , style);
+        style = { font: "12px pixelFont", fill: "#aaaaaa", align: "center" };
+        this.text = new Phaser.Text(this.game, x, y + 15, "Level " + (Global.levelNumber + 1).toString() + " / " + Global.MAX_DEPTH.toString()  + "" , style);
         this.text.anchor.set(0.5, 0);
         this.add(this.text);
     }

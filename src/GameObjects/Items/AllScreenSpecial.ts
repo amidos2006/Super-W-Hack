@@ -2,7 +2,7 @@
 
 class AllScreenSpecial extends BaseSpecial{
     constructor(){
-        super(2);
+        super("explosion", 2);
     }
     
     useSpecial(level:GameplayState){
@@ -15,8 +15,8 @@ class AllScreenSpecial extends BaseSpecial{
                 damage[x].push(1);
             } 
         }
-        
-        level.handleAttack(damage, true);
+        damage[level.playerObject.getTilePosition().y][level.playerObject.getTilePosition().x] = 0;
+        level.handleAttack(damage, true, false);
         level.add.existing(new WhiteLayer(level.game, 0, 0, 0.03));
         Global.audioManager.playSpecial(AudioManager.SPECIAL_GAT);
     }

@@ -22,7 +22,7 @@ class PlayerInfoText extends BaseUIObject{
         this.playerDescription = this.game.add.text(x, y + 20, "", style, this);
         this.playerDescription.wordWrap = true;
         this.playerDescription.wordWrapWidth = this.game.width - 40;
-        this.playerSpecial = new FlyingText(game, x + 12, y + 110, "", 2, 15);
+        this.playerSpecial = new FlyingText(game, x + 12, y + 120, "", 2, 15);
         this.playerSpecial.selectText(true);
         
         this.add(this.heroSprite);

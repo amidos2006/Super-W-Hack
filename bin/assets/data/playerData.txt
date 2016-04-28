@@ -1,11 +1,11 @@
 aat
-an explosive phd student able to hack new weapons
+a phd student able to create new weapons
 change your current weapon
 
 gat
-a multicolored phd student able to hack enemy health
+a phd student able to make explosions every where
 decrease all enemies health by one
 
 tat
-a quiet phd student able to teleport away from troubles
+a phd student able to teleport away from troubles
 teleport to a safe place
