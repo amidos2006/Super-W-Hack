@@ -4,8 +4,8 @@ class BaseGameState extends Phaser.State{
     }
     
     create(){
-        this.game.world.setBounds(-20, -35, this.game.width + 20, this.game.height + 35);
+        this.game.world.setBounds(-20, -50, this.game.width + 20, this.game.height + 50);
         this.game.camera.x = -10;
-        this.game.camera.y = -30;
+        this.game.camera.y = -40;
     }
 }
