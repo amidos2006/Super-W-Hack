@@ -34,6 +34,7 @@ class Global{
     static ROOM_WIDTH:number = 11;
     static ROOM_HEIGHT:number = 11;
     static MAX_LVL_CATEGORY:number = 1;
+    static MAX_DEPTH:number = 5;
     
     static weaponNameGenerator:WeaponNameGenerator;
     static audioManager:AudioManager;
@@ -219,15 +220,26 @@ class Global{
             }
         }
         
+        var bossRooms:Phaser.Point[] = [];
         for (var x = 0; x < Global.mapWidth; x++) {
             for (var y = 0; y < Global.mapHeight; y++) {
-                if(Global.levelRooms[x][y] != null && 
-                    Global.levelRooms[x][y].roomType == RoomTypeEnum.None && 
+                if (Global.levelRooms[x][y] != null &&
+                    Global.levelRooms[x][y].roomType == RoomTypeEnum.None &&
                     Global.levelRooms[x][y].getNumberOfConnection() <= 1 &&
-                    !(x == Global.currentX && y == Global.currentY)){
+                    !(x == Global.currentX && y == Global.currentY)) {
                     Global.levelRooms[x][y].roomType = RoomTypeEnum.Enemy;
                 }
-            }         
+                if (Global.levelRooms[x][y] != null &&
+                    Global.levelRooms[x][y].getNumberOfConnection() <= 1 &&
+                    !(x == Global.currentX && y == Global.currentY)) {
+                    bossRooms.push(new Phaser.Point(x, y));
+                }
+            }
+        }
+        
+        if(Global.levelNumber >= Global.MAX_DEPTH - 1){
+            var index:number = random.integerInRange(0, bossRooms.length - 1);
+            Global.levelRooms[bossRooms[i].x][bossRooms[i].y].roomType = RoomTypeEnum.Boss;
         }
     }
     
