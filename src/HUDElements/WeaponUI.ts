@@ -1,10 +1,10 @@
 class WeaponUI extends BaseUIObject{
     text:Phaser.Text;
     weaponName:Phaser.Text[];
-    damageText:Phaser.Text;
-    cooldownText:Phaser.Text;
-    damageSprite:Phaser.Sprite;
-    cooldownSprite:Phaser.Sprite;
+    // damageText:Phaser.Text;
+    // cooldownText:Phaser.Text;
+    // damageSprite:Phaser.Sprite;
+    // cooldownSprite:Phaser.Sprite;
     
     constructor(game:Phaser.Game, x:number, y:number){
         super(game);
@@ -23,27 +23,27 @@ class WeaponUI extends BaseUIObject{
             this.weaponName.push(tempWeapon);
         }
         
-        this.damageSprite = this.game.add.sprite(x - 60, y, "graphics");
-        this.damageSprite.animations.add("normal", [14]);
-        this.damageSprite.animations.play("normal");
-        this.damageSprite.anchor.set(0, 0.5);
-        this.add(this.damageSprite);
+        // this.damageSprite = this.game.add.sprite(x - 60, y, "graphics");
+        // this.damageSprite.animations.add("normal", [14]);
+        // this.damageSprite.animations.play("normal");
+        // this.damageSprite.anchor.set(0, 0.5);
+        // this.add(this.damageSprite);
         
-        style = { font: "14px pixelFont", fill: "#ffffff", align: "right" };
-        this.damageText = this.game.add.text(x - 45, y, "", style, this);
-        this.damageText.anchor.set(0, 0.5);
-        this.add(this.damageText);
+        // style = { font: "14px pixelFont", fill: "#ffffff", align: "right" };
+        // this.damageText = this.game.add.text(x - 45, y, "", style);
+        // this.damageText.anchor.set(0, 0.5);
+        // this.add(this.damageText);
         
-        this.cooldownSprite = this.game.add.sprite(x + 45, y, "graphics");
-        this.cooldownSprite.animations.add("normal", [15]);
-        this.cooldownSprite.animations.play("normal");
-        this.cooldownSprite.anchor.set(1, 0.5);
-        this.add(this.cooldownSprite);
+        // this.cooldownSprite = this.game.add.sprite(x + 45, y, "graphics");
+        // this.cooldownSprite.animations.add("normal", [15]);
+        // this.cooldownSprite.animations.play("normal");
+        // this.cooldownSprite.anchor.set(1, 0.5);
+        // this.add(this.cooldownSprite);
         
-        style = { font: "14px pixelFont", fill: "#ffffff", align: "right" };
-        this.cooldownText = this.game.add.text(x + 45, y, "", style, this);
-        this.cooldownText.anchor.set(1, 0.5);
-        this.add(this.cooldownText);
+        // style = { font: "14px pixelFont", fill: "#ffffff", align: "right" };
+        // this.cooldownText = this.game.add.text(x + 45, y, "", style);
+        // this.cooldownText.anchor.set(1, 0.5);
+        // this.add(this.cooldownText);
         
         this.alpha = 0;
     }
@@ -75,31 +75,31 @@ class WeaponUI extends BaseUIObject{
     }
     
     updateYValues(newY:number){
-        this.damageSprite.y = newY - 2;
-        this.damageText.y = newY;
-        this.cooldownSprite.y = newY - 2;
-        this.cooldownText.y = newY;
+        // this.damageSprite.y = newY - 2;
+        // this.damageText.y = newY;
+        // this.cooldownSprite.y = newY - 2;
+        // this.cooldownText.y = newY;
     }
     
     updateDamage(damage:number, extraValue:number){
         var added:string = "";
-        this.damageSprite.x = this.text.x - 60;
-        if(extraValue > 0){
-            added = "(+1)";
-        }
-        this.damageText.x = this.damageSprite.x + 30;
-        this.damageText.text = damage.toString() + " " +  added;
+        // this.damageSprite.x = this.text.x - 60;
+        // if(extraValue > 0){
+        //     added = "(+1)";
+        // }
+        // this.damageText.x = this.damageSprite.x + 30;
+        // this.damageText.text = damage.toString() + " " +  added;
         this.alpha = 1;
     }
     
     updateCooldown(cooldown:number, extraValue:number){
         var added:string = "";
-        this.cooldownText.x = this.text.x + 55;
-        if(extraValue > 0){
-            added = "(-1)";
-        }
-        this.cooldownSprite.x = this.cooldownText.x - added.length * 5 - 12;
-        this.cooldownText.text = cooldown.toString() + " " + added;
+        // this.cooldownText.x = this.text.x + 55;
+        // if(extraValue > 0){
+        //     added = "(-1)";
+        // }
+        // this.cooldownSprite.x = this.cooldownText.x - added.length * 5 - 12;
+        // this.cooldownText.text = cooldown.toString() + " " + added;
         this.alpha = 1;
     }
 }
