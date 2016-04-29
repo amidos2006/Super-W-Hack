@@ -14,6 +14,8 @@ class EnemyTypes{
     patrols:Phaser.Point[];
     currentEnemyNumbers:number[];
     levelNumber:number;
+    levelDiff:number;
+    enemyNumber:number;
     lastDirection:Phaser.Point;
     
     constructor(game:Phaser.Game){
@@ -40,8 +42,10 @@ class EnemyTypes{
         }
     }
     
-    initNewRoom(levelNumber:number, lastDirection:Phaser.Point){
+    initNewRoom(levelNumber:number, levelDiff:number, enemyNumber:number, lastDirection:Phaser.Point){
         this.levelNumber = levelNumber;
+        this.levelDiff = levelDiff;
+        this.enemyNumber = enemyNumber;
         this.currentEnemyNumbers = [];
         for (var i = 0; i < EnemyNames.TotalEnemies; i++) {
             this.currentEnemyNumbers.push(0);
@@ -109,14 +113,17 @@ class EnemyTypes{
             health = damage;
         }
         
-        this.currentEnemyNumbers[EnemyNames.Random] += 1;
+        this.updateEnemyNumber(EnemyNames.Random);
         return new RandomEnemyObject(game, empty.x, empty.y, health, 0, new Phaser.Point());
     }
     
-    createChaser(game:Phaser.Game, map:TileTypeEnum[][], damage:number, distances:number[]){
+    createChaser(game:Phaser.Game, map:TileTypeEnum[][], damage:number, distances:number[], inputHealth:number = -1){
         var locations:Phaser.Point[] = this.getFarAwayTiles(map);
         var empty:Phaser.Point = locations[game.rnd.integerInRange(0, locations.length - 1)];
         var health:number = this.getIndex(game.rnd, this.healthProbabilites) + 1;
+        if(inputHealth > 0){
+            health = inputHealth;
+        }
         var maxHealth:boolean = true;
         for (var i = 0; i < distances.length; i++) {
             if(distances[i] > 1){
@@ -128,7 +135,7 @@ class EnemyTypes{
             health = damage;
         }
         
-        this.currentEnemyNumbers[EnemyNames.Chaser] += 1;
+        this.updateEnemyNumber(EnemyNames.Chaser);
         return new ChaserEnemyObject(game, empty.x, empty.y, health, 0, new Phaser.Point());
     }
     
@@ -143,7 +150,8 @@ class EnemyTypes{
         else{
             cannonDirection.x = 0;
         }
-        console.log(this.lastDirection + " " + cannonDirection);
+        
+        this.updateEnemyNumber(EnemyNames.Shooter);
         return new StaticShooterEnemyObject(game, Math.floor(Global.ROOM_WIDTH/2), 
             Math.floor(Global.ROOM_HEIGHT/2), health, 1, cannonDirection);
     }
@@ -166,7 +174,7 @@ class EnemyTypes{
             return this.createChaser(game, map, damage, distances);
         }
         
-        this.currentEnemyNumbers[EnemyNames.Explosive] += 1;
+        this.updateEnemyNumber(EnemyNames.Explosive);
         return new ExplosiveEnemyObject(game, empty.x, empty.y, health, 0, new Phaser.Point());
     }
     
@@ -181,7 +189,7 @@ class EnemyTypes{
         playerLocation.x -= this.lastDirection.x;
         playerLocation.y -= this.lastDirection.y;
         
-        this.currentEnemyNumbers[EnemyNames.Blob] += 1;
+        this.updateEnemyNumber(EnemyNames.Blob);
         return new BlobEnemyObject(game, empty.x, empty.y, health, 0, new Phaser.Point(), playerLocation);
     }
     
@@ -264,20 +272,47 @@ class EnemyTypes{
         
         if(position == null){
             this.patrols.push(cannonDirection);
-            this.currentEnemyNumbers[EnemyNames.Chaser] += 1;
+            this.updateEnemyNumber(EnemyNames.Chaser);
             return this.createChaser(game, map, damage, distances);
         }
         
-        this.currentEnemyNumbers[EnemyNames.Patrol] += 1;
+        this.updateEnemyNumber(EnemyNames.Patrol);
         return new BackAndForthEnemyObject(game, position.x, position.y, health, 1, cannonDirection, moveDirection);
+    }
+    
+    numOfDivertEnemies(){
+        var numbers:number = 0;
+        for (var i = 0; i < this.currentEnemyNumbers.length; i++) {
+            if(this.currentEnemyNumbers[i] > 0){
+                numbers += 1;
+            }
+        }
+        return numbers;
     }
     
     checkConstraints(currentClassIndex:EnemyNames){
         switch (currentClassIndex){
+            case EnemyNames.Chaser:
+                return !(this.enemyNumber <= 1 && this.numOfDivertEnemies() <= 1 && 
+                    this.currentEnemyNumbers[EnemyNames.Chaser] > 0);
             case EnemyNames.Shooter:
                 return this.currentEnemyNumbers[currentClassIndex] < 1;
             case EnemyNames.Patrol:
                 return this.currentEnemyNumbers[currentClassIndex] < 2;
+        }
+        return true;
+    }
+    
+    updateEnemyNumber(enemyType:number){
+        this.currentEnemyNumbers[enemyType] += 1;
+        this.enemyNumber -= 1;
+    }
+    
+    isUnique(num:number, array:number[]){
+        for (var i = 0; i < array.length; i++) {
+            if(num == array[i]){
+                return  false;
+            }
         }
         return true;
     }
@@ -291,10 +326,29 @@ class EnemyTypes{
                     damageValue = damageMatrix[x][y];
                     var d:number = Math.abs(x - Math.floor(Global.ROOM_WIDTH / 2)) + 
                         Math.abs(y - Math.floor(Global.ROOM_HEIGHT / 2));
-                    distances.push(d);
+                    if(this.isUnique(d, distances)){ 
+                        distances.push(d);
+                    }
                 }
             }
         }
+        
+        if(Global.levelNumber == 0){
+            switch (Global.difficultyNumber) {
+                case 0:
+                    return this.createChaser(game, map, damageValue, distances, 1);
+                case 1:
+                    return this.createPatrol(game, map, damageValue, distances);
+                case 2:
+                    if(this.currentEnemyNumbers[EnemyNames.Chaser] > 0){
+                        return this.createPatrol(game, map, damageValue, distances);
+                    }
+                    else{
+                        return this.createChaser(game, map, damageValue, distances);
+                    }
+            }
+        }
+        
         var currentClassIndex:number = 0;
         do{
             currentClassIndex = this.getIndex(game.rnd, this.typeProbabilities);

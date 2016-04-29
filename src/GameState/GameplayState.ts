@@ -39,6 +39,12 @@ class GameplayState extends BaseGameState {
         Global.audioManager.playMusic(Global.levelCategory *
             Math.floor(AudioManager.AMOUNT_OF_MUSIC / Global.MAX_LVL_CATEGORY) + Global.levelMusic);
 
+        var numOfEnemies: number = Global.enemyNumbers.getNumber(this.rnd, Global.levelNumber);
+        var room:RoomInfoObject = Global.getCurrentRoom();
+        if (room.cleared || room.roomType == RoomTypeEnum.None || Global.levelNumber >= Global.MAX_DEPTH - 1) {
+            numOfEnemies = 0;
+        }
+        Global.enemyTypes.initNewRoom(Global.levelNumber, Global.difficultyNumber, numOfEnemies, Global.previousDirection);
         this.createCurrentRoom(Global.getCurrentRoom());
         this.lastDirection = new Phaser.Point(-Global.previousDirection.x, -Global.previousDirection.y);
         if (this.lastDirection.getMagnitude() == 0) {
@@ -46,8 +52,6 @@ class GameplayState extends BaseGameState {
         }
         Global.levelRooms[Global.currentX][Global.currentY].visited = true;
         this.createHUDElements();
-
-        Global.enemyTypes.initNewRoom(Global.levelNumber, Global.previousDirection);
     }
 
     createHUDElements() {
@@ -136,13 +140,9 @@ class GameplayState extends BaseGameState {
         this.game.add.existing(this.portalObject);
 
         this.enemyObjects = [];
-        var numOfEnemies: number = Global.enemyNumbers.getNumber(this.rnd, Global.levelNumber);
-        if (room.cleared || room.roomType == RoomTypeEnum.None || room.roomType == RoomTypeEnum.Boss) {
-            numOfEnemies = 0;
-        }
-
+        
         var normalTiles: TileTypeEnum[][] = room.getMatrix(this.enemyObjects);
-        for (var i: number = 0; i < numOfEnemies; i++) {
+        while(Global.enemyTypes.enemyNumber > 0){
             var tempEnemy: EnemyObject = Global.enemyTypes.getEnemy(this.game, normalTiles,
                 Global.currentWeapon.getWeaponPositions(new Phaser.Point(Math.floor(Global.ROOM_WIDTH / 2),
                     Math.floor(Global.ROOM_HEIGHT / 2)), new Phaser.Point(0, -1), normalTiles));
@@ -269,6 +269,7 @@ class GameplayState extends BaseGameState {
                 this.portalObject.showPortal(lastEnemyDied.x, lastEnemyDied.y);
             }
             else {
+                Global.difficultyNumber += 1;
                 this.showBoxObject(lastEnemyDied);
             }
         }
@@ -286,6 +287,10 @@ class GameplayState extends BaseGameState {
     }
 
     changeHandWeapon(minDamage: number) {
+        if(Global.levelNumber == 0 && Global.difficultyNumber == 0){
+            minDamage = 1;
+        }
+        
         Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd,
             this.playerObject.getWeapon(), Global.weaponNameGenerator, minDamage);
         this.playerObject.setWeapon(Global.currentWeapon);

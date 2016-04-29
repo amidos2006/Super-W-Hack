@@ -15,6 +15,16 @@ class EnemyNumbers{
     }
     
     getNumber(random:Phaser.RandomDataGenerator, levelNumber:number){
+        if(Global.levelNumber == 0){
+            switch (Global.difficultyNumber) {
+                case 0:
+                    return 1;
+                case 1:
+                    return 1;
+                case 2:
+                    return 2;
+            }
+        }
         var cdf:number[] = [this.probabilities[levelNumber][0]];
         var total:number = 0;
         for (var i = 1; i < this.probabilities[levelNumber].length; i++) {

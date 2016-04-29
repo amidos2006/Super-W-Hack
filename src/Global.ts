@@ -45,6 +45,7 @@ class Global{
     static levelCategory:number = 0;
     static levelMusic:number = 0;
     static crateNumber:number = 0;
+    static difficultyNumber:number = 0;
     static itemUsage:number = 0;
     static currentWeapon:Weapon = null;
     static currentPlayer:BasePlayerData = null;
@@ -148,6 +149,7 @@ class Global{
     
     static constructLevel(random:Phaser.RandomDataGenerator){
         Global.previousDirection = new Phaser.Point(0, 0);
+        Global.difficultyNumber = 0;
         
         var probabilityOfEmptyPlace:number = 0.08;
         var precentageCovered:number = 0.6;
