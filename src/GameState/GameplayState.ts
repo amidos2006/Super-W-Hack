@@ -50,6 +50,11 @@ class GameplayState extends BaseGameState {
         if (this.lastDirection.getMagnitude() == 0) {
             this.lastDirection.y = 1;
         }
+        for (var i = 0; i < this.enemyObjects.length; i++) {
+            var element = this.enemyObjects[i];
+            element.renderHighlight(this.playerObject.getTilePosition(), 
+                Global.getCurrentRoom().getMatrix(this.enemyObjects));
+        }
         Global.levelRooms[Global.currentX][Global.currentY].visited = true;
         this.createHUDElements();
     }
@@ -362,7 +367,9 @@ class GameplayState extends BaseGameState {
             var colPoint: Phaser.Point = null;
             if(this.enemyObjects[i].isAlive){
                 colPoint = this.enemyObjects[i].enemyShot(playerPosition,
-                    Global.getCurrentRoom().getMatrix(this.enemyObjects));    
+                    Global.getCurrentRoom().getMatrix(this.enemyObjects));
+                this.enemyObjects[i].renderHighlight(playerPosition, 
+                    Global.getCurrentRoom().getMatrix(this.enemyObjects));   
             }
             if (colPoint != null) {
                 var enemyPos: Phaser.Point = this.enemyObjects[i].getTilePosition();

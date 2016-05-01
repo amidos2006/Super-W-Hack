@@ -160,12 +160,8 @@ class EnemyObject extends BaseGameObject {
 
     }
 
-    enemyShot(playerPosition: Phaser.Point, tileMap: TileTypeEnum[][]) {
-        if (typeof this.cannons == 'undefined') {
-            return null;
-        }
-        if (this.cannons.length == 1) {
-            if (this.laserHighlight != null) {
+    renderHighlight(playerPosition:Phaser.Point, tileMap:TileTypeEnum[][]){
+        if (this.laserHighlight != null) {
                 var tilePosition: Phaser.Point = this.getTilePosition();
                 var relativePosition: Phaser.Point = new Phaser.Point();
                 this.laserHighlight.clear();
@@ -191,6 +187,13 @@ class EnemyObject extends BaseGameObject {
                 this.laserHighlight.endFill();
                 this.laserHighlight.tint = 0xcc6668;
             }
+    }
+
+    enemyShot(playerPosition: Phaser.Point, tileMap: TileTypeEnum[][]) {
+        if (typeof this.cannons == 'undefined') {
+            return null;
+        }
+        if (this.cannons.length == 1) {
             return this.cannons[0].shoot(playerPosition, this, tileMap);
         }
     }
