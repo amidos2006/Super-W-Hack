@@ -14,6 +14,7 @@ class GameplayState extends BaseGameState {
     arrowHighlight: DirHighlightTile;
     playerObject: PlayerObject;
     enemyObjects: EnemyObject[];
+    harmfulObjects:HarmfulFloorObject[];
     bossObject: Boss;
     boxObject: BoxObject;
     portalObject: PortalObject;
@@ -24,8 +25,11 @@ class GameplayState extends BaseGameState {
     weaponUI:WeaponUI;
     buttonText: ButtonTutorial;
 
-    listOfAdded: EnemyObject[];
-    listOfDeleted: EnemyObject[];
+    listOfAdded:EnemyObject[];
+    listOfDeleted:EnemyObject[];
+    
+    listOfAddedHarm:HarmfulFloorObject[];
+    listOfDeletedHarm:HarmfulFloorObject[];
 
     constructor() {
         super();
@@ -35,6 +39,10 @@ class GameplayState extends BaseGameState {
         super.create();
         this.listOfAdded = [];
         this.listOfDeleted = [];
+        this.listOfAddedHarm = [];
+        this.listOfDeletedHarm = [];
+        this.harmfulObjects = [];
+        
         Global.audioManager.stopTitleMusic();
         Global.audioManager.playMusic(Global.levelCategory *
             Math.floor(AudioManager.AMOUNT_OF_MUSIC / Global.MAX_LVL_CATEGORY) + Global.levelMusic);
@@ -263,10 +271,25 @@ class GameplayState extends BaseGameState {
             }
         }
         
+        for (var i = 0; i < this.harmfulObjects.length; i++) {
+            var harm = this.harmfulObjects[i];
+            if(!harm.isAlive){
+                harm.killObject();
+                this.harmfulObjects.splice(i, 1);
+                i--;
+            }
+        }
+        
         for (var i = 0; i < this.listOfAdded.length; i++) {
             var enemy = this.listOfAdded[i];
             this.enemyObjects.push(enemy);
             this.game.add.existing(enemy);
+        }
+        
+        for (var i = 0; i < this.listOfAddedHarm.length; i++) {
+            var harm = this.listOfAddedHarm[i];
+            this.harmfulObjects.push(harm);
+            this.game.add.existing(harm);
         }
 
         if (lastEnemyDied != null && this.enemyObjects.length <= 0) {
@@ -281,10 +304,16 @@ class GameplayState extends BaseGameState {
         
         this.listOfDeleted = [];
         this.listOfAdded = [];
+        this.listOfAddedHarm = [];
+        this.listOfDeletedHarm = [];
     }
 
-    addEnemy(enemy: EnemyObject) {
+    addEnemy(enemy:EnemyObject) {
         this.listOfAdded.push(enemy);
+    }
+    
+    addHarm(harm:HarmfulFloorObject){
+        this.listOfAddedHarm.push(harm);
     }
 
     showBoxObject(position: Phaser.Point) {
@@ -385,6 +414,26 @@ class GameplayState extends BaseGameState {
             }
         }
 
+        for (var i: number = 0; i < this.harmfulObjects.length; i++) {
+            var h:HarmfulFloorObject = this.harmfulObjects[i];
+            if (h.isAlive && h.checkCollision(playerPosition.x, playerPosition.y)) {
+                this.playerObject.isAlive = false;
+                return true;
+            }
+            
+            for (var j = 0; j < this.enemyObjects.length; j++) {
+                var e = this.enemyObjects[j];
+                if(e.checkCollision(h.getTilePosition().x, h.getTilePosition().y)){
+                    if (e.takeDamage(1)) {
+                        this.listOfDeleted.push(e);
+                    }
+                    if(h.time < 0){
+                        h.isAlive = false;
+                    }
+                }
+            }
+        }
+
         if (this.bossObject != null &&
             this.bossObject.checkCollision(playerPosition.x, playerPosition.y)) {
             this.playerObject.isAlive = false;
@@ -423,6 +472,11 @@ class GameplayState extends BaseGameState {
             else{
                 this.enemyObjects[i].enemyMove(this.lastPosition, tileMatrix);
             }
+        }
+        
+        for (var i = 0; i < this.harmfulObjects.length; i++) {
+            var tileMatrix: number[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
+            this.harmfulObjects[i].updateStep();
         }
 
         if (this.bossObject != null) {

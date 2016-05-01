@@ -20,7 +20,7 @@ class HarmfulFloorObject extends BaseGameObject{
         this.add(this.sprite);
         
         var style = { font: "10px pixelFont", fill: "#cc6668", align: "right" };
-        this.timeText = this.game.add.text(Global.TILE_SIZE / 2, Global.TILE_SIZE / 2, 
+        this.timeText = this.game.add.text(Global.TILE_SIZE / 2 + 1, Global.TILE_SIZE / 2 + 3, 
             this.time.toString(), style, this);
         this.timeText.anchor.set(0.5, 0.5);
         this.add(this.timeText);
@@ -55,7 +55,7 @@ class HarmfulFloorObject extends BaseGameObject{
     
     updateStep(){
         if(this.time == 0){
-            this.killObject();
+            this.isAlive = false;
             return;
         }
         this.timeText.text = this.time.toString();

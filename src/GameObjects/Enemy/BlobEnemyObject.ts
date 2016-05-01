@@ -19,7 +19,8 @@ class BlobEnemyObject extends EnemyObject implements Movement {
     dropTrail() {
         var trail: HarmfulFloorObject = new HarmfulFloorObject(this.game, 
             this.getTilePosition().x, this.getTilePosition().y, 1, 3);
-        this.game.add.existing(trail);
+        var gameplay:GameplayState = <GameplayState>this.game.state.getCurrentState();
+        gameplay.addHarm(trail);
     }
 
     enemyMove(enemyDirection: Phaser.Point, tileMatrix: TileTypeEnum[][]) {
@@ -31,8 +32,8 @@ class BlobEnemyObject extends EnemyObject implements Movement {
             (enemyDirection.y - this.firstPlayerPosition.y));
 
         if (this.updateEnemy(direction, tileMatrix)) {
+            this.dropTrail();
             this.goEnemy(direction, tileMatrix);
-            //this.dropTrail();
         }
         this.firstPlayerPosition = enemyDirection;
     }
