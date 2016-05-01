@@ -16,9 +16,9 @@ class LaserEffect extends BaseGameObject{
         
         this.graphics = this.game.add.graphics(0, 0, this);
         this.graphics.beginFill(0xcc6668, 1);
-        this.graphics.drawRect(Math.abs(this.direction.y) * -2, Math.abs(this.direction.x) * -2, 
-            (destX - x) * Global.TILE_SIZE - this.direction.x * Global.TILE_SIZE / 2 + Math.abs(this.direction.y) * 4, 
-            (destY - y) * Global.TILE_SIZE - this.direction.y * Global.TILE_SIZE / 2 + Math.abs(this.direction.x) * 4);
+        this.graphics.drawRect(Math.abs(this.direction.y) * -4, Math.abs(this.direction.x) * -4, 
+            (destX - x) * Global.TILE_SIZE - this.direction.x * Global.TILE_SIZE / 2 + Math.abs(this.direction.y) * 8, 
+            (destY - y) * Global.TILE_SIZE - this.direction.y * Global.TILE_SIZE / 2 + Math.abs(this.direction.x) * 8);
         this.graphics.endFill();
         this.add(this.graphics);
     }

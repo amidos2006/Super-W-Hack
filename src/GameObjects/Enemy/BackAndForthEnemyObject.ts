@@ -27,5 +27,7 @@ class BackAndForthEnemyObject extends EnemyObject implements Movement {
         } else {
             this.goEnemy(this.enemyDirection, tileMatrix);
         }
+        
+        super.enemyMove(enemyDirection, tileMatrix);
     }
 }
