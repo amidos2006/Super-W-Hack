@@ -6,12 +6,11 @@ class HarmfulFloorObject extends BaseGameObject{
     exp:boolean;
     isAlive:boolean;
     
-    constructor(game:Phaser.Game, xTile:number, yTile:number, damage:number, time:number, explode:boolean){
+    constructor(game:Phaser.Game, xTile:number, yTile:number, damage:number, time:number){
         super(game, xTile * Global.TILE_SIZE, yTile * Global.TILE_SIZE);
         
         this.damage = damage;
         this.time = time;
-        this.exp = explode;
         this.isAlive = true;
         
         this.sprite = this.game.add.sprite(0, 0, "graphics");

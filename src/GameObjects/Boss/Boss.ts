@@ -271,7 +271,7 @@ explode
 which means it will explode on destruction
     */
     leaveFloorAttack(playerPosition: Phaser.Point, map: TileTypeEnum[][], pos: Phaser.Point) {
-        var floor: HarmfulFloorObject = new HarmfulFloorObject(this.game, pos.x, pos.y, 1, 3, false);
+        var floor: HarmfulFloorObject = new HarmfulFloorObject(this.game, pos.x, pos.y, 1, 3);
 
     }
 
