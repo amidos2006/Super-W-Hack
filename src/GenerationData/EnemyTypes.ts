@@ -62,18 +62,18 @@ class EnemyTypes{
     }
     
     getIndex(random:Phaser.RandomDataGenerator, prob:number[][]){
-        var cdf:number[] = [this.typeProbabilities[this.levelNumber][0]];
+        var cdf:number[] = [prob[this.levelNumber][0]];
         var total:number = 0;
-        for (var i = 1; i < this.typeProbabilities[this.levelNumber].length; i++) {
-            cdf.push(cdf[i - 1] + this.typeProbabilities[this.levelNumber][i]);
+        for (var i = 1; i < prob[this.levelNumber].length; i++) {
+            cdf.push(cdf[i - 1] + prob[this.levelNumber][i]);
             total = cdf[i];
         }
-        for (var i = 0; i < this.typeProbabilities[this.levelNumber].length; i++) {
+        for (var i = 0; i < prob[this.levelNumber].length; i++) {
             cdf[i] /= total;
         }
         var value:number = random.realInRange(0, 1);
         for (var i = 0; i < cdf.length; i++) {
-            if(value < cdf[i]){
+            if(value <= cdf[i]){
                 return i;
             }
         }

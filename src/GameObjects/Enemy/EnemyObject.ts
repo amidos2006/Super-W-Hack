@@ -56,6 +56,8 @@ class EnemyObject extends BaseGameObject {
 
             this.laserHighlight = this.game.add.graphics(0, 0, this);
             this.add(this.laserHighlight);
+            var gameplay:GameplayState = <GameplayState>this.game.state.getCurrentState();
+            this.enemyShot(gameplay.playerObject.getTilePosition(), Global.getCurrentRoom().getMatrix(gameplay.enemyObjects))
         }
     }
 
@@ -187,7 +189,7 @@ class EnemyObject extends BaseGameObject {
                     }
                 }
                 this.laserHighlight.endFill();
-                this.laserHighlight.tint = this.enemySprite.tint;
+                this.laserHighlight.tint = 0xcc6668;
             }
             return this.cannons[0].shoot(playerPosition, this, tileMap);
         }

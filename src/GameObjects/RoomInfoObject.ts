@@ -36,10 +36,7 @@ class RoomInfoObject{
         }
           
         var shapeSize:number = random.integerInRange(1, 3);
-        var numberOfShapes:number = random.integerInRange(0, 3);
-        if(numberOfShapes == 3){
-            shapeSize = random.integerInRange(1, 3);
-        }
+        var numberOfShapes:number = random.integerInRange(0, 2);
         if(this.roomType == RoomTypeEnum.Boss){
             numberOfShapes = 0;
         }
