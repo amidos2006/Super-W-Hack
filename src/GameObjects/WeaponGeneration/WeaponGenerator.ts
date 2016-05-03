@@ -200,11 +200,11 @@ class WeaponGenerator {
                 weapon.damage = random.integerInRange(Weapon.MIN_DAMAGE, Weapon.MAX_DAMAGE);
 
             switch (Global.levelNumber) {
-                case 1: weapon.cooldown = 1; break;
-                case 2: weapon.cooldown = (random.frac() < 0.7 ? 1 : 2); break;
-                case 3: weapon.cooldown = random.integerInRange(Weapon.MIN_COOLDOWN, Weapon.MAX_COOLDOWN); break;
-                case 4: weapon.cooldown = (random.frac() < 0.2 ? 1 : (random.frac() < 0.6 ? 2 : 3)); break;
-                case 5: weapon.cooldown = (random.frac() < 0.1 ? 1 : (random.frac() < 0.35 ? 2 : 3)); break;
+                case 0: weapon.cooldown = 1; break;
+                case 1: weapon.cooldown = (random.frac() < 0.7 ? 1 : 2); break;
+                case 2: weapon.cooldown = random.integerInRange(Weapon.MIN_COOLDOWN, Weapon.MAX_COOLDOWN); break;
+                case 3: weapon.cooldown = (random.frac() < 0.2 ? 1 : (random.frac() < 0.6 ? 2 : 3)); break;
+                case 4: weapon.cooldown = (random.frac() < 0.1 ? 1 : (random.frac() < 0.35 ? 2 : 3)); break;
                 default: weapon.cooldown = random.integerInRange(Weapon.MIN_COOLDOWN, Weapon.MAX_COOLDOWN);
             }
             weapon.curCooldown = 0;
@@ -270,11 +270,11 @@ class WeaponGenerator {
 
         var levelProb: number = 0.5;
         switch (Global.levelNumber) {
-            case 1: case 2: levelProb = 0.8; break;
-            case 3: levelProb = 0.70; break;
-            case 4: levelProb = 0.55; break;
+            case 1: case 0: levelProb = 0.8; break;
+            case 2: levelProb = 0.70; break;
+            case 3: levelProb = 0.55; break;
             case 4: levelProb = 0.40; break;
-       }
+        }
 
         var hasAnyFilled:boolean = false;
         for (var i: number = 0; i < height; i++) {
@@ -312,9 +312,9 @@ class WeaponGenerator {
         var hasAnyFilled: boolean = false;
         var levelProb: number = 0.5;
         switch (Global.levelNumber) {
-            case 1: case 2: levelProb = 0.8; break;
-            case 3: levelProb = 0.70; break;
-            case 4: levelProb = 0.55; break;
+            case 1: case 0: levelProb = 0.8; break;
+            case 2: levelProb = 0.70; break;
+            case 3: levelProb = 0.55; break;
             case 4: levelProb = 0.40; break;
         }
 
@@ -362,9 +362,9 @@ class WeaponGenerator {
 
         var levelProb: number = 0.5;
         switch (Global.levelNumber) {
-            case 1: case 2: levelProb = 0.8; break;
-            case 3: levelProb = 0.70; break;
-            case 4: levelProb = 0.55; break;
+            case 1: case 0: levelProb = 0.8; break;
+            case 2: levelProb = 0.70; break;
+            case 3: levelProb = 0.55; break;
             case 4: levelProb = 0.40; break;
         }
 
