@@ -25,7 +25,8 @@ class WeaponGenerator {
         if (WeaponGenerator.weapons == null) {
             WeaponGenerator.weapons = new Array(WeaponGenerator.AMOUNT_OF_WEAPONS);
             for (var i: number = 0; i < WeaponGenerator.AMOUNT_OF_WEAPONS; i++) {
-                WeaponGenerator.weapons[i] = WeaponGenerator.GenerateAWeapon(paramSet, random, oldWeapon, nameGenerator, minDamage);
+                WeaponGenerator.weapons[i] =
+                    WeaponGenerator.GenerateAWeapon(paramSet, random, oldWeapon, nameGenerator, minDamage);
                 
             }
             WeaponGenerator.weapons.sort(function (a: Weapon, b: Weapon) { return a.weaponPower - b.weaponPower; });
@@ -197,7 +198,15 @@ class WeaponGenerator {
                 weapon.damage = minDamage;
             else
                 weapon.damage = random.integerInRange(Weapon.MIN_DAMAGE, Weapon.MAX_DAMAGE);
-            weapon.cooldown = random.integerInRange(Weapon.MIN_COOLDOWN, Weapon.MAX_COOLDOWN);
+
+            switch (Global.levelNumber) {
+                case 1: weapon.cooldown = 1; break;
+                case 2: weapon.cooldown = (random.frac() < 0.7 ? 1 : 2); break;
+                case 3: weapon.cooldown = random.integerInRange(Weapon.MIN_COOLDOWN, Weapon.MAX_COOLDOWN); break;
+                case 4: weapon.cooldown = (random.frac() < 0.2 ? 1 : (random.frac() < 0.6 ? 2 : 3)); break;
+                case 5: weapon.cooldown = (random.frac() < 0.1 ? 1 : (random.frac() < 0.35 ? 2 : 3)); break;
+                default: weapon.cooldown = random.integerInRange(Weapon.MIN_COOLDOWN, Weapon.MAX_COOLDOWN);
+            }
             weapon.curCooldown = 0;
             console.log("LOGGING " + weapon.toString());
 
@@ -224,6 +233,17 @@ class WeaponGenerator {
        return weapon;
     }	
 
+    static clearAllWeapons(paramSet: number[], random: Phaser.RandomDataGenerator,
+        nameGenerator: WeaponNameGenerator, minDamage: number) {
+        WeaponGenerator.weapons = new Array(WeaponGenerator.AMOUNT_OF_WEAPONS);
+        for (var i: number = 0; i < WeaponGenerator.AMOUNT_OF_WEAPONS; i++) {
+            WeaponGenerator.weapons[i] =
+                WeaponGenerator.GenerateAWeapon(paramSet, random, null, nameGenerator, minDamage);
+
+        }
+        WeaponGenerator.weapons.sort(function (a: Weapon, b: Weapon) { return a.weaponPower - b.weaponPower; });
+    }
+
     static isSame(a: Weapon, b: Weapon): boolean {
         if (a.pattern.length != b.pattern.length || a.pattern[0].length != b.pattern[0].length) {
             return false;
@@ -245,10 +265,21 @@ class WeaponGenerator {
 
     static createPatternWithOneWidth(pattern: number[][], height: number, random: Phaser.RandomDataGenerator,
         centered: boolean, needToHaveAdj: boolean): number[][] {
+        if (Global.levelNumber == 1)
+            needToHaveAdj = true;
+
+        var levelProb: number = 0.5;
+        switch (Global.levelNumber) {
+            case 1: case 2: levelProb = 0.8; break;
+            case 3: levelProb = 0.70; break;
+            case 4: levelProb = 0.55; break;
+            case 4: levelProb = 0.40; break;
+       }
+
         var hasAnyFilled:boolean = false;
         for (var i: number = 0; i < height; i++) {
             //randomize half
-            if (random.frac() < 0.5) {
+            if (random.frac() < levelProb) {
                 pattern[i][0] = 1;
                 hasAnyFilled = true;
             }
@@ -274,12 +305,22 @@ class WeaponGenerator {
     }
 
     static createPatternWithOneHeight(pattern: number[][], width: number, random: Phaser.RandomDataGenerator,
-        centered: boolean,needToHaveAdj: boolean): number[][] {
+        centered: boolean, needToHaveAdj: boolean): number[][] {
+        if (Global.levelNumber == 1)
+            needToHaveAdj = true;
+
         var hasAnyFilled: boolean = false;
+        var levelProb: number = 0.5;
+        switch (Global.levelNumber) {
+            case 1: case 2: levelProb = 0.8; break;
+            case 3: levelProb = 0.70; break;
+            case 4: levelProb = 0.55; break;
+            case 4: levelProb = 0.40; break;
+        }
 
         //randomize half
         for (var j: number = 0; j < Math.floor(width / 2); j++) {
-            if (random.frac() < 0.5)
+            if (random.frac() < levelProb)
                 pattern[0][j] = 0;
             else {
                 pattern[0][j] = 1;
@@ -291,7 +332,7 @@ class WeaponGenerator {
         if (needToHaveAdj) {
             pattern[0][Math.floor(width / 2)] = 1;
         } else {
-            if (random.frac() < 0.5)
+            if (random.frac() < levelProb)
                 pattern[0][Math.floor(width / 2)] = 0;
             else
                 pattern[0][Math.floor(width / 2)] = 1;
@@ -314,9 +355,19 @@ class WeaponGenerator {
     }
 
     static createPattern(pattern: number[][], width: number, height: number, random: Phaser.RandomDataGenerator,
-        centered: boolean, needToHaveAdj: boolean): number[][] {
+            centered: boolean, needToHaveAdj: boolean): number[][] {
+        if (Global.levelNumber == 1)
+            needToHaveAdj = true;
         var hasAnyFilled:boolean = false;
-        
+
+        var levelProb: number = 0.5;
+        switch (Global.levelNumber) {
+            case 1: case 2: levelProb = 0.8; break;
+            case 3: levelProb = 0.70; break;
+            case 4: levelProb = 0.55; break;
+            case 4: levelProb = 0.40; break;
+        }
+
         var orientation: number = (centered ? random.frac() : random.between(0, 0.65));
         //console.log("Orientation: " + orientation);
 
@@ -326,7 +377,7 @@ class WeaponGenerator {
             for (var i: number = 0; i < height; i++) {
                 //randomize half
                 for (var j: number = 0; j < Math.floor(width / 2); j++) {
-                    if (random.frac() < 0.5)
+                    if (random.frac() < levelProb)
                         pattern[i][j] = 0;
                     else {
                         pattern[i][j] = 1;
@@ -345,7 +396,7 @@ class WeaponGenerator {
 
             for (var i: number = 0; i < height; i++) {
                 //if odd number, add one row with random
-                if (random.frac() < 0.5)
+                if (random.frac() < levelProb)
                     pattern[i][Math.floor(width / 2)] = 0;
                 else
                     pattern[i][Math.floor(width / 2)] = 1;
@@ -429,7 +480,7 @@ class WeaponGenerator {
             for (var i: number = 0; i < width; i++) {
                 //randomize half
                 for (var j: number = 0; j < Math.floor(height / 2); j++) {
-                    if (random.frac() < 0.5)
+                    if (random.frac() < levelProb)
                         pattern[j][i] = 0;
                     else {
                         pattern[j][i] = 1;
@@ -459,7 +510,7 @@ class WeaponGenerator {
 
             for (var i: number = 0; i < width; i++) {
                 //if odd number, add one line with random
-                if (random.frac() < 0.5)
+                if (random.frac() < levelProb)
                     pattern[Math.floor(height / 2)][i] = 0;
                 else
                     pattern[Math.floor(height / 2)][i] = 1;

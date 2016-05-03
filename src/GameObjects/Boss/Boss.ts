@@ -75,7 +75,8 @@ class Boss extends BaseGameObject {
     [BossAttackType.CHARGE, BossAttackType.DAMAGE_FLOOR];//, BossAttackType.SHOOT];
 
     specialType: BossSpecialType = BossSpecialType.NONE;
-    
+
+
     renderValues = {"p":37, "r":38, "c":39, "s":40, "m":41, "e":42, "l":43, "f":44, "g":47, "h":48, "o":49};
 
     state: BossState = BossState.IDLE;
@@ -151,6 +152,8 @@ class Boss extends BaseGameObject {
 
         //selection of strategies
         var amountOfFree: number = this.game.rnd.integerInRange(2, 3), att: number = 0, mov: number = 0;
+        var amountOfStrategies: number = amountOfFree;
+        //select a Special Strategy
         if (this.game.rnd.frac() < 0.3) {
             amountOfFree--;
             this.specialType = Boss.BOSS_SPECIALS[this.game.rnd.integerInRange(0, Boss.BOSS_SPECIALS.length - 1)];
@@ -175,6 +178,7 @@ class Boss extends BaseGameObject {
         if(mov > 0)
             this.movementType = new Array(mov);
 
+        //select a Attack Strategy
         for (var i: number = 0; i < att; i++) {
             var chosen: BossAttackType = Boss.BOSS_ATTACKS[this.game.rnd.integerInRange(0, Boss.BOSS_ATTACKS.length - 1)];
             var has: boolean = false;
@@ -188,6 +192,7 @@ class Boss extends BaseGameObject {
             this.attackType[i] = chosen;
         }
 
+        //select a Movement Strategy
         for (var i: number = 0; i < mov; i++) {
             var chosenM: BossMovementType = Boss.BOSS_MOVEMENTS[this.game.rnd.integerInRange(0, Boss.BOSS_MOVEMENTS.length - 1)];
             var has: boolean = false;
@@ -216,7 +221,73 @@ class Boss extends BaseGameObject {
             for (var i: number = 0; i < this.movementType.length; i++) {
                 mS += this.movementType[i] + ",";
             }
-        console.log("BOSS: " + this.specialType + ";  att " + atS + ";   mov " + mS);
+        console.log("BOSS: " + amountOfStrategies + "["+att+","+mov+"] -> " + this.specialType + ";  att " + atS + ";   mov " + mS);
+
+        var enemyKeys: string[] = new Array(4);
+        for (var i: number = 0; i < 4; i++) {
+            enemyKeys[i] = "r";
+        }
+        var ch: string = "";
+        if (amountOfStrategies == 2) {
+            if (this.specialType != BossSpecialType.NONE) {
+                switch (this.specialType) {
+                    case BossSpecialType.HEAL: ch = "h"; break;
+                    case BossSpecialType.SPAWN_ENEMY: ch = "s"; break;
+                }
+                enemyKeys[0] = ch;
+
+                if (this.movementType != null) {
+                    switch (this.movementType[quant]) {
+                        case BossMovementType.RANDOM: ch = "r"; break;
+                        case BossMovementType.CHASE: ch = "c"; break;
+                        case BossMovementType.JUMP: ch = "o"; break;
+                        case BossMovementType.TELEPORT: ch = "l"; break;
+                    }
+                } else if (this.attackType != null) {
+                   switch (this.attackType[0]) {
+                         case BossAttackType.DAMAGE_FLOOR: ch = "f"; break;
+                    }
+                }
+                enemyKeys[1] = ch;
+            } else {
+                var quant: number = 0;
+                if (this.movementType != null) {
+                    for (quant = 0; quant < this.movementType.length; quant++) {
+                        switch (this.movementType[quant]) {
+                            case BossMovementType.RANDOM: ch = "r"; break;
+                            case BossMovementType.CHASE: ch = "c"; break;
+                            case BossMovementType.JUMP: ch = "o"; break;
+                            case BossMovementType.TELEPORT: ch = "l"; break;
+                        }
+                        enemyKeys[quant] = ch;
+                    }
+                }
+
+                if (this.attackType != null) {
+                    for (var i = 0; i < this.attackType.length; i++) {
+                        switch (this.attackType[i]) {
+                            case BossAttackType.DAMAGE_FLOOR: ch = "f"; break;
+                        }
+
+                        enemyKeys[i + (this.movementType != null ? this.movementType.length : 0)] = ch;
+                        
+                    }
+                }
+            }
+
+            var auxP: string = "";
+            for (var i: number = 0; i < enemyKeys.length; i++) {
+                auxP += enemyKeys[i] + " ";
+            }
+            console.log(enemyKeys);
+
+            for (var i: number = enemyKeys.length - 1; i > 2; i--) {
+                enemyKeys[i] = enemyKeys[enemyKeys.length - 1 - i];
+            }
+        } else {
+
+        }
+        this.addInnerBoss(enemyKeys);
     }
 
     toTile(x: number): number {

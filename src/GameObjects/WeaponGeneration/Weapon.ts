@@ -14,14 +14,14 @@ enum WeaponCrazyEffects {
 class Weapon {
     /**Damage that weapon gives: 1 <= damage <= 3 */
     static MIN_DAMAGE:number = 1;
-    static MAX_DAMAGE:number = 3;
+    static MAX_DAMAGE:number = 1;
     static DAMAGE_INTERVAL:number = 1;
     damage: number = 1;
     
     /** Time of shot cooldown: 1, 3, 5 */
     static MIN_COOLDOWN:number = 1;
-    static MAX_COOLDOWN:number = 5;
-    static COOLDOWN_INTERVAL:number = 2;
+    static MAX_COOLDOWN:number = 3;
+    static COOLDOWN_INTERVAL:number = 1;
     cooldown :number = 1;
     curCooldown: number = 0;
     
@@ -278,9 +278,6 @@ class Weapon {
         return (this.curCooldown <= 0 ? true : false);
     }
 
-    isWeaponPoisoned(): boolean {
-        return this.poison;
-    }
 
     /**
      * Returns wheter this weapon stays in the ground (such as a mine)
@@ -364,13 +361,16 @@ class Weapon {
         var aux: number = 0;
         var MAX: number = 0;
 
-        var surrouding: number = 0;
+        var hasOneNear: boolean = false, hasMoreThanOne: boolean = false;
+        var surrouding: number = 0, counter: number = 0;
         if (this.centered) {
-            if (this.pattern[Math.floor(this.pattern.length / 2) - 1][Math.floor(this.pattern[0].length / 2)] == 1)
+            if (Math.floor(this.pattern.length / 2) - 1 >= 0 &&
+                this.pattern[Math.floor(this.pattern.length / 2) - 1][Math.floor(this.pattern[0].length / 2)] == 1)
                 aux++;
             if (this.pattern[Math.floor(this.pattern.length / 2) + 1][Math.floor(this.pattern[0].length / 2)] == 1)
                 aux++;
-            if (this.pattern[Math.floor(this.pattern.length / 2)][Math.floor(this.pattern[0].length / 2) - 1] == 1)
+            if (Math.floor(this.pattern[0].length / 2) - 1 >= 0 &&
+                this.pattern[Math.floor(this.pattern.length / 2)][Math.floor(this.pattern[0].length / 2) - 1] == 1)
                 aux++;
             if (this.pattern[Math.floor(this.pattern.length / 2)][Math.floor(this.pattern[0].length / 2) + 1] == 1)
                 aux++;
@@ -379,28 +379,43 @@ class Weapon {
             if (this.pattern[this.pattern.length - 1][Math.floor(this.pattern[0].length / 2)] == 1)
                 surrouding++;
         }
+
+        if (surrouding > 0)
+            hasOneNear = true;
         MAX++;
+
+        for (var i: number = 0; i < this.pattern.length && counter < 2; i++) {
+            for (var j: number = 0; j < this.pattern[0].length && counter < 2; j++) {
+                if (this.pattern[i][j] == 1)
+                    counter++;
+            }
+        }
+
+        if (counter == 2) {
+            hasMoreThanOne = true;
+        }
 
         
         var cooldown: number = 0;
-        if (this.cooldown < Math.ceil(Weapon.MAX_COOLDOWN / 3))
+        if (this.cooldown == 1)
             cooldown = (2/2);
-        else if (this.cooldown < (Math.ceil(Weapon.MAX_COOLDOWN / 3)* 2 )){
+        else if (this.cooldown == 2){
             cooldown = (1/2);
         }
         MAX++;
 
+        /*
         var damage: number = 0;
         if (this.damage == Weapon.MAX_DAMAGE)
             damage = (2 / 2);
         else if (this.damage > Math.floor(Weapon.MAX_DAMAGE / 2)) {
             damage = (1 / 2);
         }
-        MAX++;
+        MAX++;*/
 
         var area: number = this.areaLevel;
         MAX++;
-
+        
         var ling: number = this.lingering ? (this.amountOfLingeringLive > 0 ? this.amountOfLingeringLive / 3 : 4) : 0;
 
         /*if (this.centered) {
@@ -413,7 +428,51 @@ class Weapon {
             amount++;
         MAX++;*/
 
-        this.weaponPower = ((surrouding * 2) + (area * 1) + (cooldown * 2) + (damage * 2) + (ling * 1)) / 8;
+        var valueForWeaponType: number = 0;
+        /*
+        1- One Tile only (beside you)
+        2- No tile in the 4 direction around u (low density)
+        3- No tile in the 4 direction around u (high density)
+        4- at least one tile in the 4 direction around u (low density)
+        5- at least one tile in the 4 direction around u (high density)
+
+        I tried to think more about the difficulty of levels based on the weapon and opposite but its still difficult
+
+        but most obvious ones are this order from easy to high
+        5
+        1, 4
+        3
+        2
+        */
+
+        
+        var maxSize: number;
+        if (!this.centered && this.repeat)
+            maxSize = (Global.ROOM_HEIGHT - 1) * Weapon.MAX_AREA_SIZE_FRONT_W;
+        else
+            maxSize = (Weapon.MAX_AREA_SIZE_FRONT_W * Weapon.MAX_AREA_SIZE_FRONT_H);
+        maxSize = 1;
+        var isLowDensity: boolean = (this.areaLevel <  0.25 ? true : false);
+
+        
+        var diff: number = 0;
+        MAX = 3;
+        if (hasOneNear) {
+            if (!isLowDensity) //5
+                diff = 3;
+            else
+                diff = 2;
+        } else {
+            if (!isLowDensity)
+                diff = 1;
+            else
+                diff = 0;
+        }
+        diff = diff / MAX;
+        console.log("VALUES FOR WEAPON " + diff + " " + cooldown + " :" + (((diff * 3) + (cooldown * 1)) / 4));
+        console.log("hasOneNear "+hasOneNear + " \tisLowDensity " + isLowDensity + " \tareaLevel: " + this.areaLevel + " maxSize: " + maxSize);
+        this.weaponPower = ((diff * 3) + (cooldown * 1))/4;//((surrouding * 2) + (area * 1) + (cooldown * 2) + + (ling * 1)) / 6;
+        console.log(this.weaponPower);
         return this.weaponPower;
     }
 }
