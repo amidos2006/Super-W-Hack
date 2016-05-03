@@ -41,6 +41,9 @@ class LoadingState extends BaseGameState{
         Global.enemyNumbers = new EnemyNumbers(this.game);
         Global.enemyTypes = new EnemyTypes(this.game);
         
+        Global.gameController = new GameController(this.game);
+        Global.gameController.start();
+        
         this.game.state.start("mainmenu", true);
     }
 }

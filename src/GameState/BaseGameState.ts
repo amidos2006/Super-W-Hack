@@ -8,4 +8,8 @@ class BaseGameState extends Phaser.State{
         this.game.camera.x = -10;
         this.game.camera.y = -40;
     }
+    
+    update(){
+        Global.gameController.update();
+    }
 }

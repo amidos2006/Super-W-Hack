@@ -21,7 +21,7 @@ class PlayerSelectState extends BaseGameState{
         
         this.game.add.existing(new WhiteLayout(this.game, 10, 10, this.game.width - 20, this.game.height - 20));
         this.game.add.existing(new HintText(this.game, this.game.width/2, this.game.height - 5, 
-            "(left/right) to choose\n(x) to select - (z) to go back"));
+            "(left/right) to choose\n(a) to select - (b) to go back"));
             
         var arrowSprite:Phaser.Sprite = this.game.add.sprite(this.game.width/2 + 80, this.game.height/2 - 100, "graphics");
         arrowSprite.animations.add("normal", [7]);
@@ -43,7 +43,7 @@ class PlayerSelectState extends BaseGameState{
     update(){
         super.update();
         
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
+        if(Global.gameController.direction.x == -1){
             this.selectedIndex -= 1;
             if(this.selectedIndex < 0){
                 this.selectedIndex = this.characters.length - 1;
@@ -51,14 +51,12 @@ class PlayerSelectState extends BaseGameState{
             
             this.playerText.updateText(this.characters[this.selectedIndex]);
             Global.audioManager.playMenuSelection();
-            this.game.input.keyboard.reset();
         }
         
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
+        if(Global.gameController.direction.x == 1){
             this.selectedIndex = (this.selectedIndex + 1) % this.characters.length;
             this.playerText.updateText(this.characters[this.selectedIndex]);
             Global.audioManager.playMenuSelection();
-            this.game.input.keyboard.reset();
         }
         
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.P)){
@@ -68,7 +66,7 @@ class PlayerSelectState extends BaseGameState{
             this.game.input.keyboard.reset();
         }
         
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
+        if(Global.gameController.aButton == ButtonStates.Pressed){
             Global.audioManager.stopTitleMusic();
             Global.currentPlayer = this.characters[this.selectedIndex];
             if(Global.currentGameMode == GameplayModes.adventure){
@@ -78,12 +76,10 @@ class PlayerSelectState extends BaseGameState{
                 this.game.state.start("gameplay", true);
             }
             Global.audioManager.playMenuSelected();
-            this.game.input.keyboard.reset();
         }
         
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.Z)){
+        if(Global.gameController.bButton == ButtonStates.Pressed){
             this.game.state.start("mainmenu");
-            this.game.input.keyboard.reset();
         }
     }
 }

@@ -37,6 +37,7 @@ class Global{
     static MAX_LVL_CATEGORY:number = 1;
     static MAX_DEPTH:number = 5;
     
+    static gameController:GameController;
     static weaponNameGenerator:WeaponNameGenerator;
     static audioManager:AudioManager;
     static levelRooms:RoomInfoObject[][];

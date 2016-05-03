@@ -27,8 +27,7 @@ class GameplayState extends BaseGameState {
     handUI: HandUI;
     weaponUI:WeaponUI;
     buttonText: ButtonTutorial;
-    aButton:ButtonStates;
-    bButton:ButtonStates;
+    pauseMenu:PauseMenu;
 
     listOfAdded:EnemyObject[];
     listOfDeleted:EnemyObject[];
@@ -47,9 +46,6 @@ class GameplayState extends BaseGameState {
         this.listOfAddedHarm = [];
         this.listOfDeletedHarm = [];
         this.harmfulObjects = [];
-        
-        this.aButton = ButtonStates.Up;
-        this.bButton = ButtonStates.Up;
         
         Global.audioManager.stopTitleMusic();
         Global.audioManager.playMusic(Global.levelCategory *
@@ -524,56 +520,6 @@ class GameplayState extends BaseGameState {
     update() {
         super.update();
         
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
-            switch (this.aButton) {
-                case ButtonStates.Up:
-                    this.aButton = ButtonStates.Pressed;
-                    break;
-                case ButtonStates.Pressed:
-                    this.aButton = ButtonStates.Down;
-                    break;
-                case ButtonStates.Released:
-                    this.aButton = ButtonStates.Pressed;
-            }
-        }
-        else{
-            switch (this.aButton) {
-                case ButtonStates.Down:
-                    this.aButton = ButtonStates.Released;
-                    break;
-                case ButtonStates.Pressed:
-                    this.aButton = ButtonStates.Released;
-                    break;
-                case ButtonStates.Released:
-                    this.aButton = ButtonStates.Up;
-            }
-        }
-        
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.Z)){
-            switch (this.bButton) {
-                case ButtonStates.Up:
-                    this.bButton = ButtonStates.Pressed;
-                    break;
-                case ButtonStates.Pressed:
-                    this.bButton = ButtonStates.Down;
-                    break;
-                case ButtonStates.Released:
-                    this.bButton = ButtonStates.Pressed;
-            }
-        }
-        else{
-            switch (this.bButton) {
-                case ButtonStates.Down:
-                    this.bButton = ButtonStates.Released;
-                    break;
-                case ButtonStates.Pressed:
-                    this.bButton = ButtonStates.Released;
-                    break;
-                case ButtonStates.Released:
-                    this.bButton = ButtonStates.Up;
-            }
-        }
-
         this.buttonText.alpha = 1;
         if (Global.currentWeapon == null) {
             this.buttonText.alpha = 0;
@@ -595,7 +541,22 @@ class GameplayState extends BaseGameState {
         if (!this.playerObject.isAlive) {
             this.playerObject.takeDamage();
             this.playerObject = null;
-            this.game.add.existing(new Gameover(this.game, this.game.width/2, this.game.height/2 - 30));
+            this.pauseMenu = new PauseMenu(this.game, this.game.width/2, this.game.height/2 - 30, "gameover", false);
+            this.game.add.existing(this.pauseMenu);
+            return;
+        }
+        
+        if(this.pauseMenu != null && this.pauseMenu.alive){
+            return;
+        }
+        else{
+            this.pauseMenu == null;
+        }
+        
+        if(Global.gameController.startButton == ButtonStates.Pressed){
+            this.pauseMenu = new PauseMenu(this.game, this.game.width/2, this.game.height/2 - 30, "pause", true);
+            this.game.add.existing(this.pauseMenu);
+            this.game.input.gamepad.reset();
             return;
         }
 
@@ -616,39 +577,15 @@ class GameplayState extends BaseGameState {
             this.game.input.keyboard.reset();
         }
 
-        var direction: Phaser.Point = new Phaser.Point();
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-            direction.y -= 1;
-        }
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-            direction.y += 1;
-        }
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-            direction.x -= 1;
-        }
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-            direction.x += 1;
-        }
-
-        if (direction.x != 0 && direction.y != 0) {
-            if (Math.random() < 0.5) {
-                direction.x = 0;
-            }
-            else {
-                direction.y = 0;
-            }
-        }
-
         if (this.arrowHighlight.isAppearing()) {
-            if (direction.x != 0 || direction.y != 0) {
-                this.lastDirection = direction;
+            if (Global.gameController.direction.x != 0 || Global.gameController.direction.y != 0) {
+                this.lastDirection = Global.gameController.direction;
                 this.arrowHighlight.show(this.playerObject.getTilePosition(), this.lastDirection);
                 this.highlight(this.playerObject.getWeapon().getWeaponPositions(
                     this.playerObject.getTilePosition(), this.lastDirection,
                     Global.matrixTranspose(Global.getCurrentRoom().getMatrix(this.enemyObjects))));
-                this.game.input.keyboard.reset();
             }
-            if (this.aButton == ButtonStates.Pressed) {
+            if (Global.gameController.aButton == ButtonStates.Pressed) {
                 this.lastPosition = this.playerObject.getTilePosition();
                 this.arrowHighlight.hide();
                 this.unhighlight();
@@ -660,23 +597,24 @@ class GameplayState extends BaseGameState {
                 this.stepUpdate();
                 this.buttonText.normalMode();
             }
-            if (this.bButton == ButtonStates.Pressed) {
+            if (Global.gameController.bButton == ButtonStates.Pressed) {
                 this.arrowHighlight.hide();
                 this.unhighlight();
                 this.buttonText.normalMode();
             }
         }
         else {
-            if (direction.x != 0 || direction.y != 0) {
+            if (Global.gameController.direction.x != 0 || Global.gameController.direction.y != 0) {
                 this.lastPosition = this.playerObject.getTilePosition();
-                this.lastDirection = direction;
-                if (this.playerObject.move(direction, Global.getCurrentRoom().getMatrix(this.enemyObjects))) {
+                this.lastDirection = Global.gameController.direction;
+                if (this.playerObject.move(Global.gameController.direction, 
+                    Global.getCurrentRoom().getMatrix(this.enemyObjects))) {
                     this.stepUpdate();
                 }
                 this.game.input.keyboard.reset();
             }
             if (Global.currentWeapon != null) {
-                if (this.aButton == ButtonStates.Pressed &&
+                if (Global.gameController.aButton == ButtonStates.Pressed &&
                     this.playerObject.getWeapon().getCurrentCoolDown() <= 0) {
                     this.arrowHighlight.show(this.playerObject.getTilePosition(), this.lastDirection);
                     this.highlight(this.playerObject.getWeapon().getWeaponPositions(
@@ -685,7 +623,7 @@ class GameplayState extends BaseGameState {
                     this.buttonText.aimMode();
                 }
                 
-                if (this.bButton == ButtonStates.Pressed) {
+                if (Global.gameController.bButton == ButtonStates.Pressed) {
                     if(Global.crateNumber >= Global.getCurrentCost() && this.playerObject.specialTimer == null){
                         this.playerObject.specialTimer = this.game.time.create(true);
                         this.playerObject.specialTimer.add(1000, this.useSpecial, this);
@@ -697,7 +635,8 @@ class GameplayState extends BaseGameState {
                             this.playerObject.getTilePosition().y, "insufficient crates"));
                     }
                 }
-                else if(this.bButton == ButtonStates.Up || this.bButton == ButtonStates.Released){
+                else if(Global.gameController.bButton == ButtonStates.Up || 
+                    Global.gameController.bButton == ButtonStates.Released){
                     if(this.playerObject!= null && this.playerObject.specialTimer != null){
                         this.playerObject.specialTimer.destroy();
                         this.playerObject.specialTimer = null;

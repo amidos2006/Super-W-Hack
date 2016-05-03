@@ -31,13 +31,13 @@ class MainMenuState extends BaseGameState{
         
         this.game.add.existing(new WhiteLayout(this.game, 10, 10, this.game.width - 20, this.game.height - 20));
         this.game.add.existing(new HintText(this.game, this.game.width/2, 
-            this.game.height - 5, "(up/down) to choose\n(x) to select"));
+            this.game.height - 5, "(up/down) to choose\n(a) to select"));
     }
     
     update(){
         super.update();
         
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP)){
+        if(Global.gameController.direction.y == -1){
             this.choices[this.index].changeText(this.unselectedValues[this.index]);
             this.choices[this.index].selectText(false);
             
@@ -49,9 +49,8 @@ class MainMenuState extends BaseGameState{
             this.choices[this.index].changeText(this.selectedValues[this.index]);
             this.choices[this.index].selectText(true);
             Global.audioManager.playMenuSelection();
-            this.game.input.keyboard.reset();
         }
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)){
+        if(Global.gameController.direction.y == 1){
             this.choices[this.index].changeText(this.unselectedValues[this.index]);
             this.choices[this.index].selectText(false);
             
@@ -60,9 +59,8 @@ class MainMenuState extends BaseGameState{
             this.choices[this.index].changeText(this.selectedValues[this.index]);
             this.choices[this.index].selectText(true);
             Global.audioManager.playMenuSelection();
-            this.game.input.keyboard.reset();
         }
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
+        if(Global.gameController.aButton == ButtonStates.Pressed){
             switch(this.index){
                 case 0:
                 Global.currentGameMode = GameplayModes.adventure;
@@ -81,6 +79,7 @@ class MainMenuState extends BaseGameState{
             }
             Global.audioManager.playMenuSelected();
             this.game.input.keyboard.reset();
+            this.game.input.gamepad.pad1.reset();
         }
     }
 }
