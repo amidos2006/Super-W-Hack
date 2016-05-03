@@ -12,6 +12,16 @@ class PlayerSelectState extends BaseGameState{
         
         this.selectedIndex = 0;
         
+        var aButton:string = "(a)";
+        if(!this.game.input.gamepad.pad1.connected){
+            aButton = "(x)";
+        }
+        
+        var bButton:string = "(b)";
+        if(!this.game.input.gamepad.pad1.connected){
+            bButton = "(z)";
+        }
+        
         var text:string = this.game.cache.getText("playerdata");
         this.characters = [new AatPlayerData(text), new GatPlayerData(text), new TatPlayerData(text)];
         
@@ -21,7 +31,7 @@ class PlayerSelectState extends BaseGameState{
         
         this.game.add.existing(new WhiteLayout(this.game, 10, 10, this.game.width - 20, this.game.height - 20));
         this.game.add.existing(new HintText(this.game, this.game.width/2, this.game.height - 5, 
-            "(left/right) to choose\n(a) to select - (b) to go back"));
+            "(left/right) to choose\n" + aButton + " to select - " + bButton + " to go back"));
             
         var arrowSprite:Phaser.Sprite = this.game.add.sprite(this.game.width/2 + 80, this.game.height/2 - 100, "graphics");
         arrowSprite.animations.add("normal", [7]);
