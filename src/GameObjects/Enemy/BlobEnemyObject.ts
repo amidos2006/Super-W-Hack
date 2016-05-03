@@ -18,7 +18,7 @@ class BlobEnemyObject extends EnemyObject implements Movement {
 
     dropTrail() {
         var trail: HarmfulFloorObject = new HarmfulFloorObject(this.game, 
-            this.getTilePosition().x, this.getTilePosition().y, 1, 3);
+            this.getTilePosition().x, this.getTilePosition().y, 1, -1);
         var gameplay:GameplayState = <GameplayState>this.game.state.getCurrentState();
         gameplay.addHarm(trail);
     }

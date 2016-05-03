@@ -49,7 +49,8 @@ class GameplayState extends BaseGameState {
 
         var numOfEnemies: number = Global.enemyNumbers.getNumber(this.rnd, Global.levelNumber);
         var room:RoomInfoObject = Global.getCurrentRoom();
-        if (room.cleared || room.roomType == RoomTypeEnum.None || Global.levelNumber >= Global.MAX_DEPTH - 1) {
+        if (room.cleared || room.roomType == RoomTypeEnum.None || 
+            room.roomType == RoomTypeEnum.Boss || Global.levelNumber >= Global.MAX_DEPTH - 1) {
             numOfEnemies = 0;
         }
         Global.enemyTypes.initNewRoom(Global.levelNumber, Global.difficultyNumber, numOfEnemies, Global.previousDirection);
@@ -465,6 +466,13 @@ class GameplayState extends BaseGameState {
 
         for (var i = 0; i < this.enemyObjects.length; i++) {
             var tileMatrix: number[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
+            if(this.bossObject != null){
+                var pos:Phaser.Point = this.bossObject.getTilePosition();
+                tileMatrix[pos.x][pos.y] = TileTypeEnum.Enemy;
+                tileMatrix[pos.x + 1][pos.y] = TileTypeEnum.Enemy;
+                tileMatrix[pos.x][pos.y + 1] = TileTypeEnum.Enemy;
+                tileMatrix[pos.x + 1][pos.y + 1] = TileTypeEnum.Enemy;
+            }
             var blob:BlobEnemyObject = <BlobEnemyObject>this.enemyObjects[i];
             if(blob.dropTrail != null){
                 this.enemyObjects[i].enemyMove(this.playerObject.getTilePosition(), tileMatrix);

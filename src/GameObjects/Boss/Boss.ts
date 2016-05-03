@@ -113,10 +113,25 @@ class Boss extends BaseGameObject {
         this.tilePosition = new Phaser.Point(3, 3);
         this.updateAbsolutePosition();
 
-        var graphics: Phaser.Graphics = this.game.add.graphics(0, 0, this);
-        graphics.beginFill(0xffffff, 1);
-        graphics.drawRect(0, 0, this.bossWidth * Global.TILE_SIZE, this.bossHeight * Global.TILE_SIZE);
-        graphics.endFill();
+        var graphics: Phaser.Sprite = this.game.add.sprite(0, 0, "graphics");
+        graphics.animations.add("normal", [35]);
+        graphics.animations.play("normal");
+        graphics.tint = 0xcc6668;
+        this.add(graphics);
+        graphics = this.game.add.sprite(Global.TILE_SIZE, 0, "graphics");
+        graphics.animations.add("normal", [36]);
+        graphics.animations.play("normal");
+        graphics.tint = 0xcc6668;
+        this.add(graphics);
+        graphics = this.game.add.sprite(0, Global.TILE_SIZE, "graphics");
+        graphics.animations.add("normal", [45]);
+        graphics.animations.play("normal");
+        graphics.tint = 0xcc6668;
+        this.add(graphics);
+        graphics = this.game.add.sprite(Global.TILE_SIZE, Global.TILE_SIZE, "graphics");
+        graphics.animations.add("normal", [46]);
+        graphics.animations.play("normal");
+        graphics.tint = 0xcc6668;
         this.add(graphics);
 
         //selection of strategies
@@ -192,7 +207,14 @@ class Boss extends BaseGameObject {
     toTile(x: number): number {
         return x * Global.TILE_SIZE;
     }
-
+    
+    checkCollision(xTile:number, yTile:number){
+        return this.getTilePosition().equals(new Phaser.Point(xTile, yTile)) ||
+            this.getTilePosition().equals(new Phaser.Point(xTile - 1, yTile)) ||
+            this.getTilePosition().equals(new Phaser.Point(xTile, yTile - 1)) ||
+            this.getTilePosition().equals(new Phaser.Point(xTile - 1, yTile - 1));
+    }
+    
     stepUpdate(playerPosition: Phaser.Point, map: TileTypeEnum[][]) {
         if (this.lastSpecial >= this.specialCooldown) {
             //if needs to use special

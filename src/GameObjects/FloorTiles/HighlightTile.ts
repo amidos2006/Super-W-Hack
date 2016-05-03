@@ -7,7 +7,7 @@ class HighlightTile extends BaseTile{
         super(game, 0, 0);
         
         this.sprite = this.game.add.sprite(0, 0, "graphics");
-        this.sprite.animations.add("normal", [5]);
+        this.sprite.animations.add("normal", [0]);
         this.sprite.animations.play("normal");
         this.sprite.tint = 0x86b7c0;
         this.add(this.sprite);
@@ -27,7 +27,7 @@ class HighlightTile extends BaseTile{
     }
     
     show(value:number){
-        this.alpha = 1;
+        this.alpha = 0.5;
         this.damage.text = value.toString();
         this.damage.anchor.set(0.5, 0);
     }
