@@ -2,10 +2,13 @@
 
 class PlayerObject extends BaseGameObject{
     playerSprite:Phaser.Sprite;
+    specialTimerOutline:Phaser.Graphics;
+    specialTimerInner:Phaser.Graphics;
     playerWeapon:Weapon;
     coolDownText:Phaser.Text;
     playerHealth:number;
     isAlive:boolean;
+    specialTimer:Phaser.Timer;
     
     constructor(game:Phaser.Game, x:number, y:number, weapon:Weapon){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
@@ -13,6 +16,19 @@ class PlayerObject extends BaseGameObject{
         this.playerSprite = this.game.add.sprite(0, 0, 'graphics');
         this.playerSprite.animations.add("normal", [Global.currentPlayer.graphicsIndex]);
         this.add(this.playerSprite);
+        
+        this.specialTimerInner = this.game.add.graphics(5, 0, this);
+        this.specialTimerInner.beginFill(0xffffff, 1);
+        this.specialTimerInner.drawRect(0, Global.TILE_SIZE - 2, Global.TILE_SIZE - 10, 2);
+        this.specialTimerInner.endFill();
+        this.specialTimerInner.alpha = 0;
+        this.add(this.specialTimerInner);
+        
+        this.specialTimerOutline = this.game.add.graphics(5, 0, this);
+        this.specialTimerOutline.lineStyle(1, 0xffffff, 1);
+        this.specialTimerOutline.drawRect(0, Global.TILE_SIZE - 2, Global.TILE_SIZE - 10, 2);
+        this.specialTimerOutline.alpha = 0;
+        this.add(this.specialTimerOutline);
         
         this.playerWeapon = weapon;
         this.playerSprite.animations.play("normal");
@@ -37,7 +53,7 @@ class PlayerObject extends BaseGameObject{
             this.coolDownText.alpha = 0;
         }
         
-    } 
+    }
     
     move(cursors:Phaser.Point, mapMatrix:TileTypeEnum[][])
     {
@@ -158,6 +174,15 @@ class PlayerObject extends BaseGameObject{
             this.coolDownText.alpha = 1;
             this.coolDownText.text = cd.toString();
             this.coolDownText.anchor.set(0, 0);
+        }
+        if(this.specialTimer != null){
+            this.specialTimerInner.alpha = 1;
+            this.specialTimerOutline.alpha = 1;
+            this.specialTimerInner.scale.set(this.specialTimer.ms / 1000, 1);
+        }
+        else{
+            this.specialTimerInner.alpha = 0;
+            this.specialTimerOutline.alpha = 0;
         }
     }
 }

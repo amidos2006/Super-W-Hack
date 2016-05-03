@@ -4,7 +4,7 @@ class WeaponName extends BaseGameObject{
     movingSpeed:number;
     fadingSpeed:number;
     fadeOut:boolean;
-    constructor(game:Phaser.Game, x:number, y:number, name:String, movingSpeed:number = 0.4, fadingSpeed:number = 0.004){
+    constructor(game:Phaser.Game, x:number, y:number, name:String, color:number = 0xffffff, movingSpeed:number = 0.4, fadingSpeed:number = 0.004){
         super(game, (x + 0.5) * Global.TILE_SIZE, (y + 0.5) * Global.TILE_SIZE);
         
         this.movingSpeed = movingSpeed;
@@ -17,6 +17,7 @@ class WeaponName extends BaseGameObject{
         text.anchor.set(0.5, 0.5);
         text.wordWrap = true;
         text.wordWrapWidth = (Global.ROOM_WIDTH - 4) * Global.TILE_SIZE;
+        text.tint = color;
         this.add(text);
         
         if(this.x < text.width / 2 + Global.TILE_SIZE){
