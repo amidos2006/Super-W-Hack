@@ -699,7 +699,7 @@ class GameplayState extends BaseGameState {
                     }
                 }
                 else if(this.bButton == ButtonStates.Up || this.bButton == ButtonStates.Released){
-                    if(this.playerObject.specialTimer != null){
+                    if(this.playerObject!= null && this.playerObject.specialTimer != null){
                         this.playerObject.specialTimer.destroy();
                         this.playerObject.specialTimer = null;
                     }
