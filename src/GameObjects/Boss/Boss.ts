@@ -97,7 +97,7 @@ class Boss extends BaseGameObject {
     bossHeight: number = 2;    //
 
     lastSpecial: number = 0;
-    specialCooldown:number = 4;
+    specialCooldown:number = 6;
 
     attackCooldown: number = 2;
     movementCooldown: number = 1;
@@ -251,12 +251,12 @@ class Boss extends BaseGameObject {
                         case BossMovementType.RANDOM: ch = "r"; break;
                         case BossMovementType.CHASE: ch = "c"; break;
                         case BossMovementType.JUMP: ch = "o"; break;
-                        case BossMovementType.TELEPORT: ch = "l"; break;
+                        case BossMovementType.TELEPORT: ch = "e"; break;
                     }
                 } else if (this.attackType != null) {
                    switch (this.attackType[0]) {
                        case BossAttackType.DAMAGE_FLOOR: ch = "f"; break;
-                       case BossAttackType.DAMAGE_FLOOR_LINE: ch = "e"; break;
+                       case BossAttackType.DAMAGE_FLOOR_LINE: ch = "l"; break;
                     }
                 }
                 enemyKeys[1] = ch;
@@ -268,7 +268,7 @@ class Boss extends BaseGameObject {
                             case BossMovementType.RANDOM: ch = "r"; break;
                             case BossMovementType.CHASE: ch = "c"; break;
                             case BossMovementType.JUMP: ch = "o"; break;
-                            case BossMovementType.TELEPORT: ch = "l"; break;
+                            case BossMovementType.TELEPORT: ch = "e"; break;
                         }
                         enemyKeys[quant] = ch;
                     }
@@ -278,7 +278,7 @@ class Boss extends BaseGameObject {
                     for (var i = 0; i < this.attackType.length; i++) {
                         switch (this.attackType[i]) {
                             case BossAttackType.DAMAGE_FLOOR: ch = "f"; break;
-                            case BossAttackType.DAMAGE_FLOOR_LINE: ch = "e"; break;
+                            case BossAttackType.DAMAGE_FLOOR_LINE: ch = "l"; break;
                         }
 
                         enemyKeys[i + (this.movementType != null ? this.movementType.length : 0)] = ch;
@@ -287,7 +287,7 @@ class Boss extends BaseGameObject {
                 }
             }
 
-            console.log(enemyKeys);
+            console.log("e "+enemyKeys);
 
             for (var i: number = enemyKeys.length - 1; i > 1; i--) {
                 enemyKeys[i] = enemyKeys[enemyKeys.length - 1- i];
@@ -312,7 +312,7 @@ class Boss extends BaseGameObject {
                         case BossMovementType.RANDOM: ch = "r"; break;
                         case BossMovementType.CHASE: ch = "c"; break;
                         case BossMovementType.JUMP: ch = "o"; break;
-                        case BossMovementType.TELEPORT: ch = "l"; break;
+                        case BossMovementType.TELEPORT: ch = "e"; break;
                     }
                     enemyKeys[quant +  (this.specialType != BossSpecialType.NONE ? 1 : 0)] = ch;
                 }
@@ -322,6 +322,7 @@ class Boss extends BaseGameObject {
                 for (var i = 0; i < this.attackType.length; i++) {
                     switch (this.attackType[i]) {
                         case BossAttackType.DAMAGE_FLOOR: ch = "f"; break;
+                        case BossAttackType.DAMAGE_FLOOR_LINE: ch = "l"; break;
                     }
 
                     enemyKeys[i + (this.specialType != BossSpecialType.NONE ? 1 : 0) + (this.movementType != null ? this.movementType.length : 0)] = ch;
@@ -364,7 +365,11 @@ class Boss extends BaseGameObject {
     }
     
     stepUpdate(playerPosition: Phaser.Point, map: TileTypeEnum[][]) {
-        if (this.specialType != BossSpecialType.NONE && this.lastSpecial >= this.specialCooldown) {
+        if (this.state == BossState.TELEPORTING) {
+            this.lastSpecial++;
+            this.lastAttack++;
+            this.moveTeleport(playerPosition, map, false);
+        } else if (this.specialType != BossSpecialType.NONE && this.lastSpecial >= this.specialCooldown) {
             //if needs to use special
             this.useSpecial(playerPosition, map);
             this.lastSpecial = 0;
@@ -372,7 +377,7 @@ class Boss extends BaseGameObject {
             if (this.specialType != BossSpecialType.NONE)
                 this.lastSpecial++;
 
-            var previousPos: Phaser.Point = null;
+            var previousPos: Phaser.Point = new Phaser.Point(this.tilePosition.x, this.tilePosition.y);
             var nextMove: number = 0;
             if (this.movementType != null && this.attackType != null) {
                 nextMove = (this.game.rnd.integerInRange(0, 1));
@@ -385,7 +390,7 @@ class Boss extends BaseGameObject {
             if (nextMove == 0) {
                 if (this.movementType != null) {
                     if (this.lastMovement <= 0) {
-                        var nextMv: number = this.game.rnd.integerInRange(0, this.movementType.length - 1);
+                        var nextMv: number = this.movementType[this.game.rnd.integerInRange(0, this.movementType.length - 1)];
                         switch (nextMv) {
                             case BossMovementType.CHASE: previousPos = this.moveChase(playerPosition, map); break;
                             case BossMovementType.TELEPORT: previousPos = this.moveTeleport(playerPosition, map, false); break;
@@ -399,7 +404,7 @@ class Boss extends BaseGameObject {
             } else if (nextMove == 1) {
                 if (this.attackType != null) {
                     if (this.lastAttack <= 0) {
-                        var nextMv: number = this.game.rnd.integerInRange(0, this.attackType.length - 1);
+                        var nextMv: number = this.attackType[this.game.rnd.integerInRange(0, this.attackType.length - 1)];
                         switch (nextMv) {
                             //case BossAttackType.CHARGE: previousPos = this.moveRandom(playerPosition, map, false); break;
                             case BossAttackType.DAMAGE_FLOOR_LINE: this.leaveFloorAttack(playerPosition, map, previousPos,
@@ -467,6 +472,7 @@ which means it will explode on destruction
             var floor: HarmfulFloorObject = new HarmfulFloorObject(this.game, attPos.x, attPos.y, 1, 9);
             gameplay.addHarm(floor);
         } else { //one direction, 3 turns
+            
             var attPos: Phaser.Point = new Phaser.Point(0, 0), dir: number = this.game.rnd.integerInRange(0, 3);
             switch (dir) {
                 case 0: attPos = new Phaser.Point(0, 1); break;
@@ -475,10 +481,17 @@ which means it will explode on destruction
                 case 3: default: attPos = new Phaser.Point(-1,0); break;
             }
 
-            for (var i:number = pos.x + 1; i < map.length; i++) {
-                for (var j: number = pos.y + 1; j < map[0].length && map[i][j] != TileTypeEnum.Wall; j++) {
-                    var floor: HarmfulFloorObject = new HarmfulFloorObject(this.game, i, j, 1, 6);
-                    gameplay.addHarm(floor);
+            console.log("Damage in line " + attPos);
+
+            for (var i: number = pos.x + 1; i < map.length && i > 0; i + attPos.x) {
+                for (var j: number = pos.y + 1; j < map[0].length && j > 0; j + attPos.y) {
+                    if (map[i][j] != TileTypeEnum.Wall) {
+                        i = -10; j = -10;
+                        break;
+                    } else {
+                        var floor: HarmfulFloorObject = new HarmfulFloorObject(this.game, i, j, 1, 6);
+                        gameplay.addHarm(floor);
+                    }
                 }
             }
         }
@@ -628,6 +641,7 @@ which means it will explode on destruction
 
     moveTeleport(playerPosition: Phaser.Point, map: TileTypeEnum[][], isFocusedOnPlayer: boolean): Phaser.Point {
         var previous: Phaser.Point = new Phaser.Point(this.tilePosition.x, this.tilePosition.y);
+        console.log("Damage teleport ");
         if (this.state == BossState.TELEPORTING) {
 
             if (this.auxTelTimer == 0) {
@@ -638,7 +652,7 @@ which means it will explode on destruction
                 this.curMovementType = 0;
                 this.auxTelTimer--;
             }
-        } else if (this.state == BossState.MOVING) {
+        } else {
             //select a new position
             
             var enPosition: Phaser.Point = new Phaser.Point(0, 0);
@@ -682,7 +696,7 @@ which means it will explode on destruction
                 }
             }
             this.curMovementType = 0;
-            this.auxTelTimer = 1;
+            this.auxTelTimer = 3;
             this.alpha = 0.5;
             this.state = BossState.TELEPORTING;
 
@@ -731,6 +745,19 @@ which means it will explode on destruction
         if (enx < 0)
             enx = 0;
         eny = this.game.rnd.integerInRange(this.tilePosition.y - 2, this.tilePosition.y - 1);
+
+        if (map[enx][eny] == TileTypeEnum.Wall) {
+            if (enx == Global.ROOM_WIDTH - 1)
+                enx--;
+            else if (enx == 0)
+                enx++;
+            if (eny == Global.ROOM_HEIGHT - 1)
+                eny--;
+            else if (eny == 0)
+                eny++;
+        }
+
+        
 
         var enemy:EnemyObject = null;
         switch (this.spawnEnemy) {

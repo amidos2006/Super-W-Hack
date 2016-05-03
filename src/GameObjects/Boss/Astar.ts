@@ -1,4 +1,5 @@
 ﻿/// <reference path="ANode.ts"/>
+
 class Astar {
 
     createChild(cur: ANode, playerPosition: Phaser.Point, map: TileTypeEnum[][], sumX: number, sumY: number): ANode {
@@ -59,8 +60,9 @@ class Astar {
                 break;
 
             for (var i: number = 0; i < dir.length; i++) {
-                if (map[cur.x + dir[i].x][cur.y + dir[i].y] != TileTypeEnum.Wall &&
-                    map[cur.x + dir[i].x][cur.y + dir[i].y] != TileTypeEnum.Enemy) {
+                //if (map[cur.x + dir[i].x][cur.y + dir[i].y] != TileTypeEnum.Wall &&
+               //     map[cur.x + dir[i].x][cur.y + dir[i].y] != TileTypeEnum.Enemy) {
+                if (this.colideEnemy(new Phaser.Point(cur.x + dir[i].x, cur.y + dir[i].y),boss,map)) {
                     var child: ANode = this.createChild(cur, playerPosition, map, dir[i].x, dir[i].y);
 
                     if (!this.appearInList(open, child) && !this.appearInList(closed, child))
@@ -71,7 +73,7 @@ class Astar {
             closed.push(cur);
         }
 
-        if (this.colide(cur,boss,playerPosition)) {
+        if (this.colide(cur,boss,playerPosition,map)) {
             var s: string = "";
             for (var i: number = 0; i < map.length; i++) {
                 for (var j: number = 0; j < map[0].length; j++) {
@@ -97,10 +99,21 @@ class Astar {
         }
     }
 
-    colide(cur: ANode, boss: Boss, player: Phaser.Point): boolean {
+    colideEnemy(pos: Phaser.Point, boss: Boss, map: TileTypeEnum[][]): boolean {
+        for (var i: number = pos.x; i <= pos.x + boss.width; i++) {
+            for (var j: number = pos.y; j <= pos.y + boss.height; j++) {
+                if (map[i][j] == TileTypeEnum.Enemy || map[i][j] == TileTypeEnum.Wall)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    colide(cur: ANode, boss: Boss, player: Phaser.Point, map: TileTypeEnum[][]): boolean {
         for (var i: number = cur.x; i <= cur.x + boss.width; i++) {
             for (var j: number = cur.y; j <= cur.y + boss.height; j++) {
-                if (player.x == i && player.y == j)
+                if ((player.x == i && player.y == j))
                     return true;
             }
         }
