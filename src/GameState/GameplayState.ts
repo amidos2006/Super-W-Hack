@@ -8,6 +8,8 @@
 /// <reference path="../HUDElements/MiniMap.ts"/>
 /// <reference path="../GameObjects/Boss/Boss.ts"/>
 /// <reference path="../ButtonStates.ts"/>
+/// <reference path="../HUDElements/WeaponUI.ts"/>
+/// <reference path="../HUDElements/HandUI.ts"/>
 
 class GameplayState extends BaseGameState {
     currentDoors: DoorTile[];
@@ -82,10 +84,7 @@ class GameplayState extends BaseGameState {
         this.handUI = new HandUI(this.game, 1.5 * Global.MAP_SIZE,
             this.game.height - (this.game.height - this.game.width) / 2 - 3 * Global.MAP_SIZE / 2 + 5);
         this.game.add.existing(this.handUI);
-        if (Global.currentWeapon != null) {
-            this.updateHandUI();
-        }
-
+        
         this.buttonText = new ButtonTutorial(this.game, 7, this.game.height);
         this.game.add.existing(this.buttonText);
 

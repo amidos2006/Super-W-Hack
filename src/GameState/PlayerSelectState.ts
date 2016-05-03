@@ -64,6 +64,7 @@ class PlayerSelectState extends BaseGameState{
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.P)){
             Global.levelNumber = (Global.levelNumber + 1) % 5;
             Global.constructLevel(this.game.rnd);
+            Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.game.rnd, null, Global.weaponNameGenerator, -1);
             this.game.input.keyboard.reset();
         }
         

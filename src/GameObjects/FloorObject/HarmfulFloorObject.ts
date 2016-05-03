@@ -21,7 +21,7 @@ class HarmfulFloorObject extends BaseGameObject{
         
         var style = { font: "10px pixelFont", fill: "#cc6668", align: "right" };
         this.timeText = this.game.add.text(Global.TILE_SIZE - 3, Global.TILE_SIZE + 2, 
-            this.time.toString(), style, this);
+            (this.time > 0)?this.time.toString():"", style, this);
         this.timeText.anchor.set(1, 1);
         this.add(this.timeText);
     }
@@ -58,9 +58,11 @@ class HarmfulFloorObject extends BaseGameObject{
             this.isAlive = false;
             return;
         }
-        this.timeText.text = this.time.toString();
-        this.timeText.anchor.set(1, 1);
-        this.time -= 1;
+        if(this.time > 0){
+            this.timeText.text = this.time.toString();
+            this.timeText.anchor.set(1, 1);
+            this.time -= 1;
+        }
     }
     
     update(){
