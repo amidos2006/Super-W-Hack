@@ -50,7 +50,7 @@ enum BossMovementType {
 }
 
 enum BossAttackType {
-    DAMAGE_FLOOR, CHARGE, SHOOT
+    DAMAGE_FLOOR, CHARGE, SHOOT, DAMAGE_FLOOR_LINE
 }
 
 enum BossSpecialType {
@@ -72,7 +72,7 @@ class Boss extends BaseGameObject {
     [BossSpecialType.SPAWN_ENEMY, BossSpecialType.HEAL];//, BossSpecialType.STUN];
 
     static BOSS_ATTACKS: BossAttackType[] =
-    [BossAttackType.CHARGE, BossAttackType.DAMAGE_FLOOR];//, BossAttackType.SHOOT];
+    [BossAttackType.DAMAGE_FLOOR, BossAttackType.DAMAGE_FLOOR_LINE];//,BossAttackType.CHARGE]; BossAttackType.SHOOT];
 
     specialType: BossSpecialType = BossSpecialType.NONE;
 
@@ -97,7 +97,7 @@ class Boss extends BaseGameObject {
     lastSpecial: number = 0;
     specialCooldown:number = 4;
 
-    attackCooldown: number = 3;
+    attackCooldown: number = 2;
     movementCooldown: number = 1;
     lastMovement: number = 0;
     lastAttack: number = 0;
@@ -212,17 +212,25 @@ class Boss extends BaseGameObject {
             this.spawnEnemy = EnemyTypeEnum.Random;
         }
 
+        //print for your own conscience
         var atS: string = "", mS: string = "";
         if (att == 0)
             atS = "none";
+        else
+            for (var i: number = 0; i < this.attackType.length; i++) {
+                atS += this.attackType[i] + ",";
+            }
         if (mov == 0)
-            atS = "none";
+            mS = "none";
         else
             for (var i: number = 0; i < this.movementType.length; i++) {
                 mS += this.movementType[i] + ",";
             }
-        console.log("BOSS: " + amountOfStrategies + "["+att+","+mov+"] -> " + this.specialType + ";  att " + atS + ";   mov " + mS);
+        console.log("BOSS: " + amountOfStrategies + "[" + att + "," + mov + "] -> " +
+            this.specialType +
+            ";  att [" + (this.attackType != null ? this.attackType.length:"null") + "] " + atS + ";   mov [" + (this.movementType != null ? this.movementType.length : "null")+"] " + mS);
 
+        //select characters
         var enemyKeys: string[] = new Array(4);
         for (var i: number = 0; i < 4; i++) {
             enemyKeys[i] = "r";
@@ -237,7 +245,7 @@ class Boss extends BaseGameObject {
                 enemyKeys[0] = ch;
 
                 if (this.movementType != null) {
-                    switch (this.movementType[quant]) {
+                    switch (this.movementType[0]) {
                         case BossMovementType.RANDOM: ch = "r"; break;
                         case BossMovementType.CHASE: ch = "c"; break;
                         case BossMovementType.JUMP: ch = "o"; break;
@@ -245,7 +253,8 @@ class Boss extends BaseGameObject {
                     }
                 } else if (this.attackType != null) {
                    switch (this.attackType[0]) {
-                         case BossAttackType.DAMAGE_FLOOR: ch = "f"; break;
+                       case BossAttackType.DAMAGE_FLOOR: ch = "f"; break;
+                       case BossAttackType.DAMAGE_FLOOR_LINE: ch = "e"; break;
                     }
                 }
                 enemyKeys[1] = ch;
@@ -267,6 +276,7 @@ class Boss extends BaseGameObject {
                     for (var i = 0; i < this.attackType.length; i++) {
                         switch (this.attackType[i]) {
                             case BossAttackType.DAMAGE_FLOOR: ch = "f"; break;
+                            case BossAttackType.DAMAGE_FLOOR_LINE: ch = "e"; break;
                         }
 
                         enemyKeys[i + (this.movementType != null ? this.movementType.length : 0)] = ch;
@@ -275,17 +285,50 @@ class Boss extends BaseGameObject {
                 }
             }
 
-            var auxP: string = "";
-            for (var i: number = 0; i < enemyKeys.length; i++) {
-                auxP += enemyKeys[i] + " ";
-            }
             console.log(enemyKeys);
 
-            for (var i: number = enemyKeys.length - 1; i > 2; i--) {
-                enemyKeys[i] = enemyKeys[enemyKeys.length - 1 - i];
+            for (var i: number = enemyKeys.length - 1; i > 1; i--) {
+                enemyKeys[i] = enemyKeys[enemyKeys.length - 1- i];
             }
-        } else {
 
+            console.log(enemyKeys);
+        } else {
+            if (this.specialType != BossSpecialType.NONE) {
+                switch (this.specialType) {
+                    case BossSpecialType.HEAL: ch = "h"; break;
+                    case BossSpecialType.SPAWN_ENEMY: ch = "s"; break;
+                }
+                enemyKeys[0] = ch;
+
+                
+            } 
+
+            var quant: number = 0;
+            if (this.movementType != null) {
+                for (quant = 0; quant < this.movementType.length; quant++) {
+                    switch (this.movementType[quant]) {
+                        case BossMovementType.RANDOM: ch = "r"; break;
+                        case BossMovementType.CHASE: ch = "c"; break;
+                        case BossMovementType.JUMP: ch = "o"; break;
+                        case BossMovementType.TELEPORT: ch = "l"; break;
+                    }
+                    enemyKeys[quant +  (this.specialType != BossSpecialType.NONE ? 1 : 0)] = ch;
+                }
+            }
+
+            if (this.attackType != null) {
+                for (var i = 0; i < this.attackType.length; i++) {
+                    switch (this.attackType[i]) {
+                        case BossAttackType.DAMAGE_FLOOR: ch = "f"; break;
+                    }
+
+                    enemyKeys[i + (this.specialType != BossSpecialType.NONE ? 1 : 0) + (this.movementType != null ? this.movementType.length : 0)] = ch;
+
+                }
+            }
+
+            enemyKeys[3] = enemyKeys[0];
+            
         }
         this.addInnerBoss(enemyKeys);
     }
@@ -302,41 +345,54 @@ class Boss extends BaseGameObject {
     }
     
     stepUpdate(playerPosition: Phaser.Point, map: TileTypeEnum[][]) {
-        if (this.lastSpecial >= this.specialCooldown) {
+        if (this.specialType != BossSpecialType.NONE && this.lastSpecial >= this.specialCooldown) {
             //if needs to use special
             this.useSpecial(playerPosition, map);
             this.lastSpecial = 0;
         } else {
-            this.lastSpecial++;
+            if (this.specialType != BossSpecialType.NONE)
+                this.lastSpecial++;
 
             var previousPos: Phaser.Point = null;
+            var nextMove: number = 0;
+            if (this.movementType != null && this.attackType != null) {
+                nextMove = (this.game.rnd.integerInRange(0, 1));
+            } else if (this.movementType == null)
+                nextMove = 1;
 
             //other movement
-            if (this.movementType != null) {
-                if (this.lastMovement <= this.movementCooldown) {
-                    var nextMv: number = this.game.rnd.integerInRange(0, this.movementType.length-1);
-                    switch (nextMv) {
-                        case BossMovementType.CHASE: previousPos = this.moveChase(playerPosition, map); break;
-                        case BossMovementType.TELEPORT: previousPos = this.moveTeleport(playerPosition, map, false); break;
-                        case BossMovementType.JUMP: previousPos = this.moveTeleport(playerPosition, map, true); break;
-                        case BossMovementType.RANDOM: default: previousPos = this.moveRandom(playerPosition, map, false); break;
-                    }
-                    this.lastMovement = this.movementCooldown;
-                } else
-                    this.lastMovement--;
-            }
 
-            /*if (this.attackType != null) {
-                if (this.lastAttack <= this.attackCooldown) {
-                    var nextMv: number = this.game.rnd.integerInRange(0, this.attackType.length - 1);
-                    switch (nextMv) {
-                        case BossAttackType.DAMAGE_FLOOR;
-                        case BossMovementType.RANDOM: default: previousPos = this.moveRandom(playerPosition, map, false); break;
-                    }
+
+            if (nextMove == 0) {
+                if (this.movementType != null) {
+                    if (this.lastMovement <= 0) {
+                        var nextMv: number = this.game.rnd.integerInRange(0, this.movementType.length - 1);
+                        switch (nextMv) {
+                            case BossMovementType.CHASE: previousPos = this.moveChase(playerPosition, map); break;
+                            case BossMovementType.TELEPORT: previousPos = this.moveTeleport(playerPosition, map, false); break;
+                            case BossMovementType.JUMP: previousPos = this.moveTeleport(playerPosition, map, true); break;
+                            case BossMovementType.RANDOM: default: previousPos = this.moveRandom(playerPosition, map, false); break;
+                        }
+                        this.lastMovement = this.movementCooldown;
+                    } else
+                        this.lastMovement--;
                 }
-                this.lastAttack = this.attackCooldown;
-            } else
-                this.lastAttack--;*/
+            } else if (nextMove == 1) {
+                if (this.attackType != null) {
+                    if (this.lastAttack <= 0) {
+                        var nextMv: number = this.game.rnd.integerInRange(0, this.attackType.length - 1);
+                        switch (nextMv) {
+                            //case BossAttackType.CHARGE: previousPos = this.moveRandom(playerPosition, map, false); break;
+                            case BossAttackType.DAMAGE_FLOOR_LINE: this.leaveFloorAttack(playerPosition, map, previousPos,
+                                BossAttackType.DAMAGE_FLOOR_LINE); break;
+                            case BossAttackType.DAMAGE_FLOOR: default:
+                                this.leaveFloorAttack(playerPosition, map, previousPos, BossAttackType.DAMAGE_FLOOR); break;
+                        }
+                        this.lastAttack = this.attackCooldown;
+                    } else
+                        this.lastAttack--;
+                }
+            }
         }
         console.log(this.tilePosition + " " + this.x + "," + this.y + " special:" + this.lastSpecial);
 
@@ -378,9 +434,32 @@ means its there forever
 explode
 which means it will explode on destruction
     */
-    leaveFloorAttack(playerPosition: Phaser.Point, map: TileTypeEnum[][], pos: Phaser.Point) {
-        var floor: HarmfulFloorObject = new HarmfulFloorObject(this.game, pos.x, pos.y, 1, 3);
+    leaveFloorAttack(playerPosition: Phaser.Point, map: TileTypeEnum[][], pos: Phaser.Point, type: BossAttackType) {
+        if (type == BossAttackType.DAMAGE_FLOOR) { // random position, 1 per turn, 5 time
+            var attPos: Phaser.Point = new Phaser.Point(0, 0);
+            attPos.x = this.game.rnd.integerInRange(1, map.length - 1);
+            attPos.y = this.game.rnd.integerInRange(1, map[0].length - 1);
+            if (map[attPos.x][attPos.y] == TileTypeEnum.Wall)
+                if (this.game.rnd.frac() < 0.5)
+                    attPos.x += (attPos.x + 1 < map.length - 1 ? 1 : -1);
+                else
+                    attPos.y += (attPos.y + 1 < map[0].length - 1 ? 1 : -1);
+            var floor: HarmfulFloorObject = new HarmfulFloorObject(this.game, attPos.x, attPos.y, 1, 5);
+        } else { //one direction, 3 turns
+            var attPos: Phaser.Point = new Phaser.Point(0, 0), dir: number = this.game.rnd.integerInRange(0, 3);
+            switch (dir) {
+                case 0: attPos = new Phaser.Point(0, 1); break;
+                case 1: attPos = new Phaser.Point(0, -1); break;
+                case 2: attPos = new Phaser.Point(1,0); break;
+                case 3: default: attPos = new Phaser.Point(-1,0); break;
+            }
 
+            for (var i:number = pos.x + 1; i < map.length; i++) {
+                for (var j: number = pos.y + 1; j < map[0].length && map[i][j] != TileTypeEnum.Wall; j++) {
+                    var floor: HarmfulFloorObject = new HarmfulFloorObject(this.game, i, j, 1, 3);
+                }
+            }
+        }
     }
 
     useSpecial(playerPosition: Phaser.Point, map: TileTypeEnum[][]) {
@@ -500,7 +579,7 @@ which means it will explode on destruction
             this.updateAbsolutePosition();
 
             if (isLeavingOnFloor) {
-                this.leaveFloorAttack(playerPosition, map, previousPos);
+                this.leaveFloorAttack(playerPosition, map, previousPos, BossAttackType.DAMAGE_FLOOR);
             }
         } else {
             this.tilePosition = previousPos;
