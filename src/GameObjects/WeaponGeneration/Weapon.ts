@@ -153,7 +153,7 @@ class Weapon {
         //USE resto??? %
         if (this.repeat) {
             if (faceDirection.x == 1) {
-                for (var i: number = (topLeft.y < 0 ? 0 : topLeft.y); i - topLeft.y < pathRightDir.length; i++) {
+                for (var i: number = (topLeft.y < 0 ? 0 : topLeft.y); i - topLeft.y < pathRightDir.length && i < result.length; i++) {
                     for (var j: number = topLeft.x; j < result[0].length; j++) {
                         if (pathRightDir[(i - topLeft.y)][(j - topLeft.x)%pathRightDir[0].length] == 1) {
                                     result[i][j] = this.damage;
