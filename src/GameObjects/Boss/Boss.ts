@@ -75,6 +75,8 @@ class Boss extends BaseGameObject {
     [BossAttackType.CHARGE, BossAttackType.DAMAGE_FLOOR];//, BossAttackType.SHOOT];
 
     specialType: BossSpecialType = BossSpecialType.NONE;
+    
+    renderValues = {"p":37, "r":38, "c":39, "s":40, "m":41, "e":42, "l":43, "f":44, "g":47, "h":48, "o":49};
 
     state: BossState = BossState.IDLE;
     attackType: BossAttackType[] = null;
@@ -107,6 +109,19 @@ class Boss extends BaseGameObject {
     tilePosition: Phaser.Point;
     probDirection: number[] = [25, 25, 25, 25];
     spawnEnemy: EnemyTypeEnum = EnemyTypeEnum.Chaser;
+
+    addInnerBoss(symbols:string[]){
+        for (var i = 0; i < symbols.length; i++) {
+            var value:number = this.renderValues[symbols[i].toLowerCase()];
+            var x:number = i % 2;
+            var y:number = Math.floor(i / 2);
+            var graphics: Phaser.Sprite = this.game.add.sprite(x * Global.TILE_SIZE, y * Global.TILE_SIZE, "graphics");
+            graphics.animations.add("normal", [value]);
+            graphics.animations.play("normal");
+            graphics.tint = 0xcc6668;
+            this.add(graphics);
+        }
+    }
 
     constructor(game: Phaser.Game, xTile: number, yTile: number) {
         super(game, xTile * Global.TILE_SIZE, yTile * Global.TILE_SIZE);
