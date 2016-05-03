@@ -87,6 +87,8 @@ class Boss extends BaseGameObject {
     curDirection: number[] = [1, 0];
     stepsSinceLastMoveChange: number = 0;
     stepsToChangeMove: number = 0;
+    
+    healthText: Phaser.Text;
 
     static MAX_HEALTH: number = 20;
     health: number = Boss.MAX_HEALTH;
@@ -331,6 +333,12 @@ class Boss extends BaseGameObject {
             
         }
         this.addInnerBoss(enemyKeys);
+        
+        var style = { font: "10px pixelFont", fill: "#cc6668", align: "right" };
+        this.healthText = this.game.add.text(2 * Global.TILE_SIZE - 3, 2 * Global.TILE_SIZE + 4,
+            this.health.toString(), style, this);
+        this.healthText.anchor.set(1, 1);
+        this.add(this.healthText);
     }
 
     toTile(x: number): number {
@@ -342,6 +350,17 @@ class Boss extends BaseGameObject {
             this.getTilePosition().equals(new Phaser.Point(xTile - 1, yTile)) ||
             this.getTilePosition().equals(new Phaser.Point(xTile, yTile - 1)) ||
             this.getTilePosition().equals(new Phaser.Point(xTile - 1, yTile - 1));
+    }
+    
+    update(){
+        super.update();
+        
+        this.healthText.text = this.health.toString();
+        this.healthText.anchor.set(1, 1);
+        this.healthText.alpha = 1;
+        if (this.health < 1) {
+            this.healthText.alpha = 0;
+        }
     }
     
     stepUpdate(playerPosition: Phaser.Point, map: TileTypeEnum[][]) {
@@ -435,6 +454,7 @@ explode
 which means it will explode on destruction
     */
     leaveFloorAttack(playerPosition: Phaser.Point, map: TileTypeEnum[][], pos: Phaser.Point, type: BossAttackType) {
+        var gameplay:GameplayState = <GameplayState>this.game.state.getCurrentState();
         if (type == BossAttackType.DAMAGE_FLOOR) { // random position, 1 per turn, 5 time
             var attPos: Phaser.Point = new Phaser.Point(0, 0);
             attPos.x = this.game.rnd.integerInRange(1, map.length - 1);
@@ -444,7 +464,8 @@ which means it will explode on destruction
                     attPos.x += (attPos.x + 1 < map.length - 1 ? 1 : -1);
                 else
                     attPos.y += (attPos.y + 1 < map[0].length - 1 ? 1 : -1);
-            var floor: HarmfulFloorObject = new HarmfulFloorObject(this.game, attPos.x, attPos.y, 1, 5);
+            var floor: HarmfulFloorObject = new HarmfulFloorObject(this.game, attPos.x, attPos.y, 1, 9);
+            gameplay.addHarm(floor);
         } else { //one direction, 3 turns
             var attPos: Phaser.Point = new Phaser.Point(0, 0), dir: number = this.game.rnd.integerInRange(0, 3);
             switch (dir) {
@@ -456,7 +477,8 @@ which means it will explode on destruction
 
             for (var i:number = pos.x + 1; i < map.length; i++) {
                 for (var j: number = pos.y + 1; j < map[0].length && map[i][j] != TileTypeEnum.Wall; j++) {
-                    var floor: HarmfulFloorObject = new HarmfulFloorObject(this.game, i, j, 1, 3);
+                    var floor: HarmfulFloorObject = new HarmfulFloorObject(this.game, i, j, 1, 6);
+                    gameplay.addHarm(floor);
                 }
             }
         }

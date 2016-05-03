@@ -250,6 +250,18 @@ class GameplayState extends BaseGameState {
                 this.bossObject.killObject();
                 this.bossObject = null;
             }
+            if (this.bossObject != null && this.bossObject.takeDamage(damage[bP.y + 1][bP.x])) {
+                this.bossObject.killObject();
+                this.bossObject = null;
+            }
+            if (this.bossObject != null && this.bossObject.takeDamage(damage[bP.y][bP.x + 1])) {
+                this.bossObject.killObject();
+                this.bossObject = null;
+            }
+            if (this.bossObject != null && this.bossObject.takeDamage(damage[bP.y + 1][bP.x + 1])) {
+                this.bossObject.killObject();
+                this.bossObject = null;
+            }
         }
         
         var playerPos:Phaser.Point = this.playerObject.getTilePosition();
