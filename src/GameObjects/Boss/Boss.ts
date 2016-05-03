@@ -118,7 +118,10 @@ class Boss extends BaseGameObject {
             var value:number = this.renderValues[symbols[i].toLowerCase()];
             var x:number = i % 2;
             var y:number = Math.floor(i / 2);
-            var graphics: Phaser.Sprite = this.game.add.sprite(x * Global.TILE_SIZE, y * Global.TILE_SIZE, "graphics");
+            var shiftX:number = -2*x + 1;
+            var shiftY:number = -2*y + 1;
+            var graphics: Phaser.Sprite = this.game.add.sprite(x * Global.TILE_SIZE + shiftX * 3, 
+                y * Global.TILE_SIZE + shiftY * 3, "graphics");
             graphics.animations.add("normal", [value]);
             graphics.animations.play("normal");
             graphics.tint = 0xcc6668;

@@ -206,9 +206,11 @@ class EnemyTypes{
             for (var y = 0; y < map[x].length; y++) {
                 if (map[x][y] == TileTypeEnum.Passable) {
                     if ((y > Math.floor(Global.ROOM_HEIGHT / 2) + 1 || 
-                        y < Math.floor(Global.ROOM_HEIGHT / 2) - 1) &&
-                        !(playerLocation.x == x || playerLocation.x == y || 
-                        playerLocation.y == x || playerLocation.y == y)){
+                        y < Math.floor(Global.ROOM_HEIGHT / 2) - 1) && 
+                        (x > Math.floor(Global.ROOM_WIDTH / 2) + 1 || 
+                        x < Math.floor(Global.ROOM_WIDTH / 2) - 1) &&
+                        !(x == Global.ROOM_WIDTH - 1 || x == 1 ||
+                        y == Global.ROOM_HEIGHT - 1 || y == 1)){
                         places.push(y);
                     }
                     value += 1;

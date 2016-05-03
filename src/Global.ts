@@ -143,7 +143,7 @@ class Global{
         
         Global.mapWidth = 1;
         Global.mapHeight = 1;
-        Global.levelRooms = [[new RoomInfoObject(RoomTypeEnum.Boss, random)]];
+        Global.levelRooms = [[new RoomInfoObject(RoomTypeEnum.Spawning, random)]];
         Global.currentX = 0;
         Global.currentY = 0;
     }
