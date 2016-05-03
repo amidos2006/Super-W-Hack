@@ -169,8 +169,10 @@
      * Play the game's title music.
      */
     playTitleMusic() {
-        AudioManager.musicTitle.play();
-        AudioManager.musicTitle.volume = 0.6;
+        if(!AudioManager.musicTitle.isPlaying){
+            AudioManager.musicTitle.play();
+            AudioManager.musicTitle.volume = 0.6;
+        }
     }
 
     stopTitleMusic() {

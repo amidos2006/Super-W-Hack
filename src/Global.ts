@@ -165,6 +165,20 @@ class Global{
             }
         }
         
+        if(Global.levelNumber == Global.MAX_DEPTH - 1){
+            Global.currentX = Math.floor(Global.mapWidth / 2);
+            Global.currentY = Math.floor(Global.mapHeight / 2) + 1;
+            Global.levelRooms[Global.currentX][Global.currentY] = new RoomInfoObject(RoomTypeEnum.None, random);
+            Global.levelRooms[Global.currentX][Global.currentY].cleared = true;
+            Global.levelRooms[Global.currentX][Global.currentY].setDoor(new Phaser.Point(0, -1));
+            Global.levelRooms[Global.currentX][Global.currentY - 1] = new RoomInfoObject(RoomTypeEnum.None, random);
+            Global.levelRooms[Global.currentX][Global.currentY - 1].setDoor(new Phaser.Point(0, 1));
+            Global.levelRooms[Global.currentX][Global.currentY - 1].setDoor(new Phaser.Point(0, -1));
+            Global.levelRooms[Global.currentX][Global.currentY - 2] = new RoomInfoObject(RoomTypeEnum.Boss, random);
+            Global.levelRooms[Global.currentX][Global.currentY - 2].setDoor(new Phaser.Point(0, 1));
+            return;
+        }
+        
         var sets:RoomSet[] = [];
         
         var queue:Phaser.Point[] = [new Phaser.Point(random.integerInRange(0, Global.mapWidth - 1), 
