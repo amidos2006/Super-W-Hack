@@ -1,3 +1,5 @@
+/// <reference path="../BaseGameObject.ts"/>
+
 class AttackEffect extends BaseGameObject{
     sprite:Phaser.Sprite;
     scaleInc:number;

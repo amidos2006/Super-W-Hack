@@ -1,5 +1,7 @@
 /// <reference path="../BaseGameObject.ts"/>
 
+/// <reference path="../BaseGameObject.ts"/>
+
 class LaserEffect extends BaseGameObject{
     graphics:Phaser.Graphics;
     direction:Phaser.Point;
