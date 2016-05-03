@@ -29,9 +29,14 @@ class MainMenuState extends BaseGameState{
         this.choices[this.index].changeText(this.selectedValues[this.index]);
         this.choices[this.index].selectText(true);
         
+        var buttons:string = "(a)";
+        if(!this.game.input.gamepad.pad1.connected){
+            buttons = "(x)";
+        }
+        
         this.game.add.existing(new WhiteLayout(this.game, 10, 10, this.game.width - 20, this.game.height - 20));
         this.game.add.existing(new HintText(this.game, this.game.width/2, 
-            this.game.height - 5, "(up/down) to choose\n(a) to select"));
+            this.game.height - 5, "(up/down) to choose\n" + buttons + " to select"));
     }
     
     update(){

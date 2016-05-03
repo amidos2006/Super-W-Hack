@@ -25,11 +25,21 @@ class PauseMenu extends BaseUIObject{
         
         var value:string = "";
         if(isPause){
-            value += "(start) resume\n";
+            if(!this.game.input.gamepad.pad1.connected){
+                value += "(esc) resume\n"
+            }
+            else{
+                value += "(start) resume\n";
+            }
+        }
+        
+        var select:string = "(select)";
+        if(!this.game.input.gamepad.pad1.connected){
+            select = "(r)"
         }
         
         style = { font: "20px pixelFont", fill: "#ffffff", align: "center" };
-        text = this.game.add.text(x, y + shift, value + "(select) restart", style, this);
+        text = this.game.add.text(x, y + shift, value + select + " restart", style, this);
         text.anchor.set(0.5, 0);
         this.add(text);
         

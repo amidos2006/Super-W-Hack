@@ -333,20 +333,27 @@ class EnemyTypes{
             }
         }
         
-        if(Global.levelNumber == 0){
-            switch (Global.difficultyNumber) {
-                case 0:
-                    return this.createChaser(game, map, damageValue, distances, 1);
-                case 1:
-                    return this.createPatrol(game, map, damageValue, distances);
-                case 2:
-                    if(this.currentEnemyNumbers[EnemyNames.Chaser] > 0){
+        switch (Global.levelNumber) {
+            case 0:
+                switch (Global.difficultyNumber) {
+                    case 0:
+                        return this.createChaser(game, map, damageValue, distances, 1);
+                    case 1:
                         return this.createPatrol(game, map, damageValue, distances);
-                    }
-                    else{
-                        return this.createChaser(game, map, damageValue, distances);
-                    }
-            }
+                    case 2:
+                        if(this.currentEnemyNumbers[EnemyNames.Chaser] > 0){
+                            return this.createPatrol(game, map, damageValue, distances);
+                        }
+                        else{
+                            return this.createChaser(game, map, damageValue, distances);
+                        }
+                }
+                break;
+            case 1:
+                if(Global.difficultyNumber == 0){
+                    return this.createShooter(game, map, damageValue, distances);
+                }
+                break;
         }
         
         var currentClassIndex:number = 0;
