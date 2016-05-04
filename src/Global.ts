@@ -138,12 +138,15 @@ class Global{
         return result;
     }
     
-    static constructSingleLevel(random:Phaser.RandomDataGenerator){
+    static constructSingleLevel(random:Phaser.RandomDataGenerator, influence:RoomTypeEnum = -1){
         Global.previousDirection = new Phaser.Point(0, 1);
         
         Global.mapWidth = 1;
         Global.mapHeight = 1;
         Global.levelRooms = [[new RoomInfoObject(RoomTypeEnum.Spawning, random)]];
+        if(influence != -1){
+            Global.levelRooms = [[new RoomInfoObject(influence, random)]];
+        }
         Global.currentX = 0;
         Global.currentY = 0;
     }

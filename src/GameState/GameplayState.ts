@@ -441,9 +441,7 @@ class GameplayState extends BaseGameState {
                     if (e.takeDamage(1)) {
                         this.listOfDeleted.push(e);
                     }
-                    if(h.time < 0){
-                        h.isAlive = false;
-                    }
+                    h.isAlive = false;
                 }
             }
         }
@@ -486,13 +484,13 @@ class GameplayState extends BaseGameState {
                 tileMatrix[pos.x][pos.y + 1] = TileTypeEnum.Enemy;
                 tileMatrix[pos.x + 1][pos.y + 1] = TileTypeEnum.Enemy;
             }
-            var blob:BlobEnemyObject = <BlobEnemyObject>this.enemyObjects[i];
-            if(blob.dropTrail != null){
-                this.enemyObjects[i].enemyMove(this.playerObject.getTilePosition(), tileMatrix);
-            }
-            else{
+            // var blob:BlobEnemyObject = <BlobEnemyObject>this.enemyObjects[i];
+            // if(blob.dropTrail != null){
+            //     this.enemyObjects[i].enemyMove(this.playerObject.getTilePosition(), tileMatrix);
+            // }
+            // else{
                 this.enemyObjects[i].enemyMove(this.lastPosition, tileMatrix);
-            }
+            // }
         }
         
         for (var i = 0; i < this.harmfulObjects.length; i++) {

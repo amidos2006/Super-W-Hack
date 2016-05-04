@@ -42,6 +42,12 @@ class MainMenuState extends BaseGameState{
     update(){
         super.update();
         
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
+            Global.constructSingleLevel(this.rnd, RoomTypeEnum.Boss);
+            this.game.state.start("gameplay");
+            this.game.input.keyboard.reset();
+        }
+        
         if(Global.gameController.direction.y == -1){
             this.choices[this.index].changeText(this.unselectedValues[this.index]);
             this.choices[this.index].selectText(false);

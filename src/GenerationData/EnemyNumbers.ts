@@ -34,6 +34,14 @@ class EnemyNumbers{
                         return 3;
                 }
                 break;
+            case 2:
+                switch (Global.difficultyNumber) {
+                    case 0:
+                        return 1;
+                    case 1:
+                        return 3;
+                }
+                break;
         }
         var cdf:number[] = [this.probabilities[levelNumber][0]];
         var total:number = 0;

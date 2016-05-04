@@ -178,10 +178,33 @@ class EnemyTypes{
         return new ExplosiveEnemyObject(game, empty.x, empty.y, health, 0, new Phaser.Point());
     }
     
-    createBlob(game:Phaser.Game, map:TileTypeEnum[][], damage:number, distances:number[]):EnemyObject{
+    sameXSameY(point:Phaser.Point, map:TileTypeEnum[][]){
+        for (var x = 0; x < Global.ROOM_WIDTH; x++) {
+            for (var y = 0; y < Global.ROOM_HEIGHT; y++) {
+                if(map[x][y] == TileTypeEnum.Enemy){
+                    if(point.x == x || point.y == y){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    createBlob(game:Phaser.Game, map:TileTypeEnum[][], damage:number, distances:number[], inHealth:number = -1):EnemyObject{
         var locations:Phaser.Point[] = this.getFarAwayTiles(map);
+        for (var i = 0; i < locations.length; i++) {
+            var l = locations[i];
+            if(this.sameXSameY(l, map)){
+                locations.splice(i, 1);
+                i--;
+            }
+        }
         var empty:Phaser.Point = locations[game.rnd.integerInRange(0, locations.length - 1)];
         var health:number = this.getIndex(game.rnd, this.healthProbabilites) + 1;
+        if(inHealth > 0){
+            health = inHealth;
+        }
         
         var playerLocation:Phaser.Point = new Phaser.Point(Math.floor((this.lastDirection.x + 1) * Global.ROOM_WIDTH / 2) 
             - Math.floor((this.lastDirection.x + 1) / 2), Math.floor((this.lastDirection.y + 1) * Global.ROOM_HEIGHT / 2) 
@@ -205,12 +228,9 @@ class EnemyTypes{
             var maxPlaces: number[] = [];
             for (var y = 0; y < map[x].length; y++) {
                 if (map[x][y] == TileTypeEnum.Passable) {
-                    if ((y > Math.floor(Global.ROOM_HEIGHT / 2) + 1 || 
-                        y < Math.floor(Global.ROOM_HEIGHT / 2) - 1) && 
-                        (x > Math.floor(Global.ROOM_WIDTH / 2) + 1 || 
-                        x < Math.floor(Global.ROOM_WIDTH / 2) - 1) &&
-                        !(x == Global.ROOM_WIDTH - 1 || x == 1 ||
-                        y == Global.ROOM_HEIGHT - 1 || y == 1)){
+                    console.log(y + " " + Math.floor(map[x].length / 2) + " " + (map[x].length - 2));
+                    if ((y > Math.floor(map[x].length / 2) + 1 && y < map[x].length - 2) || 
+                        (y < Math.floor(map[x].length / 2) - 1 && y > 1)){
                         places.push(y);
                     }
                     value += 1;
@@ -227,7 +247,7 @@ class EnemyTypes{
                     places = [];
                 }
             }
-            if (maxValue > refrenceValue) {
+            if (maxValue > refrenceValue && maxPlaces.length > 0) {
                 positions.push(new Phaser.Point(x, maxPlaces[random.integerInRange(0, maxPlaces.length - 1)]));
             }
         }
@@ -292,7 +312,14 @@ class EnemyTypes{
         return numbers;
     }
     
-    checkConstraints(currentClassIndex:EnemyNames){
+    checkConstraints(currentClassIndex:EnemyNames, distances:number[]){
+        var maxHealth:boolean = true;
+        for (var i = 0; i < distances.length; i++) {
+            if(distances[i] > 1){
+                maxHealth = false;
+                break;
+            }
+        }
         switch (currentClassIndex){
             case EnemyNames.Chaser:
                 return !(this.enemyNumber <= 1 && this.numOfDivertEnemies() <= 1 && 
@@ -301,6 +328,9 @@ class EnemyTypes{
                 return this.currentEnemyNumbers[currentClassIndex] < 1;
             case EnemyNames.Patrol:
                 return this.currentEnemyNumbers[currentClassIndex] < 2;
+            case EnemyNames.Blob:
+                return !(this.enemyNumber <= 1 && maxHealth && this.numOfDivertEnemies() <= 1 && 
+                    this.currentEnemyNumbers[EnemyNames.Blob] > 0);
         }
         return true;
     }
@@ -356,12 +386,17 @@ class EnemyTypes{
                     return this.createShooter(game, map, damageValue, distances);
                 }
                 break;
+            case 2:
+                if(Global.difficultyNumber == 0){
+                    return this.createBlob(game, map, damageValue, distances, 1);
+                }
+                break;
         }
         
         var currentClassIndex:number = 0;
         do{
             currentClassIndex = this.getIndex(game.rnd, this.typeProbabilities);
-        }while(!this.checkConstraints(currentClassIndex));
+        }while(!this.checkConstraints(currentClassIndex, distances));
         
         var enemy:EnemyObject = null;
         switch (currentClassIndex) {
