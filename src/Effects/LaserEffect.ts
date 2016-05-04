@@ -7,7 +7,7 @@ class LaserEffect extends BaseGameObject{
     direction:Phaser.Point;
     scaleDownSpeed:number;
     
-    constructor(game:Phaser.Game, x:number, y:number, destX:number, destY:number){
+    constructor(game:Phaser.Game, x:number, y:number, destX:number, destY:number, color:number){
         super(game, x * Global.TILE_SIZE, y * Global.TILE_SIZE);
         this.scaleDownSpeed = 0.05;
         
@@ -17,7 +17,7 @@ class LaserEffect extends BaseGameObject{
         this.y += (this.direction.y + 1) * Global.TILE_SIZE / 2;
         
         this.graphics = this.game.add.graphics(0, 0, this);
-        this.graphics.beginFill(0xcc6668, 1);
+        this.graphics.beginFill(color, 1);
         this.graphics.drawRect(Math.abs(this.direction.y) * -4, Math.abs(this.direction.x) * -4, 
             (destX - x) * Global.TILE_SIZE - this.direction.x * Global.TILE_SIZE / 2 + Math.abs(this.direction.y) * 8, 
             (destY - y) * Global.TILE_SIZE - this.direction.y * Global.TILE_SIZE / 2 + Math.abs(this.direction.x) * 8);

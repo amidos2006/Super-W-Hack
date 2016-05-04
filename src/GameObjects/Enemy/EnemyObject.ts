@@ -447,6 +447,7 @@ class EnemyObject extends BaseGameObject {
             this.enemySprite.tint = 0xcc66cc;
             if(this.cannonSprite != null){
                 this.cannonSprite.tint = 0xcc66cc;
+                this.laserHighlight.tint = 0xcc66cc;
             }
             this.healthText.tint = 0xcc66cc;
         }
@@ -454,6 +455,7 @@ class EnemyObject extends BaseGameObject {
             this.enemySprite.tint = 0xcc6668;
             if(this.cannonSprite != null){
                 this.cannonSprite.tint = 0xcc6668;
+                this.laserHighlight.tint = 0xcc6668;
             }
             this.healthText.tint = 0xcc6668;
         }

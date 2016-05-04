@@ -274,6 +274,7 @@ class GameplayState extends BaseGameState {
             }
             
             if (this.enemyObjects[i].takeDamage(damage[eP.y][eP.x])) {
+                this.scoreMuliplier += 1;
                 this.listOfDeleted.push(this.enemyObjects[i]);
             }
         }
@@ -355,8 +356,9 @@ class GameplayState extends BaseGameState {
             for (var j = 0; j < this.enemyObjects.length; j++) {
                 var e2 = this.enemyObjects[j];
                 if(e1 == e2){
-                    this.scoreMuliplier += 1;
                     lastEnemyDied = this.enemyObjects[j].getTilePosition();
+                    this.game.add.existing(new WeaponName(this.game, lastEnemyDied.x, lastEnemyDied.y, 
+                        "+" + (Math.pow(2, this.scoreMuliplier - 2)).toString(), 0xffffff));
                     this.enemyObjects[j].killObject();
                     this.enemyObjects.splice(j, 1);
                     break;
@@ -516,16 +518,17 @@ class GameplayState extends BaseGameState {
                 this.enemyObjects[i].renderHighlight(playerPosition, map);   
             }
             if (colPoint != null) {
-                Global.scoreNumber += 1;
                 var enemyPos: Phaser.Point = this.enemyObjects[i].getTilePosition();
                 this.game.add.existing(new LaserEffect(this.game, enemyPos.x, enemyPos.y,
-                    colPoint.x, colPoint.y));
+                    colPoint.x, colPoint.y, this.enemyObjects[i].enemySprite.tint));
                 if (colPoint.equals(playerPosition)) {
                     this.playerObject.isAlive = false;
                     return true;
                 }
                 else {
                     enemyAttacked.push(colPoint);
+                    Global.scoreNumber += 1;
+                    this.game.add.existing(new WeaponName(this.game, colPoint.x, colPoint.y, "+1", 0xffffff));
                 }
             }
         }
