@@ -12,6 +12,7 @@
 /// <reference path="../HUDElements/HandUI.ts"/>
 
 class GameplayState extends BaseGameState {
+    scoreMuliplier:number = 1;
     currentDoors: DoorTile[];
     highlightTiles: HighlightTile[];
     arrowHighlight: DirHighlightTile;
@@ -265,8 +266,13 @@ class GameplayState extends BaseGameState {
     }
 
     handleAttack(damage: number[][], isPlayer:boolean, isCreated:boolean = true) {
+        var notTouched:boolean = true;
         for (var i: number = 0; i < this.enemyObjects.length; i++) {
             var eP = this.enemyObjects[i].getTilePosition();
+            if(damage[eP.y][eP.x] > 0){
+                notTouched = false;
+            }
+            
             if (this.enemyObjects[i].takeDamage(damage[eP.y][eP.x])) {
                 this.listOfDeleted.push(this.enemyObjects[i]);
             }
@@ -282,6 +288,11 @@ class GameplayState extends BaseGameState {
 
         if (this.bossObject != null) {
             var bP: Phaser.Point = this.bossObject.getTilePosition();
+            if(damage[bP.y][bP.x] > 0 || damage[bP.y + 1][bP.x] > 0 || 
+                damage[bP.y][bP.x + 1] > 0 || damage[bP.y + 1][bP.x + 1] > 0){
+                notTouched = false;
+            }
+            
             if (this.bossObject.takeDamage(damage[bP.y][bP.x])) {
                 this.killBossObject();
             }
@@ -294,6 +305,11 @@ class GameplayState extends BaseGameState {
             if (this.bossObject != null && this.bossObject.takeDamage(damage[bP.y + 1][bP.x + 1])) {
                 this.killBossObject();
             }
+        }
+        
+        if(notTouched){
+            Global.scoreNumber += Math.pow(2, this.scoreMuliplier - 1) - 1;
+            this.scoreMuliplier = 1;
         }
         
         var playerPos:Phaser.Point = this.playerObject.getTilePosition();
@@ -323,6 +339,7 @@ class GameplayState extends BaseGameState {
         
         this.pauseMenu = new PauseMenu(this.game, this.game.width/2, this.game.height/2 - 30, "you win", false);
         this.game.add.existing(this.pauseMenu);
+        Global.scoreNumber += 100;
         
         Global.gameStatus.normalWin += 1;
         if(Global.scoreNumber > Global.gameStatus.normalScore){
@@ -338,6 +355,7 @@ class GameplayState extends BaseGameState {
             for (var j = 0; j < this.enemyObjects.length; j++) {
                 var e2 = this.enemyObjects[j];
                 if(e1 == e2){
+                    this.scoreMuliplier += 1;
                     lastEnemyDied = this.enemyObjects[j].getTilePosition();
                     this.enemyObjects[j].killObject();
                     this.enemyObjects.splice(j, 1);
@@ -498,6 +516,7 @@ class GameplayState extends BaseGameState {
                 this.enemyObjects[i].renderHighlight(playerPosition, map);   
             }
             if (colPoint != null) {
+                Global.scoreNumber += 1;
                 var enemyPos: Phaser.Point = this.enemyObjects[i].getTilePosition();
                 this.game.add.existing(new LaserEffect(this.game, enemyPos.x, enemyPos.y,
                     colPoint.x, colPoint.y));
@@ -728,6 +747,8 @@ class GameplayState extends BaseGameState {
                     map[this.itemObject.getTilePosition().x][this.itemObject.getTilePosition().y] = TileTypeEnum.Wall;
                 }
                 if (this.playerObject.move(Global.gameController.direction, map)) {
+                    Global.scoreNumber += Math.pow(2, this.scoreMuliplier - 1) - 1;
+                    this.scoreMuliplier = 1;
                     this.stepUpdate();
                 }
                 this.game.input.keyboard.reset();

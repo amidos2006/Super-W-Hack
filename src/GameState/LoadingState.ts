@@ -44,7 +44,7 @@ class LoadingState extends BaseGameState{
         Global.enemyTypes = new EnemyTypes(this.game);
         Global.itemTypes = new ItemTypes(this.game);
         Global.gameStatus = new GameStatus();
-        Global.gameStatus.loadStatus();
+        //Global.gameStatus.loadStatus();
         
         Global.gameController = new GameController(this.game);
         Global.gameController.start();
