@@ -199,14 +199,15 @@ class WeaponGenerator {
             else
                 weapon.damage = random.integerInRange(Weapon.MIN_DAMAGE, Weapon.MAX_DAMAGE);
 
-            switch (Global.levelNumber) {
+            /*switch (Global.levelNumber) {
                 case 0: weapon.cooldown = 1; break;
                 case 1: weapon.cooldown = (random.frac() < 0.7 ? 1 : 2); break;
                 case 2: weapon.cooldown = random.integerInRange(Weapon.MIN_COOLDOWN, Weapon.MAX_COOLDOWN); break;
                 case 3: weapon.cooldown = (random.frac() < 0.2 ? 1 : (random.frac() < 0.6 ? 2 : 3)); break;
                 case 4: weapon.cooldown = (random.frac() < 0.1 ? 1 : (random.frac() < 0.35 ? 2 : 3)); break;
                 default: weapon.cooldown = random.integerInRange(Weapon.MIN_COOLDOWN, Weapon.MAX_COOLDOWN);
-            }
+            }*/
+            weapon.cooldown = 1;
             weapon.curCooldown = 0;
             console.log("LOGGING " + weapon.toString());
 
