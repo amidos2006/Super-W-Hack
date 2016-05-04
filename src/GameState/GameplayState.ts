@@ -259,20 +259,16 @@ class GameplayState extends BaseGameState {
         if (this.bossObject != null) {
             var bP: Phaser.Point = this.bossObject.getTilePosition();
             if (this.bossObject.takeDamage(damage[bP.y][bP.x])) {
-                this.bossObject.killObject();
-                this.bossObject = null;
+                this.killBossObject();
             }
             if (this.bossObject != null && this.bossObject.takeDamage(damage[bP.y + 1][bP.x])) {
-                this.bossObject.killObject();
-                this.bossObject = null;
+                this.killBossObject();
             }
             if (this.bossObject != null && this.bossObject.takeDamage(damage[bP.y][bP.x + 1])) {
-                this.bossObject.killObject();
-                this.bossObject = null;
+                this.killBossObject();
             }
             if (this.bossObject != null && this.bossObject.takeDamage(damage[bP.y + 1][bP.x + 1])) {
-                this.bossObject.killObject();
-                this.bossObject = null;
+                this.killBossObject();
             }
         }
         
@@ -280,6 +276,29 @@ class GameplayState extends BaseGameState {
         if(damage[playerPos.y][playerPos.x] > 0){
             this.playerObject.isAlive = false;
         }
+    }
+    
+    killBossObject(){
+        var damage:number[][] = [];
+        
+        for (var x = 0; x < Global.ROOM_WIDTH; x++) {
+            damage.push([]);
+            for (var y = 0; y < Global.ROOM_HEIGHT; y++) {
+                damage[x].push(3);
+            } 
+        }
+        damage[this.playerObject.getTilePosition().y][this.playerObject.getTilePosition().x] = 0;
+        this.bossObject.killObject();
+        this.bossObject = null;
+        this.handleAttack(damage, true, false);
+        
+        for (var i = 0; i < this.harmfulObjects.length; i++) {
+            var h = this.harmfulObjects[i];
+            h.isAlive = false;
+        }
+        
+        this.pauseMenu = new PauseMenu(this.game, this.game.width/2, this.game.height/2 - 30, "you win", false);
+        this.game.add.existing(this.pauseMenu);
     }
 
     updateObjectLists() {
@@ -318,7 +337,8 @@ class GameplayState extends BaseGameState {
             this.game.add.existing(harm);
         }
 
-        if (lastEnemyDied != null && this.enemyObjects.length <= 0) {
+        if (lastEnemyDied != null && this.enemyObjects.length <= 0 && 
+            Global.getCurrentRoom().roomType != RoomTypeEnum.Boss) {
             if (Global.isDungeonFinished()) {
                 this.portalObject.showPortal(lastEnemyDied.x, lastEnemyDied.y);
             }
