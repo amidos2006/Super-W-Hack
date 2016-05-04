@@ -50,8 +50,11 @@ class Global{
     static itemUsage:number = 0;
     static currentWeapon:Weapon = null;
     static currentPlayer:BasePlayerData = null;
+    static currentItem:BasePeople = null;
     static currentX:number = 0;
     static currentY:number = 0;
+    static entranceX:number = 0;
+    static entranceY:number = 0;
     static mapWidth:number = 0;
     static mapHeight:number = 0;
     static previousDirection:Phaser.Point;
@@ -59,12 +62,14 @@ class Global{
     
     static enemyNumbers:EnemyNumbers;
     static enemyTypes:EnemyTypes;
+    static itemTypes:ItemTypes;
     
     static initialize(text1:string, text2:string, text3:string, random:Phaser.RandomDataGenerator){
         Global.levelNumber = 0;
         Global.crateNumber = 0;
         Global.currentWeapon = null;
         Global.currentPlayer = null;
+        Global.currentItem = null;
         Global.itemUsage = 0;
         switch(Global.currentGameMode){
             case GameplayModes.adventure:
@@ -172,6 +177,8 @@ class Global{
         if(Global.levelNumber == Global.MAX_DEPTH - 1){
             Global.currentX = Math.floor(Global.mapWidth / 2);
             Global.currentY = Math.floor(Global.mapHeight / 2) + 1;
+            Global.entranceX = Global.currentX;
+            Global.entranceY = Global.currentY;
             Global.levelRooms[Global.currentX][Global.currentY] = new RoomInfoObject(RoomTypeEnum.None, random);
             Global.levelRooms[Global.currentX][Global.currentY].cleared = true;
             Global.levelRooms[Global.currentX][Global.currentY].setDoor(new Phaser.Point(0, -1));
@@ -189,6 +196,8 @@ class Global{
             random.integerInRange(0, Global.mapHeight - 1))];
         Global.currentX = queue[0].x;
         Global.currentY = queue[0].y;
+        Global.entranceX = Global.currentX;
+        Global.entranceY = Global.currentY;
         var roomNumbers:number = 0;
         while(queue.length != 0 && roomNumbers / (Global.mapWidth * Global.mapHeight) < precentageCovered){
             var p:Phaser.Point = queue.splice(random.integerInRange(0, queue.length - 1), 1)[0];
@@ -196,6 +205,9 @@ class Global{
                 var roomType:RoomTypeEnum = RoomTypeEnum.Enemy;
                 if(Math.random() < probabilityOfEmptyPlace){
                     roomType = RoomTypeEnum.None;
+                    if(Global.itemTypes.isItemRoom(Global.levelNumber)){
+                        roomType = RoomTypeEnum.Item;
+                    }
                 }
                 Global.levelRooms[p.x][p.y] = new RoomInfoObject(roomType, random);
                 sets.push(new RoomSet(p));

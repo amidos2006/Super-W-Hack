@@ -21,6 +21,7 @@ class GameplayState extends BaseGameState {
     bossObject: Boss;
     boxObject: BoxObject;
     portalObject: PortalObject;
+    itemObject:ItemPeople;
     lastPosition: Phaser.Point;
     lastDirection: Phaser.Point;
     miniMap: MiniMap;
@@ -53,7 +54,7 @@ class GameplayState extends BaseGameState {
 
         var numOfEnemies: number = Global.enemyNumbers.getNumber(this.rnd, Global.levelNumber);
         var room:RoomInfoObject = Global.getCurrentRoom();
-        if (room.cleared || room.roomType == RoomTypeEnum.None || 
+        if (room.cleared || room.roomType == RoomTypeEnum.None || room.roomType == RoomTypeEnum.Item ||
             room.roomType == RoomTypeEnum.Boss || Global.levelNumber >= Global.MAX_DEPTH - 1) {
             numOfEnemies = 0;
         }
@@ -120,16 +121,20 @@ class GameplayState extends BaseGameState {
                         break;
                     case TileTypeEnum.Door:
                         if (x == 0) {
-                            this.addDoor(new Phaser.Point(-1, 0), room.cleared || room.roomType == RoomTypeEnum.None);
+                            this.addDoor(new Phaser.Point(-1, 0), room.cleared || 
+                                room.roomType == RoomTypeEnum.None || room.roomType == RoomTypeEnum.Item);
                         }
                         if (x == Global.ROOM_WIDTH - 1) {
-                            this.addDoor(new Phaser.Point(1, 0), room.cleared || room.roomType == RoomTypeEnum.None);
+                            this.addDoor(new Phaser.Point(1, 0), room.cleared || 
+                                room.roomType == RoomTypeEnum.None || room.roomType == RoomTypeEnum.Item);
                         }
                         if (y == 0) {
-                            this.addDoor(new Phaser.Point(0, -1), room.cleared || room.roomType == RoomTypeEnum.None);
+                            this.addDoor(new Phaser.Point(0, -1), room.cleared || 
+                                room.roomType == RoomTypeEnum.None || room.roomType == RoomTypeEnum.Item);
                         }
                         if (y == Global.ROOM_HEIGHT - 1) {
-                            this.addDoor(new Phaser.Point(0, 1), room.cleared || room.roomType == RoomTypeEnum.None);
+                            this.addDoor(new Phaser.Point(0, 1), room.cleared || 
+                                room.roomType == RoomTypeEnum.None || room.roomType == RoomTypeEnum.Item);
                         }
                         break;
                 }
@@ -151,8 +156,10 @@ class GameplayState extends BaseGameState {
 
         this.boxObject = new BoxObject(this.game);
         this.portalObject = new PortalObject(this.game);
+        this.itemObject = new ItemPeople(this.game);
         this.game.add.existing(this.boxObject);
         this.game.add.existing(this.portalObject);
+        this.game.add.existing(this.itemObject);
 
         this.enemyObjects = [];
         
@@ -173,8 +180,13 @@ class GameplayState extends BaseGameState {
             this.game.add.existing(this.bossObject);
         }
 
-        if (!room.cleared && room.roomType == RoomTypeEnum.None) {
-            this.showBoxObject(new Phaser.Point(Math.floor(Global.ROOM_WIDTH / 2), Math.floor(Global.ROOM_HEIGHT / 2)));
+        if (!room.cleared) {
+            if(room.roomType == RoomTypeEnum.None){
+                this.showBoxObject(new Phaser.Point(Math.floor(Global.ROOM_WIDTH / 2), Math.floor(Global.ROOM_HEIGHT / 2)));
+            }
+            if(room.roomType == RoomTypeEnum.Item){
+                this.itemObject.showItem(Math.floor(Global.ROOM_WIDTH / 2), Math.floor(Global.ROOM_HEIGHT / 2));
+            }
         }
 
         if (Global.previousDirection.getMagnitude() == 0) {
@@ -354,7 +366,9 @@ class GameplayState extends BaseGameState {
             this.handUI.updateWeaponPattern(Global.currentWeapon.getWeaponPositions(
                 new Phaser.Point(Math.floor(Global.ROOM_HEIGHT/2), Math.floor(Global.ROOM_WIDTH/2)), 
                 new Phaser.Point(0, -1), Global.getCurrentRoom().getMatrix(this.enemyObjects)));
-            this.handUI.showHide(HandObjects.Weapon);
+        }
+        if(Global.currentItem != null){
+            this.handUI.showHide(HandObjects.Person);
         }
     }
 
@@ -390,6 +404,13 @@ class GameplayState extends BaseGameState {
             if (this.portalObject.checkCollision(playerPosition.x, playerPosition.y)) {
                 Global.getCurrentRoom().cleared = true;
                 this.portalObject.enterPortal();
+            }
+            if (this.itemObject.checkCollision(playerPosition.x, playerPosition.y)) {
+                Global.getCurrentRoom().cleared = true;
+                Global.currentItem = this.itemObject.personInfo;
+                Global.crateNumber -= this.itemObject.personInfo.cost;
+                this.itemObject.killObject();
+                this.updateHandUI();
             }
         }
 
@@ -617,8 +638,13 @@ class GameplayState extends BaseGameState {
             if (Global.gameController.direction.x != 0 || Global.gameController.direction.y != 0) {
                 this.lastPosition = this.playerObject.getTilePosition();
                 this.lastDirection = Global.gameController.direction;
-                if (this.playerObject.move(Global.gameController.direction, 
-                    Global.getCurrentRoom().getMatrix(this.enemyObjects))) {
+                var map:TileTypeEnum[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
+                if(Global.getCurrentRoom().roomType == RoomTypeEnum.Item && 
+                    !Global.getCurrentRoom().cleared &&
+                    Global.crateNumber < this.itemObject.personInfo.cost){
+                    map[this.itemObject.getTilePosition().x][this.itemObject.getTilePosition().y] = TileTypeEnum.Wall;
+                }
+                if (this.playerObject.move(Global.gameController.direction, map)) {
                     this.stepUpdate();
                 }
                 this.game.input.keyboard.reset();

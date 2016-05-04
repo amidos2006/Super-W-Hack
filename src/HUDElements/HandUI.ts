@@ -12,6 +12,8 @@ class HandUI extends BaseUIObject{
     emptyText:Phaser.Text;
     patternGraphics:Phaser.Graphics;
     patternText:Phaser.Text;
+    itemSprite:Phaser.Sprite;
+    itemText:Phaser.Text;
     
     constructor(game:Phaser.Game, x:number, y:number){
         super(game);
@@ -37,7 +39,7 @@ class HandUI extends BaseUIObject{
         this.add(this.patternGraphics);
         
         style = { font: "10px pixelFont", fill: "#ffffff", align: "center" };
-        this.patternText = this.game.add.text(centerPoint.x, centerPoint.y, "-weapon-", style, this);
+        this.patternText = this.game.add.text(centerPoint.x, centerPoint.y, "", style, this);
         this.patternText.anchor.set(0.5, 0.5);
         this.add(this.patternText);
         
@@ -70,6 +72,7 @@ class HandUI extends BaseUIObject{
                 //this.patternText.alpha = 1;
             break;
             case HandObjects.Person:
+            
             break;
         }
     }
