@@ -46,6 +46,8 @@ class Global{
     static levelCategory:number = 0;
     static levelMusic:number = 0;
     static crateNumber:number = 0;
+    static totalCrateNumber:number = 0;
+    static scoreNumber:number = 0;
     static difficultyNumber:number = 0;
     static itemUsage:number = 0;
     static currentWeapon:Weapon = null;
@@ -63,10 +65,13 @@ class Global{
     static enemyNumbers:EnemyNumbers;
     static enemyTypes:EnemyTypes;
     static itemTypes:ItemTypes;
+    static gameStatus:GameStatus;
     
     static initialize(text1:string, text2:string, text3:string, random:Phaser.RandomDataGenerator){
         Global.levelNumber = 0;
         Global.crateNumber = 0;
+        Global.totalCrateNumber = 0;
+        Global.scoreNumber = 0;
         Global.currentWeapon = null;
         Global.currentPlayer = null;
         Global.currentItem = null;

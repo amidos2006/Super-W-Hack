@@ -38,10 +38,11 @@ class EnemyObject extends BaseGameObject {
         this.factorDirectionChange = 2;
         this.hitWall = false;
 
-        var style = { font: "10px pixelFont", fill: "#cc6668", align: "right" };
+        var style = { font: "10px pixelFont", fill: "#ffffff", align: "right" };
         this.healthText = this.game.add.text(Global.TILE_SIZE - 3, Global.TILE_SIZE + 4,
             this.enemyHealth.toString(), style, this);
         this.healthText.anchor.set(1, 1);
+        this.healthText.tint = 0xcc6668;
         this.add(this.healthText);
 
         if (numberOfCannons > 0) {
@@ -440,6 +441,21 @@ class EnemyObject extends BaseGameObject {
         this.healthText.alpha = 1;
         if (this.enemyHealth < 1) {
             this.healthText.alpha = 0;
+        }
+        
+        if(this.enemyHealth > 1){
+            this.enemySprite.tint = 0xcc66cc;
+            if(this.cannonSprite != null){
+                this.cannonSprite.tint = 0xcc66cc;
+            }
+            this.healthText.tint = 0xcc66cc;
+        }
+        else{
+            this.enemySprite.tint = 0xcc6668;
+            if(this.cannonSprite != null){
+                this.cannonSprite.tint = 0xcc6668;
+            }
+            this.healthText.tint = 0xcc6668;
         }
     }
 

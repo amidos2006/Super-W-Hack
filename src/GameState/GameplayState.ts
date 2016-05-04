@@ -323,6 +323,12 @@ class GameplayState extends BaseGameState {
         
         this.pauseMenu = new PauseMenu(this.game, this.game.width/2, this.game.height/2 - 30, "you win", false);
         this.game.add.existing(this.pauseMenu);
+        
+        Global.gameStatus.normalWin += 1;
+        if(Global.scoreNumber > Global.gameStatus.normalScore){
+            Global.gameStatus.normalScore = Global.scoreNumber;
+        }
+        Global.gameStatus.saveStatus();
     }
 
     updateObjectLists() {
@@ -452,6 +458,7 @@ class GameplayState extends BaseGameState {
                     this.currentDoors[i].unlock();
                 }
                 Global.crateNumber += 1;
+                Global.totalCrateNumber += 1;
                 Global.getCurrentRoom().cleared = true;
             }
             if (this.portalObject.checkCollision(playerPosition.x, playerPosition.y)) {
@@ -634,6 +641,20 @@ class GameplayState extends BaseGameState {
         if (!this.playerObject.isAlive) {
             this.playerObject.takeDamage();
             this.playerObject = null;
+            if(Global.currentGameMode == GameplayModes.adventure){
+                Global.gameStatus.normalDeath += 1;
+                if(Global.scoreNumber > Global.gameStatus.normalScore){
+                    Global.gameStatus.normalScore = Global.scoreNumber;
+                }
+            }
+            else{
+                if(Global.crateNumber > Global.gameStatus.arcadeMaxCrates){
+                    Global.gameStatus.arcadeMaxCrates = Global.crateNumber;
+                }
+                Global.gameStatus.arcadeTotalCrates += Global.totalCrateNumber;
+                Global.gameStatus.arcadePlays += 1;
+            }
+            Global.gameStatus.saveStatus();
             this.pauseMenu = new PauseMenu(this.game, this.game.width/2, this.game.height/2 - 30, "gameover", false);
             this.game.add.existing(this.pauseMenu);
             return;

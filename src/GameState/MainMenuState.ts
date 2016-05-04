@@ -80,10 +80,11 @@ class MainMenuState extends BaseGameState{
                 case 1:
                 Global.currentGameMode = GameplayModes.arcade;
                 break;
+                case 2:
+                this.game.state.start("stats", true);
+                break;
                 case 3:
                 this.game.state.start("credits", true);
-                break;
-                case 4:
                 break;
             }
             if(this.index >= 0 && this.index<=1){
