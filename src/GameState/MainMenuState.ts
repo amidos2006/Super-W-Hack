@@ -44,6 +44,7 @@ class MainMenuState extends BaseGameState{
         
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
             Global.constructSingleLevel(this.rnd, RoomTypeEnum.Boss);
+            Global.currentWeapon = WeaponGenerator.GenerateWeapon(null, this.rnd, null, Global.weaponNameGenerator, -1);
             this.game.state.start("gameplay");
             this.game.input.keyboard.reset();
         }
