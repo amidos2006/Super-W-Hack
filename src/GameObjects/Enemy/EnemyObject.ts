@@ -443,13 +443,21 @@ class EnemyObject extends BaseGameObject {
             this.healthText.alpha = 0;
         }
         
-        if(this.enemyHealth > 1){
+        if(this.enemyHealth == 2){
             this.enemySprite.tint = 0xcc3d40;
             if(this.cannonSprite != null){
                 this.cannonSprite.tint = 0xcc3d40;
                 this.laserHighlight.tint = 0xcc3d40;
             }
             this.healthText.tint = 0xcc3d40;
+        }
+        else if(this.enemyHealth == 3){
+            this.enemySprite.tint = 0xcc1417;
+            if(this.cannonSprite != null){
+                this.cannonSprite.tint = 0xcc1417;
+                this.laserHighlight.tint = 0xcc1417;
+            }
+            this.healthText.tint = 0xcc1417;
         }
         else{
             this.enemySprite.tint = 0xcc6668;
