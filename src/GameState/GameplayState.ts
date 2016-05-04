@@ -30,6 +30,7 @@ class GameplayState extends BaseGameState {
     weaponUI:WeaponUI;
     buttonText: ButtonTutorial;
     pauseMenu:PauseMenu;
+    tutorialText:TutorialText;
 
     listOfAdded:EnemyObject[];
     listOfDeleted:EnemyObject[];
@@ -94,6 +95,39 @@ class GameplayState extends BaseGameState {
             this.updateHandUI();
         }
         this.game.add.existing(new CrateText(this.game, this.game.width / 2 + 2, this.game.height - 10));
+        if(Global.currentGameMode == GameplayModes.adventure){
+            this.game.add.existing(new SideText(this.game, 40, this.game.height - 75));
+            this.tutorialText = null;
+            if(Global.levelNumber == 0){
+                var aText:string = "(x)";
+                var bText:string = "(z)";
+                if(this.game.input.gamepad.pad1.connected){
+                    aText = "(a)";
+                    bText = "(b)";
+                }
+                switch (Global.tutorialTextNumber) {
+                    case 0:
+                        this.tutorialText = new TutorialText(this.game, 
+                            Math.floor(Global.ROOM_WIDTH/2), Math.floor(Global.ROOM_HEIGHT/2), 
+                            "(arrows) move");
+                        Global.tutorialTextNumber += 1;
+                        break;
+                    case 1:
+                        if(Global.getCurrentRoom().roomType == RoomTypeEnum.Enemy && !Global.getCurrentRoom().cleared)
+                            this.tutorialText = new TutorialText(this.game, 
+                                Math.floor(Global.ROOM_WIDTH/2), Math.floor(Global.ROOM_HEIGHT/2), 
+                                aText + " aim then shoot");
+                        break;
+                    case 2:
+                        if(Global.getCurrentRoom().roomType == RoomTypeEnum.Enemy && !Global.getCurrentRoom().cleared)
+                            this.tutorialText = new TutorialText(this.game, 
+                                Math.floor(Global.ROOM_WIDTH/2), Math.floor(Global.ROOM_HEIGHT/2), 
+                                "hold " + bText + " for special\n(cost crates)");
+                        break;
+                }
+                if(this.tutorialText != null) this.game.add.existing(this.tutorialText);
+            }
+        }
         if(Global.getCurrentRoom().roomType != RoomTypeEnum.Spawning){
             this.game.add.existing(new LevelName(this.game, this.game.width / 2, 5));
         }
@@ -265,16 +299,22 @@ class GameplayState extends BaseGameState {
     }
 
     handleAttack(damage: number[][], isPlayer:boolean, isCreated:boolean = true) {
-        var notTouched:boolean = true;
+        var notTouched:boolean = isPlayer;
         for (var i: number = 0; i < this.enemyObjects.length; i++) {
             var eP = this.enemyObjects[i].getTilePosition();
-            if(damage[eP.y][eP.x] > 0){
-                notTouched = false;
-            }
             
             if (this.enemyObjects[i].takeDamage(damage[eP.y][eP.x])) {
-                Global.scoreMultiplier += 1;
+                Global.scoreNumber += Global.scoreMultiplier;
+                if(Global.currentGameMode == GameplayModes.adventure){
+                    this.game.add.existing(new WeaponName(this.game, eP.x, eP.y, 
+                        "+" + (Global.scoreMultiplier).toString(), 0xffffff));
+                }
                 this.listOfDeleted.push(this.enemyObjects[i]);
+            }
+            
+            if(damage[eP.y][eP.x] > 0){
+                notTouched = false;
+                Global.scoreMultiplier += 1;
             }
         }
 
@@ -308,8 +348,10 @@ class GameplayState extends BaseGameState {
         }
         
         if(notTouched){
-            Global.scoreNumber += Math.pow(2, Global.scoreMultiplier - 1) - 1;
             Global.scoreMultiplier = 1;
+            if(this.tutorialText != null){
+                this.tutorialText.disappear();
+            }
         }
         
         var playerPos:Phaser.Point = this.playerObject.getTilePosition();
@@ -329,6 +371,9 @@ class GameplayState extends BaseGameState {
         }
         damage[this.playerObject.getTilePosition().y][this.playerObject.getTilePosition().x] = 0;
         this.bossObject.killObject();
+        Global.scoreNumber += 10 * Global.scoreMultiplier;
+        this.game.add.existing(new WeaponName(this.game, this.bossObject.getTilePosition().x, 
+            this.bossObject.getTilePosition().y, "+" + (10 * Global.scoreMultiplier).toString(), 0xffffff));
         this.bossObject = null;
         this.handleAttack(damage, true, false);
         
@@ -339,7 +384,6 @@ class GameplayState extends BaseGameState {
         
         this.pauseMenu = new PauseMenu(this.game, this.game.width/2, this.game.height/2 - 30, "you win", false);
         this.game.add.existing(this.pauseMenu);
-        Global.scoreNumber += 100;
         
         Global.gameStatus.normalWin += 1;
         if(Global.scoreNumber > Global.gameStatus.normalScore){
@@ -356,8 +400,6 @@ class GameplayState extends BaseGameState {
                 var e2 = this.enemyObjects[j];
                 if(e1 == e2){
                     lastEnemyDied = this.enemyObjects[j].getTilePosition();
-                    this.game.add.existing(new WeaponName(this.game, lastEnemyDied.x, lastEnemyDied.y, 
-                        "+" + (Math.pow(2, Global.scoreMultiplier - 2)).toString(), 0xffffff));
                     this.enemyObjects[j].killObject();
                     this.enemyObjects.splice(j, 1);
                     break;
@@ -393,6 +435,7 @@ class GameplayState extends BaseGameState {
             }
             else {
                 Global.difficultyNumber += 1;
+                Global.tutorialTextNumber += 1;
                 this.showBoxObject(lastEnemyDied);
             }
         }
@@ -526,8 +569,6 @@ class GameplayState extends BaseGameState {
                 }
                 else {
                     enemyAttacked.push(colPoint);
-                    Global.scoreNumber += 1;
-                    this.game.add.existing(new WeaponName(this.game, colPoint.x, colPoint.y, "+1", 0xffffff));
                 }
             }
         }
@@ -749,8 +790,10 @@ class GameplayState extends BaseGameState {
                     map[this.itemObject.getTilePosition().x][this.itemObject.getTilePosition().y] = TileTypeEnum.Wall;
                 }
                 if (this.playerObject.move(Global.gameController.direction, map)) {
-                    Global.scoreNumber += Math.pow(2, Global.scoreMultiplier - 1) - 1;
                     Global.scoreMultiplier = 1;
+                    if(this.tutorialText != null){
+                        this.tutorialText.disappear();
+                    }
                     this.stepUpdate();
                 }
                 this.game.input.keyboard.reset();

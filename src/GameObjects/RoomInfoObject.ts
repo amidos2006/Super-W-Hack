@@ -40,7 +40,8 @@ class RoomInfoObject{
         if(this.roomType == RoomTypeEnum.Boss){
             numberOfShapes = 0;
         }
-        if(this.roomType == RoomTypeEnum.Spawning){
+        if(this.roomType == RoomTypeEnum.Spawning || 
+            (this.roomType == RoomTypeEnum.Enemy && Global.levelNumber == 0 && Global.difficultyNumber < 3)){
             if(numberOfShapes > 1){
                 numberOfShapes = 1;
             }

@@ -2,7 +2,7 @@
 
 class CrateText extends BaseUIObject{
     crateSprite:Phaser.Sprite;
-    crateText:Phaser.Text;
+    middleText:Phaser.Text;
     
     constructor(game:Phaser.Game, x:number, y:number){
         super(game);
@@ -16,16 +16,19 @@ class CrateText extends BaseUIObject{
         var style = { font: "14px pixelFont", fill: "#ffffff", align: "center" };
         var text:string = "crates: 0";
         if(Global.currentGameMode == GameplayModes.adventure){
-            text = "score: " + Global.scoreNumber + " (x1)"
+            text = "score: " + Global.scoreNumber + " (x1)";
         }
-        this.crateText = this.game.add.text(x, y, "crates: 0", style, this);
-        this.crateText.anchor.set(0.5, 0.5);
-        this.add(this.crateText);
+        this.middleText = this.game.add.text(x, y, text, style, this);
+        this.middleText.anchor.set(0.5, 0.5);
+        this.add(this.middleText);
     }
     
     update(){
         super.update();
         
-        this.crateText.text = "crates: " + Global.crateNumber.toString();
+        this.middleText.text = "crates: " + Global.crateNumber.toString();
+        if(Global.currentGameMode == GameplayModes.adventure){
+            this.middleText.text = "score: " + Global.scoreNumber + " (x" + Global.scoreMultiplier + ")"
+        }
     }
 }

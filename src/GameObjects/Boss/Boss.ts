@@ -72,7 +72,7 @@ class Boss extends BaseGameObject {
     [BossSpecialType.SPAWN_ENEMY, BossSpecialType.HEAL];//, BossSpecialType.STUN];
 
     static BOSS_ATTACKS: BossAttackType[] =
-    [BossAttackType.DAMAGE_FLOOR, BossAttackType.DAMAGE_FLOOR_LINE];//,BossAttackType.CHARGE]; BossAttackType.SHOOT];
+    [BossAttackType.DAMAGE_FLOOR, BossAttackType.DAMAGE_FLOOR];//BossAttackType.DAMAGE_FLOOR_LINE];//,BossAttackType.CHARGE]; BossAttackType.SHOOT];
 
     specialType: BossSpecialType = BossSpecialType.NONE;
 

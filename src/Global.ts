@@ -62,6 +62,7 @@ class Global{
     static mapHeight:number = 0;
     static previousDirection:Phaser.Point;
     static currentGameMode:GameplayModes;
+    static tutorialTextNumber:number = 0;
     
     static enemyNumbers:EnemyNumbers;
     static enemyTypes:EnemyTypes;
@@ -78,6 +79,7 @@ class Global{
         Global.currentPlayer = null;
         Global.currentItem = null;
         Global.itemUsage = 0;
+        Global.tutorialTextNumber = 0;
         switch(Global.currentGameMode){
             case GameplayModes.adventure:
                 Global.constructLevelName(text1, text2, text3, random);
