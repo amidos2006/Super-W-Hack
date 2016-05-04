@@ -27,6 +27,7 @@ class LoadingState extends BaseGameState{
         this.game.load.text("enemyTypes", "assets/generationData/enemyTypeProb.txt");
         this.game.load.text("enemyHealth", "assets/generationData/enemyHealthProb.txt");
         this.game.load.text("aaron", "assets/generationData/aaronProb.txt");
+        this.game.load.text("arcade", "assets/generationData/arcadeTimer.txt");
         
         Global.audioManager = new AudioManager();
         Global.audioManager.preload(this.game);

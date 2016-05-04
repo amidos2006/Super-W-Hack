@@ -20,11 +20,17 @@ class BoxObject extends BaseGameObject{
         this.y = tilePosition.y * Global.TILE_SIZE;
     }
     
-    collectCrate(){
+    collectCrate(nextPosition:Phaser.Point = null){
         this.game.add.existing(new WeaponName(this.game, this.getTilePosition().x, 
             this.getTilePosition().y, Global.currentWeapon.getWeaponName()));
         Global.audioManager.playPickUpCrate();
-        this.killObject();
+        
+        if(nextPosition != null){
+            this.show(nextPosition);
+        }
+        else{
+            this.killObject();
+        }
     }
     
     killObject(){

@@ -349,6 +349,60 @@ class EnemyTypes{
         return true;
     }
     
+    getArcadeEnemy(game:Phaser.Game, map:TileTypeEnum[][], damageMatrix:number[][], enemyType:number){
+        var damageValue:number = 0;
+        var distances:number[] = [];
+        for (var x = 0; x < Global.ROOM_WIDTH; x++) {
+            for (var y = 0; y < Global.ROOM_HEIGHT; y++) {
+                if(damageMatrix[x][y] > 0){
+                    damageValue = damageMatrix[x][y];
+                    var d:number = Math.abs(x - Math.floor(Global.ROOM_WIDTH / 2)) + 
+                        Math.abs(y - Math.floor(Global.ROOM_HEIGHT / 2));
+                    if(this.isUnique(d, distances)){ 
+                        distances.push(d);
+                    }
+                }
+            }
+        }
+        
+        var currentClassIndex:number = enemyType;
+        while(!this.checkConstraints(currentClassIndex, distances)){
+            currentClassIndex = this.getIndex(game.rnd, this.typeProbabilities);
+        }
+        
+        var enemy:EnemyObject = null;
+        switch (currentClassIndex) {
+            case EnemyNames.Random:
+                enemy = this.createRandom(game, map, damageValue, distances);
+                break;
+            case EnemyNames.Chaser:
+                enemy = this.createChaser(game, map, damageValue, distances);
+                break;
+            case EnemyNames.Patrol:
+                enemy = this.createPatrol(game, map, damageValue, distances);
+                this.patrols = [];
+                for (var x = -1; x <= 1; x++) {
+                    for (var y = -1; y <= 1; y++) {
+                        if(Math.abs(x) != Math.abs(y)){
+                            this.patrols.push(new Phaser.Point(x, y));
+                        }
+                    }
+                }
+                break;
+            case EnemyNames.Shooter:
+                enemy = this.createShooter(game, map, damageValue, distances);
+                break;
+            case EnemyNames.Explosive:
+                enemy = this.createExplosive(game, map, damageValue, distances);
+                break;
+            case EnemyNames.Blob:
+                enemy = this.createBlob(game, map, damageValue, distances);
+                break;
+        }
+        
+        return enemy;
+    }
+    
     getEnemy(game:Phaser.Game, map:TileTypeEnum[][], damageMatrix:number[][]){
         var damageValue:number = 0;
         var distances:number[] = [];

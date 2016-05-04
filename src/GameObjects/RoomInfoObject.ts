@@ -40,6 +40,14 @@ class RoomInfoObject{
         if(this.roomType == RoomTypeEnum.Boss){
             numberOfShapes = 0;
         }
+        if(this.roomType == RoomTypeEnum.Spawning){
+            if(numberOfShapes > 1){
+                numberOfShapes = 1;
+            }
+            if(shapeSize > 2){
+                shapeSize = 2;
+            }
+        }
        
         for(var s:number=0; s<numberOfShapes; s++){
             var pattern:Phaser.Point[] = [];

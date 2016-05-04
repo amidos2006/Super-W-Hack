@@ -17,6 +17,7 @@ class GameplayState extends BaseGameState {
     arrowHighlight: DirHighlightTile;
     playerObject: PlayerObject;
     enemyObjects: EnemyObject[];
+    arcadeTimers:ArcadeTimer[];
     harmfulObjects:HarmfulFloorObject[];
     bossObject: Boss;
     boxObject: BoxObject;
@@ -74,13 +75,15 @@ class GameplayState extends BaseGameState {
     }
 
     createHUDElements() {
-        this.miniMap = new MiniMap(this.game, this.game.width - (Global.mapWidth + 1.5) * Global.MAP_SIZE,
-            this.game.height - (this.game.height - this.game.width) / 2 - Global.mapHeight * Global.MAP_SIZE / 2 + 5);
-        this.game.add.existing(this.miniMap);
+        if(Global.getCurrentRoom().roomType != RoomTypeEnum.Spawning){
+            this.miniMap = new MiniMap(this.game, this.game.width - (Global.mapWidth + 1.5) * Global.MAP_SIZE,
+                this.game.height - (this.game.height - this.game.width) / 2 - Global.mapHeight * Global.MAP_SIZE / 2 + 5);
+            this.game.add.existing(this.miniMap);
+        }
 
-        this.handUI = new HandUI(this.game, 1.5 * Global.MAP_SIZE,
-            this.game.height - (this.game.height - this.game.width) / 2 - 3 * Global.MAP_SIZE / 2 + 5);
-        this.game.add.existing(this.handUI);
+        // this.handUI = new HandUI(this.game, 1.5 * Global.MAP_SIZE,
+        //     this.game.height - (this.game.height - this.game.width) / 2 - 3 * Global.MAP_SIZE / 2 + 5);
+        // this.game.add.existing(this.handUI);
         
         this.buttonText = new ButtonTutorial(this.game, 7, this.game.height);
         this.game.add.existing(this.buttonText);
@@ -91,7 +94,9 @@ class GameplayState extends BaseGameState {
             this.updateHandUI();
         }
         this.game.add.existing(new CrateText(this.game, this.game.width / 2 + 2, this.game.height - 10));
-        this.game.add.existing(new LevelName(this.game, this.game.width / 2, 5));
+        if(Global.getCurrentRoom().roomType != RoomTypeEnum.Spawning){
+            this.game.add.existing(new LevelName(this.game, this.game.width / 2, 5));
+        }
         this.game.add.existing(new WhiteLayout(this.game, -this.game.camera.x, -this.game.camera.y,
             Global.ROOM_WIDTH * Global.TILE_SIZE, Global.ROOM_HEIGHT * Global.TILE_SIZE));
     }
@@ -162,6 +167,25 @@ class GameplayState extends BaseGameState {
         this.game.add.existing(this.itemObject);
 
         this.enemyObjects = [];
+        
+        this.arcadeTimers = [];
+        if(room.roomType == RoomTypeEnum.Spawning){
+            var data:string[] = this.game.cache.getText("arcade").split("\n");
+            for (var i = 0; i < data.length; i++) {
+                var values:string[] = data[i].split(",");
+                var arcadeTimer:ArcadeTimer = new ArcadeTimer(this.game, parseInt(values[0]), 
+                    parseInt(values[1]), parseFloat(values[2]), parseInt(values[3]));
+                this.arcadeTimers.push(arcadeTimer);
+            }
+            
+            this.playerObject = null;
+            this.game.add.existing(new PlayerEntranceEffect(this.game, Math.floor(Global.ROOM_WIDTH / 2),
+                Math.floor(Global.ROOM_HEIGHT / 2) + 3, 8));
+            this.showBoxObject(new Phaser.Point( Math.floor(Global.ROOM_WIDTH / 2),
+                Math.floor(Global.ROOM_HEIGHT / 2)));
+            Global.levelNumber = 2;
+            return;
+        }
         
         var normalTiles: TileTypeEnum[][] = room.getMatrix(this.enemyObjects);
         while(Global.enemyTypes.enemyNumber > 0){
@@ -338,7 +362,7 @@ class GameplayState extends BaseGameState {
         }
 
         if (lastEnemyDied != null && this.enemyObjects.length <= 0 && 
-            Global.getCurrentRoom().roomType != RoomTypeEnum.Boss) {
+            Global.getCurrentRoom().roomType == RoomTypeEnum.Enemy) {
             if (Global.isDungeonFinished()) {
                 this.portalObject.showPortal(lastEnemyDied.x, lastEnemyDied.y);
             }
@@ -382,14 +406,14 @@ class GameplayState extends BaseGameState {
         this.weaponUI.updateDamage(Global.currentWeapon.getDamage(), 0);
         this.weaponUI.updateCooldown(Global.currentWeapon.cooldown - 1, 0);
         
-        if(Global.currentWeapon != null){
-            this.handUI.updateWeaponPattern(Global.currentWeapon.getWeaponPositions(
-                new Phaser.Point(Math.floor(Global.ROOM_HEIGHT/2), Math.floor(Global.ROOM_WIDTH/2)), 
-                new Phaser.Point(0, -1), Global.getCurrentRoom().getMatrix(this.enemyObjects)));
-        }
-        if(Global.currentItem != null){
-            this.handUI.showHide(HandObjects.Person);
-        }
+        // if(Global.currentWeapon != null){
+        //     this.handUI.updateWeaponPattern(Global.currentWeapon.getWeaponPositions(
+        //         new Phaser.Point(Math.floor(Global.ROOM_HEIGHT/2), Math.floor(Global.ROOM_WIDTH/2)), 
+        //         new Phaser.Point(0, -1), Global.getCurrentRoom().getMatrix(this.enemyObjects)));
+        // }
+        // if(Global.currentItem != null){
+        //     this.handUI.showHide(HandObjects.Person);
+        // }
     }
 
     handleCollision() {
@@ -411,15 +435,24 @@ class GameplayState extends BaseGameState {
             }
         }
 
-        if (!Global.getCurrentRoom().cleared && this.enemyObjects.length <= 0) {
+        if ((!Global.getCurrentRoom().cleared && this.enemyObjects.length <= 0) || 
+            Global.getCurrentRoom().roomType == RoomTypeEnum.Spawning) {
             if (this.boxObject.checkCollision(playerPosition.x, playerPosition.y)) {
                 this.changeHandWeapon(-1);
-                this.boxObject.collectCrate();
+                var newPosition:Phaser.Point = null;
+                if(Global.getCurrentRoom().roomType == RoomTypeEnum.Spawning){
+                    var map:TileTypeEnum[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
+                    map[this.boxObject.getTilePosition().x][this.boxObject.getTilePosition().y] = TileTypeEnum.Wall;
+                    map[this.playerObject.getTilePosition().x][this.playerObject.getTilePosition().y] = TileTypeEnum.Wall;
+                    var locations:Phaser.Point[] = Global.getEmptyTiles(map);
+                    newPosition = locations[this.game.rnd.integerInRange(0, locations.length - 1)];
+                }
+                this.boxObject.collectCrate(newPosition);
                 for (var i: number = 0; i < this.currentDoors.length; i++) {
                     this.currentDoors[i].unlock();
                 }
-                Global.getCurrentRoom().cleared = true;
                 Global.crateNumber += 1;
+                Global.getCurrentRoom().cleared = true;
             }
             if (this.portalObject.checkCollision(playerPosition.x, playerPosition.y)) {
                 Global.getCurrentRoom().cleared = true;
@@ -450,10 +483,12 @@ class GameplayState extends BaseGameState {
             }
             var colPoint: Phaser.Point = null;
             if(this.enemyObjects[i].isAlive){
-                colPoint = this.enemyObjects[i].enemyShot(playerPosition,
-                    Global.getCurrentRoom().getMatrix(this.enemyObjects));
-                this.enemyObjects[i].renderHighlight(playerPosition, 
-                    Global.getCurrentRoom().getMatrix(this.enemyObjects));   
+                var map:TileTypeEnum[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
+                if(Global.getCurrentRoom().roomType == RoomTypeEnum.Spawning){
+                    map[this.boxObject.getTilePosition().x][this.boxObject.getTilePosition().y] = TileTypeEnum.Wall;
+                }
+                colPoint = this.enemyObjects[i].enemyShot(playerPosition, map);
+                this.enemyObjects[i].renderHighlight(playerPosition, map);   
             }
             if (colPoint != null) {
                 var enemyPos: Phaser.Point = this.enemyObjects[i].getTilePosition();
@@ -515,9 +550,12 @@ class GameplayState extends BaseGameState {
         if (this.handleCollision()) {
             return;
         }
-
+        
         for (var i = 0; i < this.enemyObjects.length; i++) {
             var tileMatrix: number[][] = Global.getCurrentRoom().getMatrix(this.enemyObjects);
+            if(Global.getCurrentRoom().roomType == RoomTypeEnum.Spawning){
+                tileMatrix[this.boxObject.getTilePosition().x][this.boxObject.getTilePosition().y] = TileTypeEnum.Wall;
+            }
             if(this.bossObject != null){
                 var pos:Phaser.Point = this.bossObject.getTilePosition();
                 tileMatrix[pos.x][pos.y] = TileTypeEnum.Enemy;
@@ -542,7 +580,11 @@ class GameplayState extends BaseGameState {
         if (this.bossObject != null) {
             this.bossObject.stepUpdate(this.lastPosition, Global.getCurrentRoom().getMatrix(this.enemyObjects));
         }
-
+        
+        for (var i = 0; i < this.arcadeTimers.length; i++) {
+            this.arcadeTimers[i].updateStep();
+        }
+        
         if (this.handleEnemyCollision()) {
             return;
         }
