@@ -12,7 +12,6 @@
 /// <reference path="../HUDElements/HandUI.ts"/>
 
 class GameplayState extends BaseGameState {
-    scoreMuliplier:number = 1;
     currentDoors: DoorTile[];
     highlightTiles: HighlightTile[];
     arrowHighlight: DirHighlightTile;
@@ -274,7 +273,7 @@ class GameplayState extends BaseGameState {
             }
             
             if (this.enemyObjects[i].takeDamage(damage[eP.y][eP.x])) {
-                this.scoreMuliplier += 1;
+                Global.scoreMultiplier += 1;
                 this.listOfDeleted.push(this.enemyObjects[i]);
             }
         }
@@ -309,8 +308,8 @@ class GameplayState extends BaseGameState {
         }
         
         if(notTouched){
-            Global.scoreNumber += Math.pow(2, this.scoreMuliplier - 1) - 1;
-            this.scoreMuliplier = 1;
+            Global.scoreNumber += Math.pow(2, Global.scoreMultiplier - 1) - 1;
+            Global.scoreMultiplier = 1;
         }
         
         var playerPos:Phaser.Point = this.playerObject.getTilePosition();
@@ -358,7 +357,7 @@ class GameplayState extends BaseGameState {
                 if(e1 == e2){
                     lastEnemyDied = this.enemyObjects[j].getTilePosition();
                     this.game.add.existing(new WeaponName(this.game, lastEnemyDied.x, lastEnemyDied.y, 
-                        "+" + (Math.pow(2, this.scoreMuliplier - 2)).toString(), 0xffffff));
+                        "+" + (Math.pow(2, Global.scoreMultiplier - 2)).toString(), 0xffffff));
                     this.enemyObjects[j].killObject();
                     this.enemyObjects.splice(j, 1);
                     break;
@@ -750,8 +749,8 @@ class GameplayState extends BaseGameState {
                     map[this.itemObject.getTilePosition().x][this.itemObject.getTilePosition().y] = TileTypeEnum.Wall;
                 }
                 if (this.playerObject.move(Global.gameController.direction, map)) {
-                    Global.scoreNumber += Math.pow(2, this.scoreMuliplier - 1) - 1;
-                    this.scoreMuliplier = 1;
+                    Global.scoreNumber += Math.pow(2, Global.scoreMultiplier - 1) - 1;
+                    Global.scoreMultiplier = 1;
                     this.stepUpdate();
                 }
                 this.game.input.keyboard.reset();

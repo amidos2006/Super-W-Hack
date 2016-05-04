@@ -1,6 +1,6 @@
 dungeon, lair, cave, mud, dirt, shit, chocolate
 castle, tower, citadel, palace, home, room, lab, stairs, bathroom
 desk, drawer, closet, shelf, pants, shirt, skirt
-desert, storm, beach, sand castle, piss
-lake, sea, river, ocean, water cave, cup, waterfall
+desert, storm, beach, sand, piss
+lake, sea, river, ocean, water, cup, waterfall
 valley, forest, swamp, garden, backyard

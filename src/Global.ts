@@ -48,6 +48,7 @@ class Global{
     static crateNumber:number = 0;
     static totalCrateNumber:number = 0;
     static scoreNumber:number = 0;
+    static scoreMultiplier:number = 1;
     static difficultyNumber:number = 0;
     static itemUsage:number = 0;
     static currentWeapon:Weapon = null;
@@ -72,6 +73,7 @@ class Global{
         Global.crateNumber = 0;
         Global.totalCrateNumber = 0;
         Global.scoreNumber = 0;
+        Global.scoreMultiplier = 1;
         Global.currentWeapon = null;
         Global.currentPlayer = null;
         Global.currentItem = null;

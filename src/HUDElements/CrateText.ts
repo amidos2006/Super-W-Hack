@@ -14,6 +14,10 @@ class CrateText extends BaseUIObject{
         // this.add(this.crateSprite);
         
         var style = { font: "14px pixelFont", fill: "#ffffff", align: "center" };
+        var text:string = "crates: 0";
+        if(Global.currentGameMode == GameplayModes.adventure){
+            text = "score: " + Global.scoreNumber + " (x1)"
+        }
         this.crateText = this.game.add.text(x, y, "crates: 0", style, this);
         this.crateText.anchor.set(0.5, 0.5);
         this.add(this.crateText);
