@@ -17,7 +17,7 @@
     static isMusicPlaying: boolean[] = null;
     static musicTitle: Phaser.Sound = null;
 
-    static AMOUNT_OF_MUSIC: number = 12;
+    static AMOUNT_OF_MUSIC: number = 11;
     static AMOUNT_OF_ATTACKS: number = 19;
     static AMOUNT_OF_HURT: number = 3;
     static AMOUNT_OF_WALK: number = 5;
@@ -82,7 +82,7 @@
         //music
         game.load.audio("musicTitle", "assets/music/gameMusicTitle.mp3");
 
-        game.load.audio("music1", "assets/music/sacrificial.mp3");
+        //game.load.audio("music1", "assets/music/sacrificial.mp3");
         game.load.audio("music2", "assets/music/Super Crate Box/LEV0.mp3");
         game.load.audio("music3", "assets/music/Super Crate Box/LEV1.mp3");
         game.load.audio("music4", "assets/music/Super Crate Box/LEV2.mp3");
