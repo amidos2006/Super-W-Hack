@@ -99,7 +99,6 @@
         AudioManager.isMusicPlaying = new Array(AudioManager.AMOUNT_OF_MUSIC);
         for (var i: number = 0; i < AudioManager.AMOUNT_OF_MUSIC; i++) 
             AudioManager.isMusicPlaying[i] = false;
-        game.load.audio("musiccompletelvl", "assets/music/Spelunky/mVictory.mp3");
     }
 
     addSounds(game: Phaser.Game) {
@@ -156,9 +155,6 @@
             AudioManager.musics[i] = game.add.audio("music" + (i + 1));
             AudioManager.musics[i].loop = true;
         }
-
-        this.pickNPC = game.add.audio("musiccompletelvl");
-        
     }
 
     playPowerUp() {
