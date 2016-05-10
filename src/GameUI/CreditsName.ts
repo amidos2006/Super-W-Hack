@@ -18,16 +18,26 @@ class CreditsName extends BaseUIObject{
         }
         this.textHeight += 18;
         
+        this.add(new CreditLine(this.game, x, y+this.textHeight, "music by", 10));
+        this.textHeight += 10;
+        
+        var names:string[] = credits[1].split(",");
+        for (var i = 0; i < names.length; i++) {
+            this.add(new CreditLine(this.game, x, y+this.textHeight, names[i].toString(), 20));
+            this.textHeight += 18;
+        }
+        this.textHeight += 18;
+        
         this.add(new CreditLine(this.game, x, y+this.textHeight, "made for", 10));
         this.textHeight += 10;
         
-        this.add(new CreditLine(this.game, x, y+this.textHeight, credits[1].trim(), 20));
+        this.add(new CreditLine(this.game, x, y+this.textHeight, credits[2].trim(), 20));
         this.textHeight += 2 * 18;
         
         this.add(new CreditLine(this.game, x, y+this.textHeight, "inspired by", 10));
         this.textHeight += 10;
         
-        var names:string[] = credits[2].split(",");
+        var names:string[] = credits[3].split(",");
         for (var i = 0; i < names.length; i++) {
             this.add(new CreditLine(this.game, x, y+this.textHeight, names[i].toString(), 20));
             this.textHeight += 18;
@@ -37,7 +47,7 @@ class CreditsName extends BaseUIObject{
         this.add(new CreditLine(this.game, x, y+this.textHeight, "thanks to", 10));
         this.textHeight += 10;
         
-        var names:string[] = credits[3].split(",");
+        var names:string[] = credits[4].split(",");
         for (var i = 0; i < names.length; i++) {
             this.add(new CreditLine(this.game, x, y+this.textHeight, names[i].toString(), 20));
             this.textHeight += 18;
